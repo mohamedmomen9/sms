@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('exam_rec', function (Blueprint $table) {
             $table->id();
-            $table->string('cicid');
+            $table->string('student_id');
             $table->string('sess');
             $table->integer('yr');
             $table->string('remark')->nullable();

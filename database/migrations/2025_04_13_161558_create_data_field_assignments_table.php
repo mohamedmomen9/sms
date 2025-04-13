@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::create('data_field_assignments', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('stream_id'); // Assuming stream_id is a foreign key. Adjust if needed.
-            $table->unsignedBigInteger('field_id'); // Assuming field_id is a foreign key. Adjust if needed.
+            $table->unsignedBigInteger('stream_id');
+            $table->unsignedBigInteger('field_id');
             $table->text('instructions')->nullable();
             $table->boolean('is_required')->default(false);
             $table->boolean('is_unique')->default(false);

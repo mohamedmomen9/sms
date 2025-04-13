@@ -6,31 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('app_admtmp_recs', function (Blueprint $table) {
-            $table->id(); // Auto-incrementing primary key
-            $table->string('prog');  // Program
-            $table->string('plan_enr_sess'); // Plan Enrollment Session
-            $table->string('major'); // Major
-            $table->string('major2')->nullable(); // Secondary Major (can be null)
-            $table->date('add_date'); // Add Date
-            $table->date('upd_date'); // Update Date
-            $table->string('campus'); // Campus
-            $table->text('about')->nullable(); // About (potentially long text, nullable)
-            $table->string('subprog')->nullable(); // Subprogram (nullable)
-            $table->string('adm_by')->nullable(); // Admitted By (nullable)
+            $table->id();
+            $table->string('prog');
+            $table->string('plan_enr_sess');
+            $table->string('major');
+            $table->string('major2')->nullable();
+            $table->date('add_date');
+            $table->date('upd_date');
+            $table->string('campus');
+            $table->text('about')->nullable();
+            $table->string('subprog')->nullable();
+            $table->string('adm_by')->nullable();
 
-            $table->timestamps(); // Created_at and updated_at columns
+            $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('app_admtmp_recs');

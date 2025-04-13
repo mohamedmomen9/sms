@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description')->nullable(); // Use text for potentially longer descriptions.
+            $table->text('description')->nullable();
             $table->timestamps();
         });
     }

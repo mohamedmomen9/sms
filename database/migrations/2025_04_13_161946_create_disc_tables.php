@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('disc_no');
             $table->string('txt');
-            $table->decimal('disc_val', 10, 2); // Adjust precision/scale as needed.
+            $table->decimal('disc_val', 10, 2);
             $table->timestamps();
         });
     }

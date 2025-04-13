@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->string('prog');
             $table->string('lvl');
-            $table->decimal('price', 10, 2); // Adjust precision/scale as needed.
+            $table->decimal('price', 10, 2);
             $table->timestamps();
         });
     }

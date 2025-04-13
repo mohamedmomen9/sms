@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('falog_rec', function (Blueprint $table) {
             $table->id();
             $table->string('emp_id');
-            $table->text('description'); // Use text for potentially longer descriptions.
+            $table->text('description');
             $table->timestamps();
         });
     }

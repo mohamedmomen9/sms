@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('efinance_currency', function (Blueprint $table) {
             $table->string('currency_iso');
             $table->string('currency_name');
-            $table->primary('currency_iso'); // Assuming currency_iso is a unique identifier.
+            $table->string('currency_iso');
             $table->timestamps();
         });
     }

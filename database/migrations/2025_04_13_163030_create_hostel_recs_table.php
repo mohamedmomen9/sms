@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('hostel_rec', function (Blueprint $table) {
             $table->id();
             $table->string('campus');
-            $table->decimal('price', 10, 2); // Adjust precision/scale as needed.
+            $table->decimal('price', 10, 2);
             $table->string('room_type');
             $table->timestamps();
         });

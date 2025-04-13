@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('app_idtmp_recs', function (Blueprint $table) {
             $table->id();
             $table->string('app_idtmp_no');
-            $table->string('addr_line3')->nullable(); // Email Address
+            $table->string('addr_line3')->nullable();
             $table->string('fullname');
             $table->string('firstname');
             $table->string('middlename')->nullable();

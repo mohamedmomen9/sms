@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('id_rec', function (Blueprint $table) {
             $table->id();
-            $table->string('ss_no')->unique()->nullable(); // Assuming SS number should be unique.  Consider removing if not required.
+            $table->string('ss_no')->unique()->nullable();
             $table->string('fullname');
             $table->string('firstname');
             $table->string('middlename')->nullable();

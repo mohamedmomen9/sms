@@ -1,0 +1,26 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::create('onlnadv_rec', function (Blueprint $table) {
+            $table->id();
+            $table->string('student_id');
+            $table->string('crs_no');
+            $table->string('sess');
+            $table->integer('yr');
+            $table->date('crdate');
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('onlnadv_rec');
+    }
+};

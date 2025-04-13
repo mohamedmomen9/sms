@@ -13,7 +13,7 @@ return new class extends Migration
             $table->string('cert_text');
             $table->string('sitnum');
             $table->string('tag');
-            $table->decimal('percentile', 5, 2); // Adjust precision/scale as needed.
+            $table->decimal('percentile', 5, 2);
             $table->year('grad_yr');
             $table->string('entrtype');
             $table->string('fullname');

@@ -13,8 +13,8 @@ return new class extends Migration
             $table->string('user_Rfid');
             $table->string('purpose');
             $table->string('purpose_iso');
-            $table->decimal('amount', 15, 2); // Adjust precision/scale as needed.  Large amounts might require more digits.
-            $table->string('currency')->default('USD'); // Or whatever the default currency is.
+            $table->decimal('amount', 15, 2);
+            $table->string('currency')->default('USD');
             $table->string('method');
             $table->string('Bank');
             $table->string('Bank_aria');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->date('create_date');
             $table->date('modify_date')->nullable();
             $table->string('modify_by')->nullable();
-            $table->string('status')->default('pending'); // Or whatever the default status is.
+            $table->string('status')->default('pending');
             $table->string('receipt')->nullable();
             $table->timestamps();
         });

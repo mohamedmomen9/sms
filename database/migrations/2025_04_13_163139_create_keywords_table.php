@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('keywords', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('keyword_hash')->unique(); // Assuming keyword_hash should be unique.
+            $table->string('keyword_hash')->unique();
             $table->string('module')->nullable();
             $table->string('entry_key')->nullable();
             $table->string('entry_plural')->nullable();

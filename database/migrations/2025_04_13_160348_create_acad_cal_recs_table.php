@@ -12,12 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('acad_cal_recs', function (Blueprint $table) {
-            $table->id(); // Auto-incrementing primary key
-            $table->integer('yr');  // Year
-            $table->string('sess'); // Session
-            $table->boolean('crsess')->default(false); // Current Session Indicator, default false
-            $table->string('prog'); // Program
-
+            $table->id();
+            $table->integer('yr');
+            $table->string('sess');
+            $table->boolean('crsess')->default(false);
+            $table->string('prog');
             $table->timestamps();
         });
     }

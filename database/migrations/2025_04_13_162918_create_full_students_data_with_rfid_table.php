@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('full_students_data_with_rfid', function (Blueprint $table) {
-            $table->string('cicid'); // Assuming cicid is the primary key or a unique identifier.
+            $table->string('student_id');
             $table->string('std_name');
             $table->string('instructorid')->nullable();
             $table->string('campus');
@@ -18,13 +18,12 @@ return new class extends Migration
             $table->string('crs_no');
             $table->string('title1');
             $table->string('days');
-            $table->time('beg_tm'); // Use time for start and end times.
+            $table->time('beg_tm');
             $table->time('end_tm');
             $table->string('im')->nullable();
             $table->string('mtg_no')->nullable();
 
-            // Add primary key constraint (if cicid is the unique identifier)
-            $table->primary('cicid');
+            $table->primary('student_id');
         });
     }
 

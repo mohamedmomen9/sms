@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('position')->nullable();
             $table->string('target')->nullable();
             $table->string('class')->nullable();
-            $table->unsignedBigInteger('navigation_group_id')->nullable(); // Foreign Key
+            $table->unsignedBigInteger('navigation_group_id')->nullable();
             $table->foreign('navigation_group_id')->references('id')->on('navigation_groups')->nullable()->cascadeOnDelete()->cascadeOnUpdate();
 
             $table->timestamps();

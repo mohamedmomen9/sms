@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('stat');
             $table->string('exm_stat')->nullable();
             $table->string('site')->nullable();
-            $table->boolean('on_campus')->default(false); // Assuming boolean value.
+            $table->boolean('on_campus')->default(false);
             $table->date('active_date')->nullable();
             $table->date('inactive_date')->nullable();
             $table->timestamps();

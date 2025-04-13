@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('fabgt_rec', function (Blueprint $table) {
             $table->id();
             $table->string('fabgt_no');
-            $table->decimal('amt1', 15, 2); // Adjust precision/scale as needed.  Large amounts might require more digits.
+            $table->decimal('amt1', 15, 2);
             $table->timestamps();
         });
     }

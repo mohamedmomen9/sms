@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('day');
             $table->integer('hour');
             $table->integer('min');
-            $table->timestamp('full_date'); // Use timestamp for the combined date and time.
+            $table->timestamp('full_date');
             $table->timestamps();
         });
     }

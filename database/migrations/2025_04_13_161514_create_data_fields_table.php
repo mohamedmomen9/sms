@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('field_slug')->unique();
             $table->string('field_namespace');
             $table->string('field_type');
-            $table->json('field_data')->nullable(); // Use json for potentially complex data.
+            $table->json('field_data')->nullable();
             $table->boolean('is_locked')->default(false);
             $table->timestamps();
         });

@@ -10,12 +10,12 @@ return new class extends Migration
     {
         Schema::create('majsheet_rec', function (Blueprint $table) {
             $table->id();
-            $table->string('prog'); // Program
-            $table->string('major');  // Major
-            $table->string('conc'); // Concentration
-            $table->string('mscat'); // Category
-            $table->string('crs_no'); // Course number
-            $table->string('stat'); // Status
+            $table->string('prog');
+            $table->string('major');
+            $table->string('conc');
+            $table->string('mscat');
+            $table->string('crs_no');
+            $table->string('stat');
             $table->timestamps();
         });
     }

@@ -15,11 +15,11 @@ return new class extends Migration
             $table->integer('yr');
             $table->string('stat');
             $table->string('crs_no');
-            $table->decimal('lclgrd', 5, 2)->nullable(); // Adjust precision/scale as needed.
-            $table->decimal('lclmidsess_grd', 5, 2)->nullable(); // Adjust precision/scale as needed.
-            $table->decimal('extragrd', 5, 2)->nullable(); // Adjust precision/scale as needed.
-            $table->decimal('downgrd', 5, 2)->nullable(); // Adjust precision/scale as needed.
-            $table->decimal('final_grd', 5, 2)->nullable(); // Adjust precision/scale as needed.
+            $table->decimal('lclgrd', 5, 2)->nullable();
+            $table->decimal('lclmidsess_grd', 5, 2)->nullable();
+            $table->decimal('extragrd', 5, 2)->nullable();
+            $table->decimal('downgrd', 5, 2)->nullable();
+            $table->decimal('final_grd', 5, 2)->nullable();
             $table->date('beg_date');
             $table->date('end_date');
             $table->timestamps();

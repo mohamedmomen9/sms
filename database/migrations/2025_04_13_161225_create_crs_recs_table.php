@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('mscat');
             $table->string('crstype');
             $table->string('crsctgry');
-            $table->decimal('max_hrs', 5, 2); // Adjust precision/scale as needed.
+            $table->decimal('max_hrs', 5, 2);
             $table->timestamps();
         });
     }

@@ -10,9 +10,9 @@ return new class extends Migration
     {
         Schema::create('major_table', function (Blueprint $table) {
             $table->id();
-            $table->string('major'); // Major code
-            $table->string('sco'); // School Code
-            $table->string('txt'); // Major Name
+            $table->string('major');
+            $table->string('sco');
+            $table->string('txt');
             $table->timestamps();
         });
     }
