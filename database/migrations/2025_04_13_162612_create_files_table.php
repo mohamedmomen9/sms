@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('size')->nullable();
             $table->timestamp('created_on');
 
-            $table->foreign('folder_id')->references('id')->on('folders')->nullable()->cascadeOnDelete();
+            $table->foreign('folder_id')->references('id')->on('file_folders')->nullable()->cascadeOnDelete();
         });
     }
 

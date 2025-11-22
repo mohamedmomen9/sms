@@ -2,8 +2,8 @@
 
 namespace App\Filament\Forms\Components;
 
-use Filament\Schemas\Components\Tabs;
-use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Components\Component;
 
 class TranslatableInput
