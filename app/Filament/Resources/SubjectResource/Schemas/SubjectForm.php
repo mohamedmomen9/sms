@@ -4,6 +4,9 @@ namespace App\Filament\Resources\SubjectResource\Schemas;
 
 use Filament\Forms;
 
+use App\Filament\Forms\Components\TranslatableInput;
+use Filament\Forms\Components\TextInput;
+
 class SubjectForm
 {
     public static function schema(): array
@@ -19,14 +22,11 @@ class SubjectForm
             Forms\Components\TextInput::make('code')
                 ->required()
                 ->maxLength(255),
-            Forms\Components\TextInput::make('name_en')
-                ->label('Name (English)')
-                ->required()
-                ->maxLength(255),
-            Forms\Components\TextInput::make('name_ar')
-                ->label('Name (Arabic)')
-                ->required()
-                ->maxLength(255),
+            
+            TranslatableInput::make('name', TextInput::class, function ($field, $locale) {
+                return $field->required()->maxLength(255);
+            }),
+
             Forms\Components\TextInput::make('category'),
             Forms\Components\TextInput::make('type'),
             Forms\Components\TextInput::make('max_hours')

@@ -23,7 +23,7 @@ class TranslatableInput
             $tabLabel = $localeLabels[$locale] ?? strtoupper($locale);
 
             /** @var Component $field */
-            $field = $componentClass::make("{$baseName}.{$locale}")
+            $field = $componentClass::make("{$baseName}_{$locale}")
                 ->label(ucfirst($baseName) . " ({$locale})");
 
             // Allow user to apply extra configuration (required, default, etc.)

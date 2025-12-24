@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Admin\Resources\UniversityResource\Pages;
+namespace App\Filament\Resources\UniversityResource\Pages;
 
-use App\Filament\Admin\Resources\UniversityResource;
+use App\Filament\Resources\UniversityResource\UniversityResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
