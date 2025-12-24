@@ -8,16 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('conc_table', function (Blueprint $table) {
+        Schema::create('faculties', function (Blueprint $table) {
             $table->id();
-            $table->string('conc');
-            $table->string('txt');
+            $table->foreignId('university_id')->constrained('universities')->cascadeOnDelete();
+            $table->string('code'); 
+            $table->string('name');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('conc_table');
+        Schema::dropIfExists('faculties');
     }
 };

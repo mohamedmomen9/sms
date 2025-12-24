@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('active')->default(false);
             $table->string('remember_code')->nullable();
             $table->string('forgotten_password_code')->nullable();
+            $table->unsignedBigInteger('faculty_id')->nullable(); // Removed constraint for migration order
             $table->string('role')->nullable();
             $table->string('activation_code')->nullable();
             $table->string('lang')->nullable();

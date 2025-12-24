@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('div_table', function (Blueprint $table) {
+        Schema::create('universities', function (Blueprint $table) {
             $table->id();
-            $table->string('div');
-            $table->string('txt');
-            $table->string('divstatus');
+            $table->string('code');
+            $table->string('name');
+            $table->string('logo')->nullable(); // Upload University Logo
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('div_table');
+        Schema::dropIfExists('universities');
     }
 };
