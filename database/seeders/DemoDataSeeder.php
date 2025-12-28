@@ -51,6 +51,7 @@ class DemoDataSeeder extends Seeder
             [
                 'code' => 'MIT', 
                 'name' => 'Massachusetts Institute of Technology',
+                'logo' => 'universities/logos/mit.svg',
                 'faculties' => [
                     [
                         'name' => 'School of Engineering',
@@ -73,6 +74,7 @@ class DemoDataSeeder extends Seeder
             [
                 'code' => 'STAN', 
                 'name' => 'Stanford University',
+                'logo' => 'universities/logos/stanford.svg',
                 'faculties' => [
                     [
                         'name' => 'School of Medicine',
@@ -83,20 +85,23 @@ class DemoDataSeeder extends Seeder
                     ]
                 ]
             ],
-            ['code' => 'HARV', 'name' => 'Harvard University'],
-            ['code' => 'OXF', 'name' => 'University of Oxford'],
-            ['code' => 'CAM', 'name' => 'University of Cambridge'],
-            ['code' => 'CAL', 'name' => 'California Institute of Technology'],
-            ['code' => 'ETH', 'name' => 'ETH Zurich'],
-            ['code' => 'UCL', 'name' => 'University College London'],
-            ['code' => 'IMP', 'name' => 'Imperial College London'],
-            ['code' => 'CHI', 'name' => 'University of Chicago'],
+            ['code' => 'HARV', 'name' => 'Harvard University', 'logo' => 'universities/logos/harvard.svg'],
+            ['code' => 'OXF', 'name' => 'University of Oxford', 'logo' => 'universities/logos/oxford.svg'],
+            ['code' => 'CAM', 'name' => 'University of Cambridge', 'logo' => 'universities/logos/cambridge.svg'],
+            ['code' => 'CAL', 'name' => 'California Institute of Technology', 'logo' => 'universities/logos/caltech.svg'],
+            ['code' => 'ETH', 'name' => 'ETH Zurich', 'logo' => 'universities/logos/eth.svg'],
+            ['code' => 'UCL', 'name' => 'University College London', 'logo' => 'universities/logos/ucl.svg'],
+            ['code' => 'IMP', 'name' => 'Imperial College London', 'logo' => 'universities/logos/imperial.svg'],
+            ['code' => 'CHI', 'name' => 'University of Chicago', 'logo' => 'universities/logos/chicago.svg'],
         ];
 
         foreach ($universities as $uniData) {
-            $university = University::firstOrCreate(
+            $university = University::updateOrCreate(
                 ['code' => $uniData['code']],
-                ['name' => $uniData['name']]
+                [
+                    'name' => $uniData['name'],
+                    'logo' => $uniData['logo'] ?? null,
+                ]
             );
 
             // Create Uni Admin
