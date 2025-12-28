@@ -18,11 +18,14 @@ class UserResourceTest extends TestCase
 
     public function test_super_admin_can_list_users()
     {
-        $admin = \App\Models\User::factory()->create([
-            'email' => 'admin@example.com', 
-            'is_admin' => true, 
-            'role' => 'admin'
-        ]);
+        $admin = \App\Models\User::where('email', 'admin@example.com')->first();
+        if (!$admin) {
+            $admin = \App\Models\User::factory()->create([
+                'email' => 'admin@example.com', 
+                'is_admin' => true, 
+                'role' => 'admin'
+            ]);
+        }
         
         $admin->assignRole('Super Admin');
 

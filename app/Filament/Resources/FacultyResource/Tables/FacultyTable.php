@@ -31,7 +31,17 @@ class FacultyTable
                 ->sortable()
                 ->limit(40),
 
+            TextColumn::make('departments_count')
+                ->label(__('app.Departments'))
+                ->counts('departments')
+                ->sortable()
+                ->alignCenter(),
 
+            TextColumn::make('subjects_count')
+                ->label(__('app.Subjects'))
+                ->counts('subjects')
+                ->sortable()
+                ->alignCenter(),
 
             TextColumn::make('users_count')
                 ->label(__('app.Users'))

@@ -22,6 +22,7 @@ class PermissionsSeeder extends Seeder
         $scopes = [
             'scope:global', // Used for Super Admin
             'scope:faculty',
+            'scope:department',
             'scope:subject',
         ];
         foreach ($scopes as $scope) {
@@ -31,11 +32,13 @@ class PermissionsSeeder extends Seeder
         // 2. Create Functional Permissions
         $resources = [
             'faculty',
+            'department',
             'subject',
             'user',
             'role',
             'permission',
             'campus',
+            'curriculum',
         ];
 
         $actions = ['view_any', 'view', 'create', 'update', 'delete', 'delete_any'];
