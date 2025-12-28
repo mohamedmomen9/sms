@@ -10,6 +10,7 @@ class Faculty extends Model
 {
     protected $fillable = [
         'university_id',
+        'campus_id',
         'code',
         'name',
     ];
@@ -20,6 +21,14 @@ class Faculty extends Model
     public function university(): BelongsTo
     {
         return $this->belongsTo(University::class);
+    }
+
+    /**
+     * Get the campus this faculty belongs to (optional)
+     */
+    public function campus(): BelongsTo
+    {
+        return $this->belongsTo(Campus::class);
     }
 
     /**

@@ -6,7 +6,8 @@ use App\Filament\Forms\Components\TranslatableInput;
 use App\Models\Department;
 use App\Models\Faculty;
 use App\Models\University;
-use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
@@ -22,11 +23,11 @@ class SubjectForm
 
         return [
             // Section for Academic Hierarchy Selection
-            Forms\Components\Section::make('Academic Assignment')
+            Section::make('Academic Assignment')
                 ->description('Select the academic hierarchy for this subject')
                 ->schema([
                     // University Select - For filtering purposes
-                    Forms\Components\Select::make('university_id')
+                    Select::make('university_id')
                         ->label('University')
                         ->options(function () use ($user) {
                             if ($user->isAdmin()) {
@@ -55,7 +56,7 @@ class SubjectForm
                         ->visible(fn () => $isAdmin || $user->isScopedToUniversity()),
 
                     // Faculty Select - Filtered by university
-                    Forms\Components\Select::make('faculty_id')
+                    Select::make('faculty_id')
                         ->label('Faculty')
                         ->relationship('faculty', 'name')
                         ->options(function (Get $get) use ($user) {
@@ -96,7 +97,7 @@ class SubjectForm
                         ->visible(fn () => !$user->isScopedToSubject()),
 
                     // Department Select - Optional, filtered by faculty
-                    Forms\Components\Select::make('department_id')
+                    Select::make('department_id')
                         ->label('Department (Optional)')
                         ->relationship('department', 'name')
                         ->options(function (Get $get) use ($user) {
@@ -125,14 +126,14 @@ class SubjectForm
                 ->columns(3),
 
             // Subject Details Section
-            Forms\Components\Section::make('Subject Details')
+            Section::make('Subject Details')
                 ->schema([
-                    Forms\Components\TextInput::make('curriculum')
+                    TextInput::make('curriculum')
                         ->label('Curriculum / Group')
                         ->required()
                         ->maxLength(255),
 
-                    Forms\Components\TextInput::make('code')
+                    TextInput::make('code')
                         ->label('Subject Code')
                         ->required()
                         ->maxLength(255)
@@ -141,7 +142,7 @@ class SubjectForm
                 ->columns(2),
 
             // Translatable Names Section
-            Forms\Components\Section::make('Subject Names')
+            Section::make('Subject Names')
                 ->schema([
                     TranslatableInput::make('name', TextInput::class, function ($field, $locale) {
                         return $field->required()->maxLength(255);
@@ -150,9 +151,9 @@ class SubjectForm
                 ->columns(2),
 
             // Additional Properties Section
-            Forms\Components\Section::make('Additional Properties')
+            Section::make('Additional Properties')
                 ->schema([
-                    Forms\Components\Select::make('category')
+                    Select::make('category')
                         ->label('Category')
                         ->options([
                             'core' => 'Core',
@@ -162,7 +163,7 @@ class SubjectForm
                         ])
                         ->nullable(),
 
-                    Forms\Components\Select::make('type')
+                    Select::make('type')
                         ->label('Type')
                         ->options([
                             'theoretical' => 'Theoretical',
@@ -171,7 +172,7 @@ class SubjectForm
                         ])
                         ->nullable(),
 
-                    Forms\Components\TextInput::make('max_hours')
+                    TextInput::make('max_hours')
                         ->label('Maximum Hours')
                         ->numeric()
                         ->required()

@@ -6,7 +6,11 @@ use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Models\Faculty;
 use App\Models\Subject;
 use App\Models\University;
-use Filament\Forms;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Illuminate\Support\Facades\Auth;
@@ -21,21 +25,21 @@ class UserForm
 
         return [
             // Basic Information Section
-            Forms\Components\Section::make('Account Information')
+            Section::make('Account Information')
                 ->schema([
-                    Forms\Components\TextInput::make('username')
+                    TextInput::make('username')
                         ->label('Username')
                         ->required()
                         ->maxLength(255)
                         ->unique(ignoreRecord: true),
 
-                    Forms\Components\TextInput::make('email')
+                    TextInput::make('email')
                         ->email()
                         ->required()
                         ->maxLength(255)
                         ->unique(ignoreRecord: true),
 
-                    Forms\Components\TextInput::make('password')
+                    TextInput::make('password')
                         ->password()
                         ->required(fn ($livewire) => $livewire instanceof CreateUser)
                         ->dehydrated(fn ($state) => filled($state))
@@ -46,17 +50,17 @@ class UserForm
                 ->columns(3),
 
             // Personal Information Section
-            Forms\Components\Section::make('Personal Information')
+            Section::make('Personal Information')
                 ->schema([
-                    Forms\Components\TextInput::make('first_name')
+                    TextInput::make('first_name')
                         ->label('First Name')
                         ->maxLength(255),
 
-                    Forms\Components\TextInput::make('last_name')
+                    TextInput::make('last_name')
                         ->label('Last Name')
                         ->maxLength(255),
 
-                    Forms\Components\TextInput::make('display_name')
+                    TextInput::make('display_name')
                         ->label('Display Name')
                         ->maxLength(255)
                         ->helperText('This name will be shown in the admin panel'),
@@ -64,10 +68,10 @@ class UserForm
                 ->columns(3),
 
             // Role and Access Section - Only visible to admins
-            Forms\Components\Section::make('Role & Access Control')
+            Section::make('Role & Access Control')
                 ->description('Define user role and scope of access')
                 ->schema([
-                    Forms\Components\Toggle::make('is_admin')
+                    Toggle::make('is_admin')
                         ->label('Administrator')
                         ->helperText('Administrators have global access to all universities')
                         ->live()
@@ -77,13 +81,13 @@ class UserForm
                                 $set('university_id', null);
                                 $set('faculty_id', null);
                                 $set('subject_id', null);
-                                $set('scope_level', 'admin');
+                                $set('scope_level', null);
                             }
                         })
                         ->columnSpanFull(),
 
-                    Forms\Components\Select::make('role')
-                        ->label('Legacy Role')
+                    Select::make('role')
+                        ->label('User Role')
                         ->options([
                             'admin' => 'Admin',
                             'faculty_member' => 'Faculty Member',
@@ -92,8 +96,8 @@ class UserForm
                         ])
                         ->default('faculty_member'),
 
-                    // Scope Level Selection
-                    Forms\Components\Select::make('scope_level')
+                    // Scope Level Selection - Calculate default from record
+                    Select::make('scope_level')
                         ->label('Scope Level')
                         ->options([
                             'university' => 'University Level - Access to all faculties within a university',
@@ -101,6 +105,34 @@ class UserForm
                             'subject' => 'Subject Level - Access only to a specific subject',
                         ])
                         ->live()
+                        ->default(function ($record) {
+                            // Calculate scope level from existing record
+                            if (!$record) {
+                                return null;
+                            }
+                            if ($record->subject_id) {
+                                return 'subject';
+                            }
+                            if ($record->faculty_id) {
+                                return 'faculty';
+                            }
+                            if ($record->university_id) {
+                                return 'university';
+                            }
+                            return null;
+                        })
+                        ->afterStateHydrated(function (Select $component, $record) {
+                            // Set scope level when editing
+                            if ($record) {
+                                if ($record->subject_id) {
+                                    $component->state('subject');
+                                } elseif ($record->faculty_id) {
+                                    $component->state('faculty');
+                                } elseif ($record->university_id) {
+                                    $component->state('university');
+                                }
+                            }
+                        })
                         ->afterStateUpdated(function (Set $set, $state) {
                             // Clear lower-level selections when scope changes
                             if ($state === 'university') {
@@ -118,11 +150,11 @@ class UserForm
                 ->visible(fn () => $isAdmin),
 
             // Academic Scope Assignment Section
-            Forms\Components\Section::make('Academic Scope Assignment')
+            Section::make('Academic Scope Assignment')
                 ->description('Assign the user to a specific academic scope')
                 ->schema([
                     // University Select
-                    Forms\Components\Select::make('university_id')
+                    Select::make('university_id')
                         ->label('University')
                         ->options(function () use ($currentUser) {
                             if ($currentUser->isAdmin()) {
@@ -142,10 +174,10 @@ class UserForm
                             $set('subject_id', null);
                         })
                         ->visible(fn (Get $get) => !$get('is_admin') && in_array($get('scope_level'), ['university', 'faculty', 'subject']))
-                        ->required(fn (Get $get) => !$get('is_admin') && in_array($get('scope_level'), ['university', 'faculty', 'subject'])),
+                        ->required(fn (Get $get) => !$get('is_admin') && $get('scope_level') === 'university'),
 
                     // Faculty Select
-                    Forms\Components\Select::make('faculty_id')
+                    Select::make('faculty_id')
                         ->label('Faculty')
                         ->options(function (Get $get) use ($currentUser) {
                             $universityId = $get('university_id');
@@ -154,7 +186,7 @@ class UserForm
                                 if ($universityId) {
                                     return Faculty::where('university_id', $universityId)->pluck('name', 'id');
                                 }
-                                return [];
+                                return Faculty::pluck('name', 'id');
                             }
                             
                             // For scoped admin users
@@ -177,9 +209,9 @@ class UserForm
                         ->required(fn (Get $get) => !$get('is_admin') && in_array($get('scope_level'), ['faculty', 'subject'])),
 
                     // Subject Select
-                    Forms\Components\Select::make('subject_id')
+                    Select::make('subject_id')
                         ->label('Subject')
-                        ->options(function (Get $get) use ($currentUser) {
+                        ->options(function (Get $get) {
                             $facultyId = $get('faculty_id');
                             
                             if (!$facultyId) {
@@ -205,10 +237,23 @@ class UserForm
                 ->columns(3)
                 ->visible(fn (Get $get) => $isAdmin && !$get('is_admin')),
 
-            // Info Card for Non-Admin Users
-            Forms\Components\Section::make('Scope Information')
+            // Roles assignment
+            Section::make('System Roles')
+                ->description('Assign Spatie roles for permissions')
                 ->schema([
-                    Forms\Components\Placeholder::make('scope_info')
+                    Select::make('roles')
+                        ->label('Roles')
+                        ->relationship('roles', 'name')
+                        ->multiple()
+                        ->preload()
+                        ->searchable(),
+                ])
+                ->visible(fn () => $isAdmin),
+
+            // Info Card for Non-Admin Users
+            Section::make('Scope Information')
+                ->schema([
+                    Placeholder::make('scope_info')
                         ->label('Your Access Scope')
                         ->content(fn () => $currentUser->scope_description ?? 'No scope assigned'),
                 ])

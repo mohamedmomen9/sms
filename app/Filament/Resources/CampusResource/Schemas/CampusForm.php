@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Filament\Resources\FacultyResource\Schemas;
+namespace App\Filament\Resources\CampusResource\Schemas;
 
-use App\Models\Campus;
 use App\Models\University;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
 use Illuminate\Support\Facades\Auth;
 
-class FacultyForm
+class CampusForm
 {
     public static function schema(): array
     {
@@ -22,8 +20,8 @@ class FacultyForm
 
         return [
             // University Assignment Section
-            Section::make('University & Campus Assignment')
-                ->description('Select the university and optionally a campus for this faculty')
+            Section::make('University Assignment')
+                ->description('Select the university for this campus')
                 ->schema([
                     Select::make('university_id')
                         ->label('University')
@@ -41,11 +39,6 @@ class FacultyForm
                         ->required()
                         ->searchable()
                         ->preload()
-                        ->live()
-                        ->afterStateUpdated(function (Set $set) {
-                            // Reset campus when university changes
-                            $set('campus_id', null);
-                        })
                         ->default(function () use ($user) {
                             if (!$user->isAdmin()) {
                                 return $user->getScopedUniversityId();
@@ -53,31 +46,10 @@ class FacultyForm
                             return null;
                         })
                         ->disabled(fn () => !$isAdmin && $user->getScopedUniversityId() !== null),
-
-                    // Campus Select - Filtered by university
-                    Select::make('campus_id')
-                        ->label('Campus (Optional)')
-                        ->relationship('campus', 'name')
-                        ->options(function (Get $get) use ($user) {
-                            $universityId = $get('university_id');
-                            
-                            if (!$universityId) {
-                                return [];
-                            }
-                            
-                            return Campus::where('university_id', $universityId)
-                                ->where('status', 'active')
-                                ->pluck('name', 'id');
-                        })
-                        ->searchable()
-                        ->preload()
-                        ->nullable()
-                        ->helperText('Leave empty if faculty is not assigned to a specific campus'),
                 ])
-                ->columns(2)
                 ->visible(fn () => $isAdmin || $user->isScopedToUniversity()),
 
-            // Hidden university for auto-assignment when not visible
+            // Hidden university for auto-assignment
             Hidden::make('university_id')
                 ->default(function () use ($user) {
                     if (!$user->isAdmin()) {
@@ -87,21 +59,57 @@ class FacultyForm
                 })
                 ->visible(fn () => !$isAdmin && !$user->isScopedToUniversity() && $user->getScopedUniversityId() !== null),
 
-            // Faculty Details Section
-            Section::make('Faculty Details')
+            // Campus Details Section
+            Section::make('Campus Details')
                 ->schema([
                     TextInput::make('code')
-                        ->label('Faculty Code')
+                        ->label('Campus Code')
                         ->required()
-                        ->maxLength(255)
-                        ->unique(ignoreRecord: true),
+                        ->maxLength(50)
+                        ->helperText('Unique code within the university'),
 
                     TextInput::make('name')
-                        ->label('Faculty Name')
+                        ->label('Campus Name')
                         ->required()
                         ->maxLength(255),
+
+                    TextInput::make('location')
+                        ->label('Location')
+                        ->maxLength(255)
+                        ->placeholder('e.g., Main City, North District'),
+
+                    Select::make('status')
+                        ->label('Status')
+                        ->options([
+                            'active' => 'Active',
+                            'inactive' => 'Inactive',
+                        ])
+                        ->required()
+                        ->default('active'),
                 ])
                 ->columns(2),
+
+            // Contact Information Section
+            Section::make('Contact Information')
+                ->schema([
+                    Textarea::make('address')
+                        ->label('Full Address')
+                        ->rows(3)
+                        ->maxLength(500)
+                        ->columnSpanFull(),
+
+                    TextInput::make('phone')
+                        ->label('Phone Number')
+                        ->tel()
+                        ->maxLength(50),
+
+                    TextInput::make('email')
+                        ->label('Email Address')
+                        ->email()
+                        ->maxLength(255),
+                ])
+                ->columns(2)
+                ->collapsible(),
         ];
     }
 }

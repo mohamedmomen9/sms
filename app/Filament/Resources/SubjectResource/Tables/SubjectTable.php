@@ -4,7 +4,7 @@ namespace App\Filament\Resources\SubjectResource\Tables;
 
 use App\Models\Department;
 use App\Models\Faculty;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\Auth;
 
@@ -13,12 +13,12 @@ class SubjectTable
     public static function columns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('effective_faculty.university.name')
+            TextColumn::make('effective_faculty.university.name')
                 ->label('University')
                 ->sortable()
                 ->toggleable(),
 
-            Tables\Columns\TextColumn::make('faculty.name')
+            TextColumn::make('faculty.name')
                 ->label('Faculty')
                 ->sortable()
                 ->searchable()
@@ -30,60 +30,64 @@ class SubjectTable
                     return $record->department?->faculty?->name;
                 }),
 
-            Tables\Columns\TextColumn::make('department.name')
+            TextColumn::make('department.name')
                 ->label('Department')
                 ->sortable()
                 ->searchable()
                 ->placeholder('Direct to Faculty')
                 ->toggleable(),
 
-            Tables\Columns\TextColumn::make('curriculum')
+            TextColumn::make('curriculum')
                 ->label('Curriculum')
                 ->sortable()
                 ->searchable()
                 ->toggleable(),
 
-            Tables\Columns\TextColumn::make('code')
+            TextColumn::make('code')
                 ->label('Code')
                 ->sortable()
                 ->searchable()
                 ->copyable(),
 
-            Tables\Columns\TextColumn::make('name_en')
+            TextColumn::make('name_en')
                 ->label('Name')
                 ->sortable()
                 ->searchable()
                 ->limit(35),
 
-            Tables\Columns\TextColumn::make('name_ar')
+            TextColumn::make('name_ar')
                 ->label('Name (Arabic)')
                 ->toggleable(isToggledHiddenByDefault: true),
 
-            Tables\Columns\BadgeColumn::make('category')
+            TextColumn::make('category')
                 ->label('Category')
-                ->colors([
-                    'primary' => 'core',
-                    'success' => 'elective',
-                    'info' => 'general',
-                    'warning' => 'specialization',
-                ])
+                ->badge()
+                ->color(fn ($state): string => match ($state) {
+                    'core' => 'primary',
+                    'elective' => 'success',
+                    'general' => 'info',
+                    'specialization' => 'warning',
+                    default => 'secondary',
+                })
                 ->toggleable(),
 
-            Tables\Columns\BadgeColumn::make('type')
+            TextColumn::make('type')
                 ->label('Type')
-                ->colors([
-                    'info' => 'theoretical',
-                    'success' => 'practical',
-                    'warning' => 'mixed',
-                ])
+                ->badge()
+                ->color(fn ($state): string => match ($state) {
+                    'theoretical' => 'info',
+                    'practical' => 'success',
+                    'mixed' => 'warning',
+                    default => 'secondary',
+                })
                 ->toggleable(),
 
-            Tables\Columns\TextColumn::make('max_hours')
+            TextColumn::make('max_hours')
                 ->label('Hours')
                 ->sortable()
                 ->alignCenter(),
 
-            Tables\Columns\TextColumn::make('created_at')
+            TextColumn::make('created_at')
                 ->label('Created')
                 ->dateTime('M d, Y')
                 ->sortable()

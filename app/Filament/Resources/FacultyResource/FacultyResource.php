@@ -8,8 +8,11 @@ use App\Filament\Resources\FacultyResource\Tables\FacultyTable;
 use App\Models\Faculty;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables;
 use Filament\Tables\Table;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -34,12 +37,12 @@ class FacultyResource extends Resource
             ->columns(FacultyTable::columns())
             ->filters(FacultyTable::filters())
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                DeleteBulkAction::make(),
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 /** @var \App\Models\User $user */

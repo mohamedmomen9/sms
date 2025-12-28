@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Filament\Resources\SubjectResource;
+namespace App\Filament\Resources\CampusResource;
 
-use App\Filament\Resources\SubjectResource\Pages;
-use App\Filament\Resources\SubjectResource\Schemas\SubjectForm;
-use App\Filament\Resources\SubjectResource\Tables\SubjectTable;
-use App\Models\Subject;
+use App\Filament\Resources\CampusResource\Pages;
+use App\Filament\Resources\CampusResource\Schemas\CampusForm;
+use App\Filament\Resources\CampusResource\Tables\CampusTable;
+use App\Models\Campus;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Table;
@@ -16,26 +16,28 @@ use Filament\Tables\Actions\ViewAction;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
-class SubjectResource extends Resource
+class CampusResource extends Resource
 {
-    protected static ?string $model = Subject::class;
+    protected static ?string $model = Campus::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-book-open';
+    protected static ?string $navigationIcon = 'heroicon-o-map-pin';
 
     protected static ?string $navigationGroup = 'Academic Structure';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 2;
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
-        return $form->schema(SubjectForm::schema());
+        return $form->schema(CampusForm::schema());
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns(SubjectTable::columns())
-            ->filters(SubjectTable::filters())
+            ->columns(CampusTable::columns())
+            ->filters(CampusTable::filters())
             ->actions([
                 ViewAction::make(),
                 EditAction::make(),
@@ -49,7 +51,11 @@ class SubjectResource extends Resource
                 $user = Auth::user();
                 
                 if ($user && !$user->isAdmin()) {
-                    return $user->scopeSubjectQuery($query);
+                    $universityId = $user->getScopedUniversityId();
+                    if ($universityId) {
+                        return $query->where('university_id', $universityId);
+                    }
+                    return $query->whereRaw('1 = 0');
                 }
                 
                 return $query;
@@ -64,9 +70,9 @@ class SubjectResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListSubjects::route('/'),
-            'create' => Pages\CreateSubject::route('/create'),
-            'edit' => Pages\EditSubject::route('/{record}/edit'),
+            'index' => Pages\ListCampuses::route('/'),
+            'create' => Pages\CreateCampus::route('/create'),
+            'edit' => Pages\EditCampus::route('/{record}/edit'),
         ];
     }
 
@@ -81,7 +87,11 @@ class SubjectResource extends Resource
         $user = Auth::user();
         
         if ($user && !$user->isAdmin()) {
-            return $user->scopeSubjectQuery($query);
+            $universityId = $user->getScopedUniversityId();
+            if ($universityId) {
+                return $query->where('university_id', $universityId);
+            }
+            return $query->whereRaw('1 = 0');
         }
         
         return $query;

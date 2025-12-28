@@ -4,7 +4,9 @@ namespace App\Filament\Resources\DepartmentResource\Schemas;
 
 use App\Models\Faculty;
 use App\Models\University;
-use Filament\Forms;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Illuminate\Support\Facades\Auth;
@@ -19,11 +21,11 @@ class DepartmentForm
 
         return [
             // Section for Academic Hierarchy Selection
-            Forms\Components\Section::make('Academic Assignment')
+            Section::make('Academic Assignment')
                 ->description('Select the university and faculty for this department')
                 ->schema([
                     // University Select - Only visible to admins
-                    Forms\Components\Select::make('university_id')
+                    Select::make('university_id')
                         ->label('University')
                         ->options(function () use ($user) {
                             if ($user->isAdmin()) {
@@ -54,7 +56,7 @@ class DepartmentForm
                         ->visible(fn () => $isAdmin || $user->isScopedToUniversity()),
 
                     // Faculty Select - Filtered by selected university
-                    Forms\Components\Select::make('faculty_id')
+                    Select::make('faculty_id')
                         ->label('Faculty')
                         ->relationship('faculty', 'name')
                         ->options(function (Get $get) use ($user) {
@@ -94,20 +96,20 @@ class DepartmentForm
                 ->columns(2),
 
             // Section for Department Details
-            Forms\Components\Section::make('Department Details')
+            Section::make('Department Details')
                 ->schema([
-                    Forms\Components\TextInput::make('code')
+                    TextInput::make('code')
                         ->label('Department Code')
                         ->required()
                         ->maxLength(255)
                         ->unique(ignoreRecord: true),
 
-                    Forms\Components\TextInput::make('name')
+                    TextInput::make('name')
                         ->label('Department Name')
                         ->required()
                         ->maxLength(255),
 
-                    Forms\Components\Select::make('status')
+                    Select::make('status')
                         ->label('Status')
                         ->options([
                             'active' => 'Active',

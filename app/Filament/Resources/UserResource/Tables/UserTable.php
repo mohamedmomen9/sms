@@ -4,7 +4,8 @@ namespace App\Filament\Resources\UserResource\Tables;
 
 use App\Models\Faculty;
 use App\Models\University;
-use Filament\Tables;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Illuminate\Support\Facades\Auth;
@@ -14,75 +15,75 @@ class UserTable
     public static function columns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('username')
+            TextColumn::make('username')
                 ->label('Username')
                 ->searchable()
                 ->sortable()
                 ->copyable(),
 
-            Tables\Columns\TextColumn::make('email')
+            TextColumn::make('email')
                 ->label('Email')
                 ->searchable()
                 ->sortable()
                 ->copyable(),
 
-            Tables\Columns\TextColumn::make('display_name')
+            TextColumn::make('display_name')
                 ->label('Display Name')
                 ->searchable()
                 ->sortable()
                 ->toggleable(),
 
-            Tables\Columns\IconColumn::make('is_admin')
+            IconColumn::make('is_admin')
                 ->label('Admin')
                 ->boolean()
                 ->trueIcon('heroicon-o-shield-check')
                 ->falseIcon('heroicon-o-user')
-                ->trueColor('success')
-                ->falseColor('gray')
+                ->color(fn (bool $state): string => $state ? 'success' : 'gray')
                 ->alignCenter(),
 
-            Tables\Columns\TextColumn::make('scope_type')
+            TextColumn::make('scope_type')
                 ->label('Scope')
                 ->badge()
-                ->colors([
-                    'success' => 'Admin (Global Access)',
-                    'primary' => 'University',
-                    'info' => 'Faculty',
-                    'warning' => 'Subject',
-                    'gray' => 'None',
-                ]),
+                ->color(fn (string $state): string => match ($state) {
+                    'Admin (Global Access)' => 'success',
+                    'University' => 'primary',
+                    'Faculty' => 'info',
+                    'Subject' => 'warning',
+                    default => 'gray',
+                }),
 
-            Tables\Columns\TextColumn::make('university.name')
+            TextColumn::make('university.name')
                 ->label('University')
                 ->sortable()
                 ->toggleable()
                 ->placeholder('-'),
 
-            Tables\Columns\TextColumn::make('faculty.name')
+            TextColumn::make('faculty.name')
                 ->label('Faculty')
                 ->sortable()
                 ->toggleable()
                 ->placeholder('-'),
 
-            Tables\Columns\TextColumn::make('subject.name_en')
+            TextColumn::make('subject.name_en')
                 ->label('Subject')
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true)
                 ->placeholder('-'),
 
-            Tables\Columns\TextColumn::make('role')
+            TextColumn::make('role')
                 ->label('Role')
                 ->badge()
-                ->colors([
-                    'primary' => 'admin',
-                    'success' => 'faculty_member',
-                    'info' => 'student',
-                    'warning' => 'staff',
-                ])
+                ->color(fn (string $state): string => match ($state) {
+                    'admin' => 'primary',
+                    'faculty_member' => 'success',
+                    'student' => 'info',
+                    'staff' => 'warning',
+                    default => 'secondary',
+                })
                 ->sortable()
                 ->toggleable(isToggledHiddenByDefault: true),
 
-            Tables\Columns\TextColumn::make('created_at')
+            TextColumn::make('created_at')
                 ->label('Created')
                 ->dateTime('M d, Y')
                 ->sortable()

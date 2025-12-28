@@ -2,8 +2,9 @@
 
 namespace App\Filament\Resources\FacultyResource\Tables;
 
+use App\Models\Campus;
 use App\Models\University;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,43 +13,50 @@ class FacultyTable
     public static function columns(): array
     {
         return [
-            Tables\Columns\TextColumn::make('university.name')
+            TextColumn::make('university.name')
                 ->label('University')
                 ->sortable()
                 ->searchable(),
 
-            Tables\Columns\TextColumn::make('code')
+            TextColumn::make('campus.name')
+                ->label('Campus')
+                ->sortable()
+                ->searchable()
+                ->placeholder('No Campus')
+                ->toggleable(),
+
+            TextColumn::make('code')
                 ->label('Code')
                 ->searchable()
                 ->sortable()
                 ->copyable(),
 
-            Tables\Columns\TextColumn::make('name')
+            TextColumn::make('name')
                 ->label('Name')
                 ->searchable()
                 ->sortable()
                 ->limit(40),
 
-            Tables\Columns\TextColumn::make('departments_count')
+            TextColumn::make('departments_count')
                 ->label('Departments')
                 ->counts('departments')
                 ->sortable()
                 ->alignCenter(),
 
-            Tables\Columns\TextColumn::make('subjects_count')
+            TextColumn::make('subjects_count')
                 ->label('Subjects')
                 ->counts('subjects')
                 ->sortable()
                 ->alignCenter(),
 
-            Tables\Columns\TextColumn::make('users_count')
+            TextColumn::make('users_count')
                 ->label('Users')
                 ->counts('users')
                 ->sortable()
                 ->alignCenter()
                 ->toggleable(isToggledHiddenByDefault: true),
 
-            Tables\Columns\TextColumn::make('created_at')
+            TextColumn::make('created_at')
                 ->label('Created')
                 ->dateTime('M d, Y')
                 ->sortable()
@@ -68,6 +76,25 @@ class FacultyTable
             $filters[] = SelectFilter::make('university_id')
                 ->label('University')
                 ->options(University::pluck('name', 'id'))
+                ->searchable()
+                ->preload();
+        }
+
+        // Campus filter
+        if ($user && ($user->isAdmin() || $user->isScopedToUniversity())) {
+            $filters[] = SelectFilter::make('campus_id')
+                ->label('Campus')
+                ->options(function () use ($user) {
+                    if ($user->isAdmin()) {
+                        return Campus::with('university')->get()->mapWithKeys(function ($campus) {
+                            return [$campus->id => "{$campus->university->name} - {$campus->name}"];
+                        });
+                    }
+                    if ($user->isScopedToUniversity()) {
+                        return Campus::where('university_id', $user->university_id)->pluck('name', 'id');
+                    }
+                    return [];
+                })
                 ->searchable()
                 ->preload();
         }

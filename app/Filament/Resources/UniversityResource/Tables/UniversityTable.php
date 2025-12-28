@@ -2,51 +2,58 @@
 
 namespace App\Filament\Resources\UniversityResource\Tables;
 
-use Filament\Tables;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
 
 class UniversityTable
 {
     public static function columns(): array
     {
         return [
-            Tables\Columns\ImageColumn::make('logo')
+            ImageColumn::make('logo')
                 ->label('Logo')
                 ->circular()
                 ->size(40)
                 ->toggleable(),
 
-            Tables\Columns\TextColumn::make('code')
+            TextColumn::make('code')
                 ->label('Code')
                 ->searchable()
                 ->sortable()
                 ->copyable(),
 
-            Tables\Columns\TextColumn::make('name')
+            TextColumn::make('name')
                 ->label('Name')
                 ->searchable()
                 ->sortable()
                 ->limit(50),
 
-            Tables\Columns\TextColumn::make('faculties_count')
+            TextColumn::make('campuses_count')
+                ->label('Campuses')
+                ->counts('campuses')
+                ->sortable()
+                ->alignCenter(),
+
+            TextColumn::make('faculties_count')
                 ->label('Faculties')
                 ->counts('faculties')
                 ->sortable()
                 ->alignCenter(),
 
-            Tables\Columns\TextColumn::make('departments_count')
+            TextColumn::make('departments_count')
                 ->label('Departments')
                 ->counts('departments')
                 ->sortable()
                 ->alignCenter(),
 
-            Tables\Columns\TextColumn::make('users_count')
+            TextColumn::make('users_count')
                 ->label('Users')
                 ->counts('users')
                 ->sortable()
                 ->alignCenter()
                 ->toggleable(isToggledHiddenByDefault: true),
 
-            Tables\Columns\TextColumn::make('created_at')
+            TextColumn::make('created_at')
                 ->label('Created')
                 ->dateTime('M d, Y')
                 ->sortable()

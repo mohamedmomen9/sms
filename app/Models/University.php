@@ -15,6 +15,14 @@ class University extends Model
     ];
 
     /**
+     * Get all campuses for this university
+     */
+    public function campuses(): HasMany
+    {
+        return $this->hasMany(Campus::class);
+    }
+
+    /**
      * Get all faculties for this university
      */
     public function faculties(): HasMany

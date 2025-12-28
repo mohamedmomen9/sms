@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\RoleResource\Schemas;
 
-use Filament\Forms;
+use Filament\Forms\Components\TextInput;
 use App\Filament\Forms\Components\PermissionGroup;
 
 class RoleForm
@@ -10,7 +10,7 @@ class RoleForm
     public static function schema(): array
     {
         return [
-            Forms\Components\TextInput::make('name')
+            TextInput::make('name')
                 ->required()
                 ->unique(ignoreRecord: true)
                 ->maxLength(255),

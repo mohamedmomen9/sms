@@ -1,18 +1,22 @@
-# Academic Management System - Implementation Summary
+# Codeness SMS - Academic Management System
+*Student Management System by CodenessLab*
 
 ## Overview
-This Laravel + Filament v4 system implements role-based academic management with hierarchical data visibility and filtering.
+**Codeness SMS** is a comprehensive academic management system built with Laravel and Filament v4. It provides role-based academic management with hierarchical data visibility and intelligent filtering.
 
 ## Core Entities & Relationships
 
 ### Entity Hierarchy
 ```
 University
+├── Campus (belongsTo University)
+│   └── Faculty (can optionally belongsTo Campus)
 └── Faculty (belongsTo University)
     ├── Department (belongsTo Faculty)
     │   └── Subject (belongsTo Department, optionally belongsTo Faculty)
     └── Subject (can belongsTo Faculty directly)
 ```
+
 
 ### User Scope Levels
 Users can be assigned to one of three scope levels:
@@ -25,6 +29,7 @@ Users can be assigned to one of three scope levels:
 ### Migrations
 - `database/migrations/2025_12_28_101700_add_scope_fields_to_users_table.php` - Adds `university_id`, `subject_id`, and `is_admin` to users table
 - `database/migrations/2025_12_28_101800_add_faculty_id_to_subjects_table.php` - Adds `faculty_id` to subjects table for direct faculty relationship
+- `database/migrations/2025_12_28_105300_create_campuses_table.php` - Creates campuses table and adds `campus_id` to faculties
 
 ### Traits
 - `app/Traits/HasAcademicScope.php` - Core trait providing:
@@ -35,13 +40,15 @@ Users can be assigned to one of three scope levels:
 
 ### Models Updated
 - `app/Models/User.php` - Added HasAcademicScope trait, university/subject relationships, scope attributes
-- `app/Models/University.php` - Added users, departments relationships
-- `app/Models/Faculty.php` - Added subjects, users relationships
+- `app/Models/University.php` - Added campuses, users, departments relationships
+- `app/Models/Campus.php` - New model with university and faculties relationships
+- `app/Models/Faculty.php` - Added campus, subjects, users relationships
 - `app/Models/Department.php` - Added university accessor
 - `app/Models/Subject.php` - Added faculty relationship, effective faculty/university accessors
 
 ### Policies Updated
 - `app/Policies/UniversityPolicy.php` - Admin-only create/update/delete, scoped view
+- `app/Policies/CampusPolicy.php` - Scope-based CRUD (university-scoped users can manage campuses)
 - `app/Policies/FacultyPolicy.php` - Scope-based CRUD permissions
 - `app/Policies/DepartmentPolicy.php` - Scope-based CRUD permissions
 - `app/Policies/SubjectPolicy.php` - Scope-based CRUD permissions (subject-scoped users cannot create/delete)
@@ -52,7 +59,13 @@ Users can be assigned to one of three scope levels:
   - Read-only for non-admins
   - Query scoping via `getEloquentQuery()` and `modifyQueryUsing()`
 
+- `app/Filament/Resources/CampusResource/`
+  - **Dependent select**: University filters campus options
+  - Query scoping by university
+  - Status, location, contact information management
+
 - `app/Filament/Resources/FacultyResource/`
+  - **Dependent selects**: University → Campus (optional)
   - University filter based on user scope
   - Query scoping enforced
 
@@ -79,9 +92,9 @@ Users can be assigned to one of three scope levels:
 
 ### Seeder
 - `database/seeders/AcademicStructureSeeder.php` - Creates:
-  - All necessary permissions
+  - All necessary permissions (including campus permissions)
   - Admin and User roles
-  - 2 universities, 3 faculties, 3 departments, 4 subjects
+  - 2 universities, 3 campuses, 3 faculties, 3 departments, 4 subjects
   - 4 test users at different scope levels
 
 ## Test Users

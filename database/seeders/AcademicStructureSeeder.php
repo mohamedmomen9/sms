@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Campus;
 use App\Models\Department;
 use App\Models\Faculty;
 use App\Models\Subject;
@@ -24,6 +25,12 @@ class AcademicStructureSeeder extends Seeder
             'create_university',
             'update_university',
             'delete_university',
+            // Campus permissions
+            'view_any_campus',
+            'view_campus',
+            'create_campus',
+            'update_campus',
+            'delete_campus',
             // Faculty permissions
             'view_any_faculty',
             'view_faculty',
@@ -63,6 +70,10 @@ class AcademicStructureSeeder extends Seeder
         $userRole->syncPermissions([
             'view_any_university',
             'view_university',
+            'view_any_campus',
+            'view_campus',
+            'create_campus',
+            'update_campus',
             'view_any_faculty',
             'view_faculty',
             'view_any_department',
@@ -92,22 +103,67 @@ class AcademicStructureSeeder extends Seeder
             ]
         );
 
+        // Create Campuses for University 1
+        $campus1 = Campus::firstOrCreate(
+            ['code' => 'MAIN', 'university_id' => $university1->id],
+            [
+                'name' => 'Main Campus',
+                'location' => 'Giza',
+                'address' => 'Giza, Egypt',
+                'status' => 'active',
+            ]
+        );
+
+        $campus2 = Campus::firstOrCreate(
+            ['code' => 'SMART', 'university_id' => $university1->id],
+            [
+                'name' => 'Smart Village Campus',
+                'location' => 'Smart Village, 6th October',
+                'address' => 'Smart Village, 6th October City, Egypt',
+                'status' => 'active',
+            ]
+        );
+
+        // Create Campus for University 2
+        $campus3 = Campus::firstOrCreate(
+            ['code' => 'SMOUHA', 'university_id' => $university2->id],
+            [
+                'name' => 'Smouha Campus',
+                'location' => 'Smouha, Alexandria',
+                'address' => 'Smouha, Alexandria, Egypt',
+                'status' => 'active',
+            ]
+        );
+
         // Create Faculties for University 1
         $faculty1 = Faculty::firstOrCreate(
             ['code' => 'FAC001', 'university_id' => $university1->id],
-            ['name' => 'Faculty of Engineering']
+            [
+                'name' => 'Faculty of Engineering',
+                'campus_id' => $campus1->id,
+            ]
         );
+        // Update campus_id if faculty already existed
+        $faculty1->update(['campus_id' => $campus1->id]);
 
         $faculty2 = Faculty::firstOrCreate(
             ['code' => 'FAC002', 'university_id' => $university1->id],
-            ['name' => 'Faculty of Science']
+            [
+                'name' => 'Faculty of Science',
+                'campus_id' => $campus2->id,
+            ]
         );
+        $faculty2->update(['campus_id' => $campus2->id]);
 
         // Create Faculties for University 2
         $faculty3 = Faculty::firstOrCreate(
             ['code' => 'FAC003', 'university_id' => $university2->id],
-            ['name' => 'Faculty of Medicine']
+            [
+                'name' => 'Faculty of Medicine',
+                'campus_id' => $campus3->id,
+            ]
         );
+        $faculty3->update(['campus_id' => $campus3->id]);
 
         // Create Departments
         $dept1 = Department::firstOrCreate(
@@ -264,6 +320,11 @@ class AcademicStructureSeeder extends Seeder
         $subjectUser->assignRole('user');
 
         $this->command->info('Academic structure seeded successfully!');
+        $this->command->info('');
+        $this->command->info('Campuses created:');
+        $this->command->info('- Cairo University: Main Campus, Smart Village Campus');
+        $this->command->info('- Alexandria University: Smouha Campus');
+        $this->command->info('');
         $this->command->info('Users created:');
         $this->command->info('- admin@example.com (Admin - Global Access)');
         $this->command->info('- university.admin@example.com (University Scoped - Cairo University)');

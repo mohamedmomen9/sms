@@ -1,26 +1,19 @@
 <?php
 
-namespace App\Filament\Resources\DepartmentResource\Tables;
+namespace App\Filament\Resources\CampusResource\Tables;
 
-use App\Models\Faculty;
 use App\Models\University;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\Auth;
 
-class DepartmentTable
+class CampusTable
 {
     public static function columns(): array
     {
         return [
-            TextColumn::make('faculty.university.name')
+            TextColumn::make('university.name')
                 ->label('University')
-                ->sortable()
-                ->searchable()
-                ->toggleable(),
-
-            TextColumn::make('faculty.name')
-                ->label('Faculty')
                 ->sortable()
                 ->searchable(),
 
@@ -36,21 +29,33 @@ class DepartmentTable
                 ->sortable()
                 ->limit(40),
 
+            TextColumn::make('location')
+                ->label('Location')
+                ->searchable()
+                ->toggleable(),
+
+            TextColumn::make('faculties_count')
+                ->label('Faculties')
+                ->counts('faculties')
+                ->sortable()
+                ->alignCenter(),
+
             TextColumn::make('status')
                 ->label('Status')
                 ->badge()
                 ->color(fn (string $state): string => match ($state) {
                     'active' => 'success',
                     'inactive' => 'danger',
-                    'pending' => 'warning',
                     default => 'secondary',
-                })
-                ->sortable(),
+                }),
 
-            TextColumn::make('subjects_count')
-                ->label('Subjects')
-                ->counts('subjects')
-                ->sortable(),
+            TextColumn::make('phone')
+                ->label('Phone')
+                ->toggleable(isToggledHiddenByDefault: true),
+
+            TextColumn::make('email')
+                ->label('Email')
+                ->toggleable(isToggledHiddenByDefault: true),
 
             TextColumn::make('created_at')
                 ->label('Created')
@@ -69,37 +74,19 @@ class DepartmentTable
 
         // University filter - only for admins
         if ($user && $user->isAdmin()) {
-            $filters[] = SelectFilter::make('university')
+            $filters[] = SelectFilter::make('university_id')
                 ->label('University')
-                ->relationship('faculty.university', 'name')
+                ->options(University::pluck('name', 'id'))
                 ->searchable()
                 ->preload();
         }
 
-        // Faculty filter - for admins and university-scoped users
-        if ($user && ($user->isAdmin() || $user->isScopedToUniversity())) {
-            $filters[] = SelectFilter::make('faculty_id')
-                ->label('Faculty')
-                ->options(function () use ($user) {
-                    if ($user->isAdmin()) {
-                        return Faculty::pluck('name', 'id');
-                    }
-                    if ($user->isScopedToUniversity()) {
-                        return Faculty::where('university_id', $user->university_id)->pluck('name', 'id');
-                    }
-                    return [];
-                })
-                ->searchable()
-                ->preload();
-        }
-
-        // Status filter for all users
+        // Status filter
         $filters[] = SelectFilter::make('status')
             ->label('Status')
             ->options([
                 'active' => 'Active',
                 'inactive' => 'Inactive',
-                'pending' => 'Pending',
             ]);
 
         return $filters;
