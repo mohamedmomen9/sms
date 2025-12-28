@@ -30,7 +30,8 @@ trait HasAcademicScope
 
     public function isScopedToSubject(): bool
     {
-        return $this->hasPermissionTo('scope:subject');
+        // Check if user has subject scope permission AND has subjects assigned
+        return $this->hasPermissionTo('scope:subject') && ($this->subject_id || $this->subjects()->count() > 0);
     }
 
     public function getScopedFacultyId(): ?int
@@ -117,10 +118,18 @@ trait HasAcademicScope
             return $query;
         }
 
-        if ($this->isScopedToSubject()) {
+        // Check for subjects via many-to-many relationship first
+        $assignedSubjectIds = $this->subjects()->pluck('subjects.id')->toArray();
+        if (!empty($assignedSubjectIds)) {
+            return $query->whereIn('id', $assignedSubjectIds);
+        }
+
+        // Fallback to single subject_id (legacy)
+        if ($this->isScopedToSubject() && $this->subject_id) {
             return $query->where('id', $this->subject_id);
         }
 
+        // Faculty-scoped users can see all subjects in their faculty
         $facultyIds = $this->getAccessibleFacultyIds();
         if (!empty($facultyIds)) {
             return $query->where(function ($q) use ($facultyIds) {
@@ -158,7 +167,13 @@ trait HasAcademicScope
             return true;
         }
 
-        if ($this->isScopedToSubject()) {
+        // Check via many-to-many relationship first
+        if ($this->subjects()->where('subjects.id', $subject->id)->exists()) {
+            return true;
+        }
+
+        // Fallback to legacy single subject_id
+        if ($this->isScopedToSubject() && $this->subject_id) {
             return $this->subject_id === $subject->id;
         }
 
