@@ -14,9 +14,6 @@ use Spatie\Permission\Models\Role;
 
 class DemoDataSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         if (App::isProduction()) {
@@ -24,15 +21,11 @@ class DemoDataSeeder extends Seeder
             return;
         }
 
-        // Ensure permissions and roles exist
         $this->call(PermissionsSeeder::class);
 
-        // 1. Fetch Roles
         $superAdminRole = Role::where('name', 'Super Admin')->firstOrFail();
         $facultyAdminRole = Role::where('name', 'Faculty Admin')->firstOrFail();
-        // $universityAdminRole removed
 
-        // 2. Create Super Admin User
         $adminEmail = 'admin@university.edu';
         $admin = User::where('email', $adminEmail)->orWhere('username', 'admin')->first();
         if (!$admin) {
@@ -44,8 +37,6 @@ class DemoDataSeeder extends Seeder
                 'last_name' => 'Admin',
                 'display_name' => 'Super Administrator',
             ]);
-            
-            // Only assign if role exists
             if ($superAdminRole) {
                 $admin->assignRole($superAdminRole);
             }
@@ -69,8 +60,6 @@ class DemoDataSeeder extends Seeder
                 'status' => 'active',
             ]
         );
-
-        // 4. Create Faculties (Ensure at least 5 for demo)
 
         $facultiesData = [
             [
@@ -106,7 +95,7 @@ class DemoDataSeeder extends Seeder
             $facultiesData[] = [
                 'name' => "Faculty of " . fake()->word(),
                 'code' => "FAC-{$i}",
-                'campus_id' => $cairoCampus->id, // Default to Cairo for generated ones
+                'campus_id' => $cairoCampus->id,
                 'departments' => [
                     ['name' => "Department of " . fake()->word(), 'code' => "DEP-{$i}"]
                 ]
@@ -137,18 +126,14 @@ class DemoDataSeeder extends Seeder
                     'display_name' => "{$facData['name']} Admin",
                     'faculty_id' => $faculty->id,
                 ]);
-                
-                // Assign role if exists
                 if ($facultyAdminRole) {
                     $fAdmin->assignRole($facultyAdminRole);
                 }
             }
 
-            // Create Departments
             $departmentsData = $facData['departments'] ?? [['name' => 'General Department', 'code' => 'GEN']];
             
             foreach ($departmentsData as $deptData) {
-                // Create Department
                 $department = Department::firstOrCreate(
                     [
                         'faculty_id' => $faculty->id,
@@ -160,13 +145,11 @@ class DemoDataSeeder extends Seeder
                     ]
                 );
 
-                // Create Curriculum
                 $curriculum = \App\Models\Curriculum::firstOrCreate(
                     ['department_id' => $department->id, 'name' => ['en' => 'Standard Curriculum', 'ar' => 'Standard Curriculum']],
                     ['code' => $deptData['code'] . '-STD', 'status' => 'active']
                 );
 
-                // Create at least 5 subjects per department
                 $createdSubjects = [];
                 for ($s = 1; $s <= 5; $s++) {
                     $createdSubjects[] = Subject::firstOrCreate(
@@ -178,7 +161,7 @@ class DemoDataSeeder extends Seeder
                             'faculty_id' => $faculty->id,
                             'curriculum_id' => $curriculum->id,
                             'name' => ['en' => "Subject {$s} of " . $deptData['name'], 'ar' => "Subject {$s} (AR)"],
-                            'curriculum' => 'Standard', // Legacy
+                            'curriculum' => 'Standard',
                             'max_hours' => 3,
                             'category' => 'compulsory',
                             'type' => 'theoretical',
@@ -186,7 +169,6 @@ class DemoDataSeeder extends Seeder
                     );
                 }
 
-                // Create 5 Teachers for this Department
                 for ($t = 1; $t <= 5; $t++) {
                     $teacherEmail = strtolower("{$deptData['code']}_teacher_{$t}@university.edu");
                     $teacher = User::firstOrCreate(
@@ -200,22 +182,11 @@ class DemoDataSeeder extends Seeder
                             'faculty_id' => $faculty->id,
                         ]
                     );
-                        
-                        // Check if Teacher role exists before assigning
-                         try { $teacher->assignRole('Teacher'); } catch (\Exception $e) {}
-                        
-                        // Assign random subjects from this department if checking for new user or just always?
-                        // If firstOrCreate returned existing, maybe skip subject attachment to avoid dups?
-                        // detach first?
-                        // Just attach to avoid complication, subjects table handles it? No, subject_user is pivot.
-                        // We'll leave it as is, but only if it was just created?
-                        // firstOrCreate doesn't tell us if it was created easily.
-                        // Let's just sync?
-                        $subjectsToAssign = collect($createdSubjects)->random(rand(1, 3));
-                        $teacher->subjects()->syncWithoutDetaching($subjectsToAssign->pluck('id'));
+                    try { $teacher->assignRole('Teacher'); } catch (\Exception $e) {}
+                    $subjectsToAssign = collect($createdSubjects)->random(rand(1, 3));
+                    $teacher->subjects()->syncWithoutDetaching($subjectsToAssign->pluck('id'));
                 }
 
-                // Create 5 Students for this Department 
                 for ($st = 1; $st <= 5; $st++) {
                     $studentEmail = strtolower("{$deptData['code']}_student_{$st}@university.edu");
                     $student = User::firstOrCreate(
