@@ -9,9 +9,6 @@ abstract class BasePolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * The model key, e.g. 'university', 'faculty'.
-     */
     protected string $key;
 
     public function viewAny(User $user): bool

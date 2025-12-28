@@ -7,15 +7,6 @@ use App\Models\Faculty;
 use App\Models\Subject;
 use Illuminate\Database\Eloquent\Builder;
 
-/**
- * Trait HasAcademicScope
- * 
- * Provides methods for determining user's academic scope and filtering queries accordingly.
- * A user can be scoped to:
- * - A University (sees all faculties, departments, subjects within)
- * - A Faculty (sees all departments, subjects within that faculty)
- * - A Subject (sees only that subject and its parent relationships)
- */
 trait HasAcademicScope
 {
     public function isAdmin(): bool
@@ -30,7 +21,7 @@ trait HasAcademicScope
 
     public function isScopedToSubject(): bool
     {
-        return $this->hasPermissionTo('scope:subject');
+        return $this->hasPermissionTo('scope:subject') && ($this->subject_id || $this->subjects()->count() > 0);
     }
 
     public function getScopedFacultyId(): ?int
@@ -61,7 +52,6 @@ trait HasAcademicScope
     public function getAccessibleFacultyIds(): array
     {
         if ($this->isAdmin()) {
-            // In single university, admin sees ALL faculties
             return Faculty::pluck('id')->toArray();
         }
 
@@ -117,7 +107,12 @@ trait HasAcademicScope
             return $query;
         }
 
-        if ($this->isScopedToSubject()) {
+        $assignedSubjectIds = $this->subjects()->pluck('subjects.id')->toArray();
+        if (!empty($assignedSubjectIds)) {
+            return $query->whereIn('id', $assignedSubjectIds);
+        }
+
+        if ($this->isScopedToSubject() && $this->subject_id) {
             return $query->where('id', $this->subject_id);
         }
 
@@ -158,7 +153,11 @@ trait HasAcademicScope
             return true;
         }
 
-        if ($this->isScopedToSubject()) {
+        if ($this->subjects()->where('subjects.id', $subject->id)->exists()) {
+            return true;
+        }
+
+        if ($this->isScopedToSubject() && $this->subject_id) {
             return $this->subject_id === $subject->id;
         }
 
