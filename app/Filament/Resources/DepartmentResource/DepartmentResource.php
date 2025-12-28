@@ -10,12 +10,18 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class DepartmentResource extends Resource
 {
     protected static ?string $model = Department::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    protected static ?string $navigationGroup = 'Academic Structure';
+
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {
@@ -26,13 +32,25 @@ class DepartmentResource extends Resource
     {
         return $table
             ->columns(DepartmentTable::columns())
-            ->filters([])
+            ->filters(DepartmentTable::filters())
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\DeleteBulkAction::make(),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                /** @var \App\Models\User $user */
+                $user = Auth::user();
+                
+                if ($user && !$user->isAdmin()) {
+                    return $user->scopeDepartmentQuery($query);
+                }
+                
+                return $query;
+            });
     }
 
     public static function getRelations(): array
@@ -47,5 +65,22 @@ class DepartmentResource extends Resource
             'create' => Pages\CreateDepartment::route('/create'),
             'edit' => Pages\EditDepartment::route('/{record}/edit'),
         ];
+    }
+
+    /**
+     * Get the Eloquent query for the resource.
+     */
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+        
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        
+        if ($user && !$user->isAdmin()) {
+            return $user->scopeDepartmentQuery($query);
+        }
+        
+        return $query;
     }
 }
