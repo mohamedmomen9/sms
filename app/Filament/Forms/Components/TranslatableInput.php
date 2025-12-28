@@ -8,14 +8,31 @@ use Filament\Forms\Components\Component;
 
 class TranslatableInput
 {
-    public static function make(string $baseName, string $componentClass, ?callable $configure = null, $locales = null): Tabs
+    /**
+     * Create a translatable input with tabs for each locale.
+     *
+     * @param string $baseName The base field name (e.g., 'name' becomes 'name_en', 'name_ar')
+     * @param string $componentClass The Filament component class to use (e.g., TextInput::class)
+     * @param callable|null $configure Optional callback to configure each field
+     * @param array|null $locales Override the default locales
+     * @return Tabs
+     */
+    public static function make(string $baseName, string $componentClass, ?callable $configure = null, ?array $locales = null): Tabs
     {
-        $locales = $locales ?: config('app.locales', ['en', 'ar']);
-
-        $localeLabels = [
+        $locales = $locales ?: config('localization.locales', ['en', 'ar']);
+        $localeLabels = config('localization.locale_labels', [
             'en' => 'English',
             'ar' => 'العربية',
-        ];
+        ]);
+
+        // Get the translated base name for the field label
+        $baseNameKey = 'app.' . ucfirst($baseName);
+        $translatedBaseName = __($baseNameKey);
+        
+        // If translation not found, use the base name
+        if ($translatedBaseName === $baseNameKey) {
+            $translatedBaseName = ucfirst($baseName);
+        }
 
         $tabs = [];
 
@@ -24,7 +41,7 @@ class TranslatableInput
 
             /** @var Component $field */
             $field = $componentClass::make("{$baseName}.{$locale}")
-                ->label(ucfirst($baseName) . " ({$locale})");
+                ->label("{$translatedBaseName} ({$tabLabel})");
 
             // Allow user to apply extra configuration (required, default, etc.)
             if ($configure) {
@@ -34,7 +51,7 @@ class TranslatableInput
             $tabs[] = Tab::make($tabLabel)->schema([$field]);
         }
 
-        return Tabs::make($baseName)
+        return Tabs::make(__('app.' . ucfirst($baseName)))
             ->tabs($tabs)
             ->columnSpanFull()
             ->contained(true);

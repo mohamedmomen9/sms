@@ -8,17 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('div_table', function (Blueprint $table) {
+        Schema::create('faculties', function (Blueprint $table) {
             $table->id();
-            $table->string('div');
-            $table->string('txt');
-            $table->string('divstatus');
+            // university_id removed
+            $table->string('code'); 
+            $table->json('name');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('div_table');
+        Schema::dropIfExists('faculties');
     }
 };
