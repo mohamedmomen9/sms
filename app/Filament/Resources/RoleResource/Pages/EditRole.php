@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\RoleResource\Pages;
 
-use App\Filament\Resources\RoleResource;
+use App\Filament\Resources\RoleResource\RoleResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 

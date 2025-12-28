@@ -23,6 +23,8 @@ class Campus extends Model
         'status',
     ];
 
+
+
     /**
      * Get all faculties in this campus
      */
@@ -31,7 +33,13 @@ class Campus extends Model
         return $this->hasMany(Faculty::class);
     }
 
-
+    /**
+     * Get departments count through faculties
+     */
+    public function getDepartmentsCountAttribute(): int
+    {
+        return Department::whereIn('faculty_id', $this->faculties()->pluck('id'))->count();
+    }
 
     /**
      * Check if campus is active

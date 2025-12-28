@@ -2,19 +2,24 @@
 
 namespace App\Models;
 
+use App\Traits\HasAcademicScope;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Filament\Models\Contracts\FilamentUser;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable, HasApiTokens, HasRoles;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles, HasAcademicScope;
 
     /**
      * The attributes that are mass assignable.
+     *
+     * @var list<string>
      */
     protected $fillable = [
         'username',
@@ -22,22 +27,17 @@ class User extends Authenticatable implements FilamentUser
         'password',
         'role',
         'is_admin',
+        'faculty_id',
+        'subject_id',
         'display_name',
         'first_name',
         'last_name',
-        'faculty_id',
     ];
 
     /**
-     * Get the faculty the user belongs to
-     */
-    public function faculty(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Faculty::class);
-    }
-
-    /**
      * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -46,6 +46,8 @@ class User extends Authenticatable implements FilamentUser
 
     /**
      * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
      */
     protected function casts(): array
     {
@@ -54,6 +56,30 @@ class User extends Authenticatable implements FilamentUser
             'password' => 'hashed',
             'is_admin' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the faculty the user belongs to
+     */
+    public function faculty(): BelongsTo
+    {
+        return $this->belongsTo(Faculty::class);
+    }
+
+    /**
+     * Get the Subjects the user belongs to (Many-to-Many)
+     */
+    public function subjects(): BelongsToMany
+    {
+        return $this->belongsToMany(Subject::class);
+    }
+
+    /**
+     * Get the subject the user belongs to (Legacy single subject)
+     */
+    public function subject(): BelongsTo
+    {
+        return $this->belongsTo(Subject::class);
     }
 
     /**
@@ -81,10 +107,40 @@ class User extends Authenticatable implements FilamentUser
     }
 
     /**
-     * Check if user is admin
+     * Get the user's scope type as a string for display
      */
-    public function isAdmin(): bool
+    public function getScopeTypeAttribute(): string
     {
-        return $this->is_admin === true || $this->hasRole('Super Admin');
+        if ($this->isAdmin()) {
+            return 'Admin (Global Access)';
+        }
+        if ($this->isScopedToSubject()) {
+            return 'Subject';
+        }
+        if ($this->isScopedToFaculty()) {
+            return 'Faculty';
+        }
+        return 'None';
+    }
+
+    /**
+     * Get a human-readable description of the user's scope
+     */
+    public function getScopeDescriptionAttribute(): string
+    {
+        if ($this->isAdmin()) {
+            return 'Full access to system';
+        }
+
+        if ($this->isScopedToSubject() && $this->subject) {
+            $name = $this->subject->name ?? 'Unknown';
+            return "Subject: {$name}";
+        }
+
+        if ($this->isScopedToFaculty() && $this->faculty) {
+            return "Faculty: {$this->faculty->name}";
+        }
+
+        return 'No scope assigned';
     }
 }
