@@ -21,7 +21,11 @@ return new class extends Migration
             $table->boolean('active')->default(false);
             $table->string('remember_code')->nullable();
             $table->string('forgotten_password_code')->nullable();
+            // university_id removed for single-tenant app
+            $table->unsignedBigInteger('faculty_id')->nullable();
+            $table->unsignedBigInteger('subject_id')->nullable();
             $table->string('role')->nullable();
+            $table->boolean('is_admin')->default(false);
             $table->string('activation_code')->nullable();
             $table->string('lang')->nullable();
             $table->string('first_name')->nullable();
