@@ -32,7 +32,6 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->brandName($this->getBrandName())
-            ->brandLogo($this->getBrandLogo())
             ->favicon($this->getFavicon())
             ->colors([
                 'primary' => Color::hex('#0077be'),
@@ -92,19 +91,6 @@ class AdminPanelProvider extends PanelProvider
             // During migrations, settings table might not exist
             return new HtmlString('<span class="flex items-center gap-2"><img src="' . asset('images/logo.png') . '" class="h-8" alt="Logo"><span class="text-xl font-semibold">Codeness SMS</span></span>');
         }
-    }
-
-    protected function getBrandLogo(): ?string
-    {
-        try {
-            $siteLogo = Setting::get('site_logo');
-            if ($siteLogo) {
-                return asset('storage/' . $siteLogo);
-            }
-        } catch (\Exception $e) {
-            // Ignore during migrations
-        }
-        return null;
     }
 
     protected function getFavicon(): string
