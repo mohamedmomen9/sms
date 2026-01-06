@@ -2,9 +2,9 @@
 
 namespace App\Traits;
 
-use App\Models\Department;
-use App\Models\Faculty;
-use App\Models\Subject;
+use Modules\Academic\Models\Department;
+use Modules\Academic\Models\Faculty;
+use Modules\Academic\Models\Subject;
 use Illuminate\Database\Eloquent\Builder;
 
 trait HasAcademicScope

@@ -3,8 +3,8 @@
 namespace App\Filament\Resources\UserResource\Schemas;
 
 use App\Filament\Resources\UserResource\Pages\CreateUser;
-use App\Models\Faculty;
-use App\Models\Subject;
+use Modules\Academic\Models\Faculty;
+use Modules\Academic\Models\Subject;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
