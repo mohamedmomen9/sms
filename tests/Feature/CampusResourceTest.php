@@ -3,7 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\User;
-use App\Models\Campus;
+use Modules\Campus\Models\Campus;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 

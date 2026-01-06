@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\UserResource\Tables;
 
-use App\Models\Faculty;
+use Modules\Academic\Models\Faculty;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;

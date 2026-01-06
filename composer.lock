@@ -2091,12 +2091,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kz370/laravel-modular.git",
-                "reference": "b08651e7bb9877567d5896d3d9353b9edf711b02"
+                "reference": "52b5735dbc937ce4c5cc25540252e2b562d385cb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kz370/laravel-modular/zipball/b08651e7bb9877567d5896d3d9353b9edf711b02",
-                "reference": "b08651e7bb9877567d5896d3d9353b9edf711b02",
+                "url": "https://api.github.com/repos/kz370/laravel-modular/zipball/52b5735dbc937ce4c5cc25540252e2b562d385cb",
+                "reference": "52b5735dbc937ce4c5cc25540252e2b562d385cb",
                 "shasum": ""
             },
             "require": {
@@ -2150,7 +2150,7 @@
                 "issues": "https://github.com/kz370/laravel-modular/issues",
                 "source": "https://github.com/kz370/laravel-modular/tree/v1.0.0"
             },
-            "time": "2026-01-06T16:21:28+00:00"
+            "time": "2026-01-06T16:25:02+00:00"
         },
         {
             "name": "laravel/framework",

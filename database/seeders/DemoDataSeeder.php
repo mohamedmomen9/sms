@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use App\Models\Campus;
-use App\Models\Department;
-use App\Models\Faculty;
-use App\Models\Subject;
+use Modules\Campus\Models\Campus;
+use Modules\Academic\Models\Department;
+use Modules\Academic\Models\Faculty;
+use Modules\Academic\Models\Subject;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
@@ -145,7 +145,7 @@ class DemoDataSeeder extends Seeder
                     ]
                 );
 
-                $curriculum = \App\Models\Curriculum::firstOrCreate(
+                $curriculum = \Modules\Academic\Models\Curriculum::firstOrCreate(
                     ['department_id' => $department->id, 'name' => ['en' => 'Standard Curriculum', 'ar' => 'Standard Curriculum']],
                     ['code' => $deptData['code'] . '-STD', 'status' => 'active']
                 );

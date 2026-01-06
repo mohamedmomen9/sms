@@ -45,17 +45,17 @@ class User extends Authenticatable implements FilamentUser
 
     public function faculty(): BelongsTo
     {
-        return $this->belongsTo(Faculty::class);
+        return $this->belongsTo(\Modules\Academic\Models\Faculty::class);
     }
 
     public function subjects(): BelongsToMany
     {
-        return $this->belongsToMany(Subject::class);
+        return $this->belongsToMany(\Modules\Academic\Models\Subject::class);
     }
 
     public function subject(): BelongsTo
     {
-        return $this->belongsTo(Subject::class);
+        return $this->belongsTo(\Modules\Academic\Models\Subject::class);
     }
 
     public function getFilamentName(): string
