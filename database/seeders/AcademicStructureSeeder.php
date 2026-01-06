@@ -3,9 +3,9 @@
 namespace Database\Seeders;
 
 use Modules\Campus\Models\Campus;
-use Modules\Academic\Models\Department;
-use Modules\Academic\Models\Faculty;
-use Modules\Academic\Models\Subject;
+use Modules\Department\Models\Department;
+use Modules\Faculty\Models\Faculty;
+use Modules\Subject\Models\Subject;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -103,12 +103,12 @@ class AcademicStructureSeeder extends Seeder
         );
 
         // Create Curricula
-        $curr1 = \Modules\Academic\Models\Curriculum::firstOrCreate(
+        $curr1 = \Modules\Curriculum\Models\Curriculum::firstOrCreate(
             ['department_id' => $dept1->id, 'name' => ['en' => '2024 Computer Engineering', 'ar' => '2024 Computer Engineering']],
             ['code' => 'CE-2024', 'status' => 'active']
         );
 
-        $curr2 = \Modules\Academic\Models\Curriculum::firstOrCreate(
+        $curr2 = \Modules\Curriculum\Models\Curriculum::firstOrCreate(
             ['department_id' => $dept2->id, 'name' => ['en' => '2024 Electrical Engineering', 'ar' => '2024 Electrical Engineering']],
             ['code' => 'EE-2024', 'status' => 'active']
         );

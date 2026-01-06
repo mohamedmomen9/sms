@@ -1,5 +1,8 @@
 {
-    "Academic": true,
     "Campus": true,
-    "People": true
+    "People": true,
+    "Faculty": true,
+    "Department": true,
+    "Subject": true,
+    "Curriculum": true
 }
