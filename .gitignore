@@ -22,3 +22,5 @@ yarn-error.log
 /.vscode
 /.zed
 database/null.txt
+COURSE_SUBJECT_MIGRATIONS_GUIDE.md
+courseSubjectFunctions.php
