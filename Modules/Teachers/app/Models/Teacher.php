@@ -56,10 +56,16 @@ class Teacher extends Authenticatable implements FilamentUser
             ->withTimestamps();
     }
 
-    public function subjects(): BelongsToMany
+    public function subjects()
     {
-        return $this->belongsToMany(Subject::class, 'subject_teacher')
-            ->withTimestamps();
+        // Dynamic subjects based on course offerings
+        return $this->belongsToMany(Subject::class, 'course_offerings', 'teacher_id', 'subject_id')
+            ->distinct();
+    }
+
+    public function offerings()
+    {
+        return $this->hasMany(\Modules\Subject\Models\CourseOffering::class);
     }
 
     public function getAccessibleSubjectsAttribute()

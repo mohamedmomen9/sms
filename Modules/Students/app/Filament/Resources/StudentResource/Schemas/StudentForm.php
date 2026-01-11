@@ -68,19 +68,6 @@ class StudentForm
                 })
                 ->searchable()
                 ->preload(),
-            Forms\Components\Select::make('subjects')
-                ->relationship('subjects', 'name', modifyQueryUsing: function (Builder $query, Get $get) {
-                    if ($deptId = $get('department_id')) {
-                        $query->where('department_id', $deptId);
-                    } elseif ($schoolId = $get('school_id')) {
-                        $query->where('faculty_id', $schoolId);
-                    }
-                    return $query;
-                })
-                ->multiple()
-                ->preload()
-                ->searchable(['name', 'code'])
-                ->getOptionLabelFromRecordUsing(fn ($record) => "{$record->code} - {$record->name}"),
         ];
     }
 }

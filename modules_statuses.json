@@ -7,5 +7,6 @@
     "Curriculum": true,
     "Teachers": true,
     "Students": true,
-    "Users": true
+    "Users": true,
+    "Academic": true
 }

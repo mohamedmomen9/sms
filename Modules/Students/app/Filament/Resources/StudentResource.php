@@ -3,6 +3,7 @@
 namespace Modules\Students\Filament\Resources;
 
 use Modules\Students\Filament\Resources\StudentResource\Pages;
+use Modules\Students\Filament\Resources\StudentResource\RelationManagers;
 use Modules\Students\Filament\Resources\StudentResource\Schemas\StudentForm;
 use Modules\Students\Filament\Resources\StudentResource\Tables\StudentTable;
 use Modules\Students\Models\Student;
@@ -43,7 +44,9 @@ class StudentResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\EnrollmentsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

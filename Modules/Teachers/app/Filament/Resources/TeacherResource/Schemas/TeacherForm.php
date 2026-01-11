@@ -61,6 +61,7 @@ class TeacherForm
                         ->label(__('Faculties'))
                         ->multiple()
                         ->relationship('faculties', 'name')
+                        ->maxItems(1)
                         ->options(function () {
                             return Faculty::all()->mapWithKeys(function ($faculty) {
                                 $name = is_array($faculty->name) 
@@ -74,43 +75,6 @@ class TeacherForm
                         ->live()
                         ->afterStateUpdated(fn (Set $set) => $set('subjects', [])),
                         
-                    Select::make('subjects')
-                        ->label(__('Subjects'))
-                        ->multiple()
-                        ->relationship('subjects', 'name')
-                        ->options(function (Get $get) {
-                            $facultyIds = $get('faculties') ?? [];
-                            
-                            if (empty($facultyIds)) {
-                                return Subject::with('faculty')
-                                    ->orderBy('faculty_id')
-                                    ->get()
-                                    ->mapWithKeys(function ($subject) {
-                                        $name = is_array($subject->name) 
-                                            ? ($subject->name[app()->getLocale()] ?? $subject->name['en'] ?? '') 
-                                            : $subject->name;
-                                        return [$subject->id => "{$subject->code}\n{$name}"];
-                                    });
-                            }
-                            
-                            return Subject::where(function ($query) use ($facultyIds) {
-                                $query->whereIn('faculty_id', $facultyIds)
-                                    ->orWhereHas('department', function ($q) use ($facultyIds) {
-                                        $q->whereIn('faculty_id', $facultyIds);
-                                    });
-                            })
-                            ->with('faculty', 'department.faculty')
-                            ->get()
-                            ->mapWithKeys(function ($subject) {
-                                $name = is_array($subject->name) 
-                                    ? ($subject->name[app()->getLocale()] ?? $subject->name['en'] ?? '') 
-                                    : $subject->name;
-                                return [$subject->id => "{$subject->code}\n{$name}"];
-                            });
-                        })
-                        ->searchable()
-                        ->preload()
-                        ->helperText(__('Subjects are filtered based on selected faculties')),
                 ])
                 ->columns(1),
         ];

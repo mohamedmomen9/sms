@@ -58,7 +58,22 @@ class Student extends Authenticatable
 
     public function subjects()
     {
-        return $this->belongsToMany(Subject::class, 'student_subject');
+        // Dynamic subjects based on current enrollments
+        return Subject::whereHas('offerings.enrollments', function ($query) {
+            $query->where('student_id', $this->id);
+        });
+    }
+
+    public function enrollments()
+    {
+        return $this->hasMany(\Modules\Students\Models\CourseEnrollment::class);
+    }
+
+    public function currentClasses()
+    {
+        return $this->enrollments()->whereHas('courseOffering.term', function ($query) {
+            $query->where('is_active', true);
+        });
     }
 
 

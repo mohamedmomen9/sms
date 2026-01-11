@@ -60,12 +60,14 @@ class Subject extends Model
         return $this->belongsTo(Department::class);
     }
 
-    /**
-     * Get users assigned to this subject
-     */
     public function users(): HasMany
     {
         return $this->hasMany(User::class);
+    }
+
+    public function offerings()
+    {
+        return $this->hasMany(\Modules\Subject\Models\CourseOffering::class);
     }
 
     /**

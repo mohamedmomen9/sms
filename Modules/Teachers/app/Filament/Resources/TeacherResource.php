@@ -10,6 +10,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Modules\Teachers\Filament\Resources\TeacherResource\Pages;
+use Modules\Teachers\Filament\Resources\TeacherResource\RelationManagers;
 use Modules\Teachers\Filament\Resources\TeacherResource\Schemas\TeacherForm;
 use Modules\Teachers\Filament\Resources\TeacherResource\Tables\TeacherTable;
 use Modules\Teachers\Models\Teacher;
@@ -56,7 +57,9 @@ class TeacherResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\OfferingsRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
