@@ -117,14 +117,7 @@ class TeacherResource extends Resource
                                             $name = is_array($subject->name) 
                                                 ? ($subject->name[app()->getLocale()] ?? $subject->name['en'] ?? '') 
                                                 : $subject->name;
-                                            $facultyName = '';
-                                            if ($subject->faculty) {
-                                                $facultyName = is_array($subject->faculty->name) 
-                                                    ? ($subject->faculty->name[app()->getLocale()] ?? $subject->faculty->name['en'] ?? '') 
-                                                    : $subject->faculty->name;
-                                                $facultyName = " [{$facultyName}]";
-                                            }
-                                            return [$subject->id => $name . $facultyName];
+                                            return [$subject->id => "{$subject->code}\n{$name}"];
                                         });
                                 }
                                 
@@ -136,26 +129,11 @@ class TeacherResource extends Resource
                                 })
                                 ->with('faculty', 'department.faculty')
                                 ->get()
-                                ->groupBy(function ($subject) {
-                                    if ($subject->faculty) {
-                                        return is_array($subject->faculty->name) 
-                                            ? ($subject->faculty->name[app()->getLocale()] ?? $subject->faculty->name['en'] ?? 'No Faculty') 
-                                            : $subject->faculty->name;
-                                    }
-                                    if ($subject->department && $subject->department->faculty) {
-                                        return is_array($subject->department->faculty->name) 
-                                            ? ($subject->department->faculty->name[app()->getLocale()] ?? $subject->department->faculty->name['en'] ?? 'No Faculty') 
-                                            : $subject->department->faculty->name;
-                                    }
-                                    return __('No Faculty');
-                                })
-                                ->flatMap(function ($subjects, $facultyName) {
-                                    return $subjects->mapWithKeys(function ($subject) use ($facultyName) {
-                                        $name = is_array($subject->name) 
-                                            ? ($subject->name[app()->getLocale()] ?? $subject->name['en'] ?? '') 
-                                            : $subject->name;
-                                        return [$subject->id => "{$name} [{$facultyName}]"];
-                                    });
+                                ->mapWithKeys(function ($subject) {
+                                    $name = is_array($subject->name) 
+                                        ? ($subject->name[app()->getLocale()] ?? $subject->name['en'] ?? '') 
+                                        : $subject->name;
+                                    return [$subject->id => "{$subject->code}\n{$name}"];
                                 });
                             })
                             ->searchable()
