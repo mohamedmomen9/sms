@@ -24,7 +24,6 @@ return [
     'View' => 'عرض',
     'Create' => 'إنشاء',
     'Search' => 'بحث',
-    'Hours' => 'ساعات',
     
     // Campus
     'Campus' => 'الحرم الجامعي',
@@ -43,61 +42,6 @@ return [
     'Email Address' => 'عنوان البريد الإلكتروني',
     'No Campus' => 'لا يوجد حرم جامعي',
     'Contact Information' => 'معلومات الاتصال',
-    
-    // Faculty
-    'Faculty' => 'الكلية',
-    'Faculties' => 'الكليات',
-    'Faculty Code' => 'كود الكلية',
-    'Faculty Name' => 'اسم الكلية',
-    'Faculty Details' => 'تفاصيل الكلية',
-    'Campus Assignment' => 'تعيين الحرم الجامعي',
-    'Optionally assign this faculty to a specific campus' => 'اختياريًا، قم بتعيين هذه الكلية لحرم جامعي محدد',
-    'Campus (Optional)' => 'الحرم الجامعي (اختياري)',
-    'Leave empty if faculty is not assigned to a specific campus' => 'اتركه فارغًا إذا لم تكن الكلية مرتبطة بحرم جامعي محدد',
-    
-    // Department
-    'Department' => 'القسم',
-    'Departments' => 'الأقسام',
-    'Department Code' => 'كود القسم',
-    'Department Name' => 'اسم القسم',
-    'Department Details' => 'تفاصيل القسم',
-    'Department (Optional)' => 'القسم (اختياري)',
-    'Leave empty if subject belongs directly to faculty' => 'اتركه فارغًا إذا كانت المادة تابعة للكلية مباشرة',
-    'Direct to Faculty' => 'تابعة للكلية مباشرة',
-    'Select the faculty for this department' => 'حدد الكلية لهذا القسم',
-    
-    // Curriculum
-    'Curriculum' => 'المنهج',
-    'Curricula' => 'المناهج',
-    'Curriculum Details' => 'تفاصيل المنهج',
-    'Curriculum Group' => 'مجموعة المناهج',
-    'Legacy Curriculum String' => 'سلسلة المنهج القديمة',
-    'This field is deprecated. Please use Curriculum Group.' => 'هذا الحقل قديم. يرجى استخدام مجموعة المناهج.',
-    
-    // Subject
-    'Subject' => 'المادة',
-    'Subjects' => 'المواد',
-    'Subject Code' => 'كود المادة',
-    'Subject Names' => 'أسماء المادة',
-    'Name (Arabic)' => 'الاسم (العربية)',
-    'Category' => 'التصنيف',
-    'Type' => 'النوع',
-    'Maximum Hours' => 'الساعات القصوى',
-    'Academic Assignment' => 'التعيين الأكاديمي',
-    'Select the academic hierarchy for this subject' => 'حدد التسلسل الأكاديمي لهذه المادة',
-    'Subject Details' => 'تفاصيل المادة',
-    'Additional Properties' => 'خصائص إضافية',
-    
-    // Category Options
-    'Core' => 'أساسي',
-    'Elective' => 'اختياري',
-    'General' => 'عام',
-    'Specialization' => 'تخصص',
-    
-    // Type Options
-    'Theoretical' => 'نظري',
-    'Practical' => 'عملي',
-    'Mixed' => 'مختلط',
     
     // User
     'User' => 'المستخدم',
@@ -143,4 +87,15 @@ return [
     'English' => 'الإنجليزية',
     'Arabic' => 'العربية',
     'Switch Language' => 'تبديل اللغة',
+    
+    // Category Options
+    'Category' => 'التصنيف',
+    'Type' => 'النوع',
+    'Core' => 'أساسي',
+    'Elective' => 'اختياري',
+    'General' => 'عام',
+    'Specialization' => 'تخصص',
+    'Theoretical' => 'نظري',
+    'Practical' => 'عملي',
+    'Mixed' => 'مختلط',
 ];

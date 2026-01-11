@@ -55,11 +55,6 @@ class User extends Authenticatable implements FilamentUser
         ];
     }
 
-    // protected static function newFactory(): UserFactory
-    // {
-    //     return UserFactory::new();
-    // }
-
     public function faculty(): BelongsTo
     {
         return $this->belongsTo(\Modules\Faculty\Models\Faculty::class);

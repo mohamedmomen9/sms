@@ -15,7 +15,6 @@ class DepartmentForm
     {
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $isAdmin = $user?->isAdmin() ?? false;
 
         return [
             Section::make(__('app.Academic Assignment'))

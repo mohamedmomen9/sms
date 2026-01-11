@@ -6,16 +6,11 @@ use App\Filament\Forms\Components\TranslatableInput;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Illuminate\Support\Facades\Auth;
 
 class FacultyForm
 {
     public static function schema(): array
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $isAdmin = $user?->isAdmin() ?? false;
-
         return [
             Section::make(__('app.Campus Assignment'))
                 ->description(__('app.Optionally assign this faculty to a specific campus'))

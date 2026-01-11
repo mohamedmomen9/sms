@@ -27,6 +27,40 @@ class Curriculum extends Model
 
     public function subjects()
     {
-        return $this->hasMany(\Modules\Subject\Models\Subject::class);
+        return $this->belongsToMany(\Modules\Subject\Models\Subject::class, 'curriculum_subject')
+                    ->withPivot(['is_mandatory', 'credit_hours'])
+                    ->withTimestamps();
+    }
+
+    public function faculties()
+    {
+        return $this->belongsToMany(\Modules\Faculty\Models\Faculty::class, 'curriculum_faculty');
+    }
+
+    public $proxied_subjects = null;
+
+    protected static function booted()
+    {
+        static::saved(function ($model) {
+            if (is_array($model->proxied_subjects)) {
+                $activeSubjectIds = [];
+                
+                foreach ($model->proxied_subjects as $group) {
+                    if (isset($group['subjects']) && is_array($group['subjects'])) {
+                        foreach ($group['subjects'] as $subjectData) {
+                            $subjectId = $subjectData['id'] ?? null;
+                            if ($subjectId) {
+                                $activeSubjectIds[$subjectId] = [
+                                    'is_mandatory' => $subjectData['is_mandatory'] ?? true,
+                                    'credit_hours' => $subjectData['credit_hours'] ?? 3.0,
+                                ];
+                            }
+                        }
+                    }
+                }
+
+                $model->subjects()->sync($activeSubjectIds);
+            }
+        });
     }
 }

@@ -84,12 +84,6 @@ class CampusResource extends Resource
         ];
     }
 
-    /**
-     * Get the Eloquent query for the resource.
-     */
-    /**
-     * Get the Eloquent query for the resource.
-     */
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery();

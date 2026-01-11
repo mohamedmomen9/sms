@@ -30,17 +30,17 @@ class SubjectResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.Subjects');
+        return __('subject::app.Subjects');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.Subject');
+        return __('subject::app.Subject');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.Subjects');
+        return __('subject::app.Subjects');
     }
 
     public static function getNavigationGroup(): ?string

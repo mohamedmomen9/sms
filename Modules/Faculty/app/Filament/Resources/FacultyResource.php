@@ -30,17 +30,17 @@ class FacultyResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.Faculties');
+        return __('faculty::app.Faculties');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.Faculty');
+        return __('faculty::app.Faculty');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.Faculties');
+        return __('faculty::app.Faculties');
     }
 
     public static function getNavigationGroup(): ?string

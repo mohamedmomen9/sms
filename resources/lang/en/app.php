@@ -24,7 +24,6 @@ return [
     'View' => 'View',
     'Create' => 'Create',
     'Search' => 'Search',
-    'Hours' => 'Hours',
     
     // Campus
     'Campus' => 'Campus',
@@ -43,61 +42,6 @@ return [
     'Email Address' => 'Email Address',
     'No Campus' => 'No Campus',
     'Contact Information' => 'Contact Information',
-    
-    // Faculty
-    'Faculty' => 'Faculty',
-    'Faculties' => 'Faculties',
-    'Faculty Code' => 'Faculty Code',
-    'Faculty Name' => 'Faculty Name',
-    'Faculty Details' => 'Faculty Details',
-    'Campus Assignment' => 'Campus Assignment',
-    'Optionally assign this faculty to a specific campus' => 'Optionally assign this faculty to a specific campus',
-    'Campus (Optional)' => 'Campus (Optional)',
-    'Leave empty if faculty is not assigned to a specific campus' => 'Leave empty if faculty is not assigned to a specific campus',
-    
-    // Department
-    'Department' => 'Department',
-    'Departments' => 'Departments',
-    'Department Code' => 'Department Code',
-    'Department Name' => 'Department Name',
-    'Department Details' => 'Department Details',
-    'Department (Optional)' => 'Department (Optional)',
-    'Leave empty if subject belongs directly to faculty' => 'Leave empty if subject belongs directly to faculty',
-    'Direct to Faculty' => 'Direct to Faculty',
-    'Select the faculty for this department' => 'Select the faculty for this department',
-    
-    // Curriculum
-    'Curriculum' => 'Curriculum',
-    'Curricula' => 'Curricula',
-    'Curriculum Details' => 'Curriculum Details',
-    'Curriculum Group' => 'Curriculum Group',
-    'Legacy Curriculum String' => 'Legacy Curriculum String',
-    'This field is deprecated. Please use Curriculum Group.' => 'This field is deprecated. Please use Curriculum Group.',
-    
-    // Subject
-    'Subject' => 'Subject',
-    'Subjects' => 'Subjects',
-    'Subject Code' => 'Subject Code',
-    'Subject Names' => 'Subject Names',
-    'Name (Arabic)' => 'Name (Arabic)',
-    'Category' => 'Category',
-    'Type' => 'Type',
-    'Maximum Hours' => 'Maximum Hours',
-    'Academic Assignment' => 'Academic Assignment',
-    'Select the academic hierarchy for this subject' => 'Select the academic hierarchy for this subject',
-    'Subject Details' => 'Subject Details',
-    'Additional Properties' => 'Additional Properties',
-    
-    // Category Options
-    'Core' => 'Core',
-    'Elective' => 'Elective',
-    'General' => 'General',
-    'Specialization' => 'Specialization',
-    
-    // Type Options
-    'Theoretical' => 'Theoretical',
-    'Practical' => 'Practical',
-    'Mixed' => 'Mixed',
     
     // User
     'User' => 'User',
@@ -143,4 +87,15 @@ return [
     'English' => 'English',
     'Arabic' => 'Arabic',
     'Switch Language' => 'Switch Language',
+    
+    // Category Options (Generic?)
+    'Category' => 'Category',
+    'Type' => 'Type',
+    'Core' => 'Core',
+    'Elective' => 'Elective',
+    'General' => 'General',
+    'Specialization' => 'Specialization',
+    'Theoretical' => 'Theoretical',
+    'Practical' => 'Practical',
+    'Mixed' => 'Mixed',
 ];

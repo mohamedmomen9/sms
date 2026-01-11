@@ -32,17 +32,17 @@ class CurriculumResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.Curricula');
+        return __('curriculum::app.Curricula');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.Curriculum');
+        return __('curriculum::app.Curriculum');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.Curricula');
+        return __('curriculum::app.Curricula');
     }
 
     public static function getNavigationGroup(): ?string

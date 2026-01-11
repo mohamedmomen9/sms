@@ -5,7 +5,6 @@ namespace Modules\Faculty\Filament\Resources\FacultyResource\Tables;
 use Modules\Campus\Models\Campus;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Support\Facades\Auth;
 
 class FacultyTable
 {
@@ -32,19 +31,19 @@ class FacultyTable
                 ->limit(40),
 
             TextColumn::make('departments_count')
-                ->label(__('app.Departments'))
+                ->label(__('department::app.Departments'))
                 ->counts('departments')
                 ->sortable()
                 ->alignCenter(),
 
             TextColumn::make('subjects_count')
-                ->label(__('app.Subjects'))
+                ->label(__('subject::app.Subjects'))
                 ->counts('subjects')
                 ->sortable()
                 ->alignCenter(),
 
             TextColumn::make('users_count')
-                ->label(__('app.Users'))
+                ->label(__('users::app.Users'))
                 ->counts('users')
                 ->sortable()
                 ->alignCenter()
@@ -60,9 +59,6 @@ class FacultyTable
 
     public static function filters(): array
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-
         $filters = [];
 
         $filters[] = SelectFilter::make('campus_id')

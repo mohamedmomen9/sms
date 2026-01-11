@@ -30,17 +30,17 @@ class DepartmentResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.Departments');
+        return __('department::app.Departments');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.Department');
+        return __('department::app.Department');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.Departments');
+        return __('department::app.Departments');
     }
 
     public static function getNavigationGroup(): ?string
