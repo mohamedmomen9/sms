@@ -11,7 +11,7 @@ class CurriculumTable
     {
         return [
             TextColumn::make('department.name')
-                ->label(__('app.Department'))
+                ->label(__('department::app.Department'))
                 ->sortable()
                 ->searchable(),
 
@@ -24,7 +24,7 @@ class CurriculumTable
                 ->searchable(),
 
             TextColumn::make('subjects_count')
-                ->label(__('app.Subjects'))
+                ->label(__('subject::app.Subjects'))
                 ->counts('subjects')
                 ->sortable(),
 
@@ -49,7 +49,7 @@ class CurriculumTable
     {
         return [
             SelectFilter::make('department_id')
-                ->label(__('app.Department'))
+                ->label(__('department::app.Department'))
                 ->relationship('department', 'name')
                 ->searchable()
                 ->preload(),

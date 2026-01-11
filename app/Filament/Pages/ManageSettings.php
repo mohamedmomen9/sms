@@ -56,7 +56,6 @@ class ManageSettings extends Page implements HasForms
     {
         return $form
             ->schema([
-                // Site Display Section
                 Section::make(__('app.Site Display'))
                     ->description(__('app.Configure how your site appears to users'))
                     ->icon('heroicon-o-paint-brush')
@@ -88,7 +87,6 @@ class ManageSettings extends Page implements HasForms
                     ->columns(1)
                     ->collapsible(),
 
-                // Language & Localization Section
                 Section::make(__('app.Language & Localization'))
                     ->description(__('app.Configure language and regional settings'))
                     ->icon('heroicon-o-language')
@@ -110,12 +108,10 @@ class ManageSettings extends Page implements HasForms
     {
         $data = $this->form->getState();
 
-        // Save site settings
         Setting::set('site_name', $data['site_name'] ?? '', 'string', 'site');
         Setting::set('university_name', $data['university_name'] ?? '', 'string', 'site');
         Setting::set('site_logo', $data['site_logo'] ?? '', 'string', 'site');
 
-        // Save and apply language
         $locale = $data['locale'] ?? config('localization.default_locale', 'en');
         $supportedLocales = config('localization.locales', ['en', 'ar']);
         if (!in_array($locale, $supportedLocales)) {
@@ -129,7 +125,6 @@ class ManageSettings extends Page implements HasForms
             ->success()
             ->send();
 
-        // Redirect to refresh the page and apply new settings
         $this->redirect(static::getUrl());
     }
 

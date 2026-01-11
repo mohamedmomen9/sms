@@ -16,33 +16,32 @@ class Subject extends Model
     protected $fillable = [
         'faculty_id',
         'department_id',
-        'curriculum',
         'code',
         'name',
-        'category',
-        'type',
-        'max_hours',
-        'curriculum_id',
     ];
 
-
-
-    /**
-     * Get the curriculum group this subject belongs to
-     * Naming it curriculumGroup to avoid conflict with legacy curriculum string column
-     */
-    /**
-     * Get the curriculum group this subject belongs to
-     * Naming it curriculumGroup to avoid conflict with legacy curriculum string column
-     */
-    public function curriculumGroup(): BelongsTo
+    public function prerequisites()
     {
-        return $this->belongsTo(\Modules\Curriculum\Models\Curriculum::class, 'curriculum_id');
+        return $this->belongsToMany(Subject::class, 'subject_prerequisites', 'subject_id', 'prerequisite_id')
+            ->withTimestamps();
+    }
+
+    public function prerequisiteFor()
+    {
+        return $this->belongsToMany(Subject::class, 'subject_prerequisites', 'prerequisite_id', 'subject_id')
+            ->withTimestamps();
     }
 
     /**
      * Get the faculty this subject belongs to (direct relationship)
      */
+    public function curricula()
+    {
+        return $this->belongsToMany(\Modules\Curriculum\Models\Curriculum::class, 'curriculum_subject')
+                    ->withPivot('is_mandatory')
+                    ->withTimestamps();
+    }
+
     public function faculty(): BelongsTo
     {
         return $this->belongsTo(\Modules\Faculty\Models\Faculty::class);

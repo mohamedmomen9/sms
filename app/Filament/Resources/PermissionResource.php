@@ -49,9 +49,7 @@ class PermissionResource extends Resource
     {
         return $table
             ->columns(PermissionTable::columns())
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 EditAction::make(),
             ])
@@ -62,9 +60,7 @@ class PermissionResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

@@ -6,7 +6,6 @@ use Modules\Department\Models\Department;
 use Modules\Faculty\Models\Faculty;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Support\Facades\Auth;
 
 class SubjectTable
 {
@@ -14,7 +13,7 @@ class SubjectTable
     {
         return [
             TextColumn::make('faculty.name')
-                ->label(__('app.Faculty'))
+                ->label(__('subject::app.Faculty'))
                 ->sortable()
                 ->searchable()
                 ->getStateUsing(function ($record) {
@@ -25,16 +24,10 @@ class SubjectTable
                 }),
 
             TextColumn::make('department.name')
-                ->label(__('app.Department'))
+                ->label(__('subject::app.Department'))
                 ->sortable()
                 ->searchable()
-                ->placeholder(__('app.Direct to Faculty'))
-                ->toggleable(),
-
-            TextColumn::make('curriculum')
-                ->label(__('app.Curriculum'))
-                ->sortable()
-                ->searchable()
+                ->placeholder(__('subject::app.Direct to Faculty'))
                 ->toggleable(),
 
             TextColumn::make('code')
@@ -49,34 +42,6 @@ class SubjectTable
                 ->searchable()
                 ->limit(35),
 
-            TextColumn::make('category')
-                ->label(__('app.Category'))
-                ->badge()
-                ->color(fn ($state): string => match ($state) {
-                    'core' => 'primary',
-                    'elective' => 'success',
-                    'general' => 'info',
-                    'specialization' => 'warning',
-                    default => 'secondary',
-                })
-                ->toggleable(),
-
-            TextColumn::make('type')
-                ->label(__('app.Type'))
-                ->badge()
-                ->color(fn ($state): string => match ($state) {
-                    'theoretical' => 'info',
-                    'practical' => 'success',
-                    'mixed' => 'warning',
-                    default => 'secondary',
-                })
-                ->toggleable(),
-
-            TextColumn::make('max_hours')
-                ->label(__('app.Hours'))
-                ->sortable()
-                ->alignCenter(),
-
             TextColumn::make('created_at')
                 ->label(__('app.Created'))
                 ->dateTime('M d, Y')
@@ -87,37 +52,17 @@ class SubjectTable
 
     public static function filters(): array
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-
         $filters = [];
 
         $filters[] = SelectFilter::make('faculty_id')
-            ->label(__('app.Faculty'))
+            ->label(__('subject::app.Faculty'))
             ->options(Faculty::all()->pluck('name', 'id'))
             ->searchable();
 
         $filters[] = SelectFilter::make('department_id')
-            ->label(__('app.Department'))
+            ->label(__('subject::app.Department'))
             ->options(Department::all()->pluck('name', 'id'))
             ->searchable();
-
-        $filters[] = SelectFilter::make('category')
-            ->label(__('app.Category'))
-            ->options([
-                'core' => __('app.Core'),
-                'elective' => __('app.Elective'),
-                'general' => __('app.General'),
-                'specialization' => __('app.Specialization'),
-            ]);
-
-        $filters[] = SelectFilter::make('type')
-            ->label(__('app.Type'))
-            ->options([
-                'theoretical' => __('app.Theoretical'),
-                'practical' => __('app.Practical'),
-                'mixed' => __('app.Mixed'),
-            ]);
 
         return $filters;
     }

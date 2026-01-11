@@ -6,7 +6,7 @@ use Modules\Campus\Models\Campus;
 use Modules\Department\Models\Department;
 use Modules\Faculty\Models\Faculty;
 use Modules\Subject\Models\Subject;
-use App\Models\User;
+use Modules\Users\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
@@ -107,11 +107,19 @@ class AcademicStructureSeeder extends Seeder
             ['department_id' => $dept1->id, 'name' => ['en' => '2024 Computer Engineering', 'ar' => '2024 Computer Engineering']],
             ['code' => 'CE-2024', 'status' => 'active']
         );
+        // Link Curriculum 1 to Faculty 1
+        if (!$curr1->faculties()->where('faculty_id', $faculty1->id)->exists()) {
+            $curr1->faculties()->attach($faculty1->id);
+        }
 
         $curr2 = \Modules\Curriculum\Models\Curriculum::firstOrCreate(
             ['department_id' => $dept2->id, 'name' => ['en' => '2024 Electrical Engineering', 'ar' => '2024 Electrical Engineering']],
             ['code' => 'EE-2024', 'status' => 'active']
         );
+         // Link Curriculum 2 to Faculty 1
+        if (!$curr2->faculties()->where('faculty_id', $faculty1->id)->exists()) {
+            $curr2->faculties()->attach($faculty1->id);
+        }
 
         // Create Subjects
         Subject::firstOrCreate(
@@ -125,6 +133,7 @@ class AcademicStructureSeeder extends Seeder
                 'category' => 'core',
                 'type' => 'mixed',
                 'max_hours' => 3.0,
+                'is_mandatory' => true,
             ]
         );
 
@@ -139,6 +148,7 @@ class AcademicStructureSeeder extends Seeder
                 'category' => 'core',
                 'type' => 'theoretical',
                 'max_hours' => 4.0,
+                'is_mandatory' => true,
             ]
         );
 

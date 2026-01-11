@@ -23,14 +23,12 @@ class SwitchLanguage extends Page
 
     public function mount(): void
     {
-        // Redirect with toggle
         $currentLocale = App::getLocale();
         $newLocale = $currentLocale === 'ar' ? 'en' : 'ar';
         
         Session::put('locale', $newLocale);
         App::setLocale($newLocale);
         
-        // Redirect back
         $this->redirect(request()->header('Referer', '/admin'));
     }
 

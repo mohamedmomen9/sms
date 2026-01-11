@@ -22,7 +22,6 @@ class UserForm
         $isAdmin = $currentUser?->hasPermissionTo('scope:global') ?? false;
 
         return [
-            // Basic Information Section
             Section::make('Account Information')
                 ->schema([
                     TextInput::make('username')
@@ -47,7 +46,6 @@ class UserForm
                 ])
                 ->columns(3),
 
-            // Personal Information Section
             Section::make('Personal Information')
                 ->schema([
                     TextInput::make('first_name')
@@ -65,8 +63,6 @@ class UserForm
                 ])
                 ->columns(3),
 
-            // Role and Access Section - Only visible to admins
-            // Role and Access Section
             Section::make('Role & Access Control')
                 ->description('Assign Roles to define permissions and access scope')
                 ->schema([
@@ -79,20 +75,13 @@ class UserForm
                         ->default([])
                         ->live()
                         ->afterStateUpdated(function (Set $set) {
-                            // Reset scopes if roles change
-                            // We might want to be smarter here, but safety first
-                            // $set('university_id', null);
-                            // $set('faculty_id', null);
-                            // $set('subject_id', null);
                         }),
                 ])
                 ->visible(fn () => $isAdmin),
 
-            // Academic Scope Assignment Section
             Section::make('Academic Scope Assignment')
                 ->description('Assign the user to a specific academic scope based on their Role')
                 ->schema([
-                    // Faculty Select
                     Select::make('faculty_id')
                         ->label('Faculty')
                         ->options(function (Get $get) use ($currentUser) {
@@ -100,7 +89,6 @@ class UserForm
                                 return Faculty::all()->pluck('name', 'id');
                             }
                             
-                            // For scoped users
                             $accessibleFacultyIds = $currentUser->getAccessibleFacultyIds();
                             return Faculty::whereIn('id', $accessibleFacultyIds)->get()->pluck('name', 'id');
                         })
@@ -113,13 +101,11 @@ class UserForm
                         ->visible(fn (Get $get) => self::hasScopePermission($get('roles'), ['scope:faculty', 'scope:subject']))
                         ->required(fn (Get $get) => self::hasScopePermission($get('roles'), ['scope:faculty', 'scope:subject'])),
 
-                    // Subject Select
                     Select::make('subjects')
                         ->label('Subjects')
                         ->relationship('subjects', 'code', modifyQueryUsing: function ($query, Get $get) {
                             $facultyId = $get('faculty_id');
                             if (!$facultyId) {
-                                // If no faculty selected, return no results (or all? Usually none until filtered)
                                 return $query->whereRaw('1 = 0');
                             }
                             return $query->where('faculty_id', $facultyId);
@@ -129,12 +115,38 @@ class UserForm
                         ->preload()
                         ->searchable(['name->en', 'name->ar', 'code'])
                         ->visible(fn (Get $get) => self::hasScopePermission($get('roles'), ['scope:subject']))
-                        ->required(fn (Get $get) => self::hasScopePermission($get('roles'), ['scope:subject'])),
+                        ->required(fn (Get $get) => self::hasScopePermission($get('roles'), ['scope:subject']))
+                        ->rules([
+                            function (Get $get, $livewire) use ($currentUser) {
+                                return function (string $attribute, $value, \Closure $fail) use ($currentUser, $livewire) {
+                                    if (empty($value) || !is_array($value)) return;
+                                    
+                                    $subjects = Subject::whereIn('id', $value)->with('prerequisites')->get();
+                                    
+                                    $passedSubjectIds = [];
+                                    $targetUser = $livewire->record ?? null;
+                                    
+                                    if ($targetUser) {
+                                        $passedSubjectIds = $targetUser->subjects()
+                                            ->wherePivot('status', 'completed')
+                                            ->pluck('subjects.id')
+                                            ->toArray();
+                                    }
+                                    
+                                    foreach ($subjects as $subject) {
+                                        foreach ($subject->prerequisites as $prereq) {
+                                            if (!in_array($prereq->id, $passedSubjectIds)) {
+                                                $fail(__('users::app.Prerequisite Error', ['subject' => $subject->name, 'prerequisite' => $prereq->name]));
+                                            }
+                                        }
+                                    }
+                                };
+                            }
+                        ]),
                 ])
                 ->columns(3)
                 ->visible(fn () => $isAdmin),
 
-            // Info Card for Non-Admin Users
             Section::make('Scope Information')
                 ->schema([
                     Placeholder::make('scope_info')

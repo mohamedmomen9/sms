@@ -50,9 +50,7 @@ class RoleResource extends Resource
     {
         return $table
             ->columns(RoleTable::columns())
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 EditAction::make(),
             ])
@@ -65,9 +63,7 @@ class RoleResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

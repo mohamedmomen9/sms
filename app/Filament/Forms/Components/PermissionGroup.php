@@ -15,7 +15,6 @@ class PermissionGroup extends CheckboxList
     {
         parent::setUp();
 
-        // Automatically load options if not set, organized for the view
         $this->options(function () {
             return Permission::all()->pluck('name', 'id')->toArray();
         });
@@ -37,15 +36,9 @@ class PermissionGroup extends CheckboxList
                 continue;
             }
 
-            // Standard Logic: "action_resource" -> Group: "Resource", Action: "Action"
-            // Example: "view_any_university" -> Group: "University", Action: "View Any"
-            
             $bits = explode('_', $permission->name);
             $resource = end($bits);
-            
-            // Handle cases with multiple underscores if needed, but for now assuming standard naming
-            // If resource is "university", removing it from name gives "view_any"
-            
+
             $action = Str::beforeLast($permission->name, "_{$resource}");
             $action = str_replace('_', ' ', $action);
             $action = ucwords($action);

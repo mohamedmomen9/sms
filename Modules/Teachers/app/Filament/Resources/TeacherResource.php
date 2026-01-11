@@ -43,8 +43,8 @@ class TeacherResource extends Resource
                 Forms\Components\TextInput::make('qualification')
                     ->maxLength(255),
                 Forms\Components\Select::make('campus_id')
-                    ->relationship('campus', 'name') // Assuming Campus model has name and relation exists
-                    ->nullable(), // User said nullable for now
+                    ->relationship('campus', 'name')
+                    ->nullable(),
                 Forms\Components\TextInput::make('school_id')
                     ->numeric()
                     ->nullable(),
@@ -63,16 +63,14 @@ class TeacherResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('qualification')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('campus.name') // Assuming relation
+                Tables\Columns\TextColumn::make('campus.name')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -86,9 +84,7 @@ class TeacherResource extends Resource
 
     public static function getRelations(): array
     {
-        return [
-            //
-        ];
+        return [];
     }
 
     public static function getPages(): array

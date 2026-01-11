@@ -30,22 +30,22 @@ class UserResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.Users');
+        return __('users::app.Users');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.User');
+        return __('users::app.User');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.Users');
+        return __('users::app.Users');
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.User Management');
+        return __('users::app.User Management');
     }
 
     public static function form(Form $form): Form
@@ -66,10 +66,7 @@ class UserResource extends Resource
             ->bulkActions([
                 DeleteBulkAction::make(),
             ])
-            ->modifyQueryUsing(function (Builder $query) {
-                // In SMS-1, all logged-in users can see all users
-                return $query;
-            });
+            ->modifyQueryUsing(fn (Builder $query) => $query);
     }
 
     public static function getRelations(): array
@@ -86,9 +83,6 @@ class UserResource extends Resource
         ];
     }
 
-    /**
-     * Get the Eloquent query for the resource.
-     */
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery();

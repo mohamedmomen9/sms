@@ -5,7 +5,6 @@ namespace Modules\Department\Filament\Resources\DepartmentResource\Tables;
 use Modules\Faculty\Models\Faculty;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
-use Illuminate\Support\Facades\Auth;
 
 class DepartmentTable
 {
@@ -13,7 +12,7 @@ class DepartmentTable
     {
         return [
             TextColumn::make('faculty.name')
-                ->label(__('app.Faculty'))
+                ->label(__('department::app.Faculty'))
                 ->sortable()
                 ->searchable(),
 
@@ -41,7 +40,7 @@ class DepartmentTable
                 ->sortable(),
 
             TextColumn::make('subjects_count')
-                ->label(__('app.Subjects'))
+                ->label(__('subject::app.Subjects'))
                 ->counts('subjects')
                 ->sortable(),
 
@@ -55,13 +54,10 @@ class DepartmentTable
 
     public static function filters(): array
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-
         $filters = [];
 
         $filters[] = SelectFilter::make('faculty_id')
-            ->label(__('app.Faculty'))
+            ->label(__('department::app.Faculty'))
             ->relationship('faculty', 'name')
             ->searchable()
             ->preload();
