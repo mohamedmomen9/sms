@@ -10,35 +10,28 @@ class CurriculumTable
     public static function columns(): array
     {
         return [
-            TextColumn::make('departments.name')
-                ->label(__('department::app.Departments'))
-                ->formatStateUsing(fn ($state) => $state instanceof \Illuminate\Support\Collection ? $state->map(fn($name) => self::getTranslatedName($name))->join(', ') : self::getTranslatedName($state))
-                ->badge()
-                ->separator(',')
-                ->searchable(),
-
             TextColumn::make('name')
                 ->label(__('app.Name'))
-                ->formatStateUsing(fn ($state) => self::getTranslatedName($state))
+                ->formatStateUsing(fn($state) => self::getTranslatedName($state))
                 ->searchable(),
 
             TextColumn::make('code')
                 ->label(__('app.Code'))
                 ->searchable(),
 
-            TextColumn::make('subjects_count')
-                ->label(__('subject::app.Subjects'))
-                ->counts('subjects')
-                ->sortable(),
-
             TextColumn::make('status')
                 ->label(__('app.Status'))
                 ->badge()
-                ->color(fn (string $state): string => match ($state) {
+                ->color(fn(string $state): string => match ($state) {
                     'active' => 'success',
                     'archived' => 'gray',
                     default => 'gray',
                 }),
+
+            TextColumn::make('subjects_count')
+                ->label(__('subject::app.Subjects'))
+                ->counts('subjects')
+                ->sortable()->toggleable(isToggledHiddenByDefault: true),
 
             TextColumn::make('created_at')
                 ->label(__('app.Created'))
@@ -51,12 +44,6 @@ class CurriculumTable
     public static function filters(): array
     {
         return [
-            SelectFilter::make('departments')
-                ->label(__('department::app.Departments'))
-                ->relationship('departments', 'name')
-                ->preload()
-                ->searchable(),
-
             SelectFilter::make('status')
                 ->label(__('app.Status'))
                 ->options([
