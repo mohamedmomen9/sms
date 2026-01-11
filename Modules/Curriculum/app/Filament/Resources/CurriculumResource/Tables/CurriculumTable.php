@@ -29,7 +29,7 @@ class CurriculumTable
                 }),
 
             TextColumn::make('subjects_count')
-                ->label(__('subject::app.Subjects'))
+                ->label(__('app.Subjects'))
                 ->counts('subjects')
                 ->sortable()->toggleable(isToggledHiddenByDefault: true),
 

@@ -3,12 +3,10 @@
 namespace App\Filament\TeacherPanel\Resources;
 
 use App\Filament\TeacherPanel\Resources\MySubjectResource\Pages;
-use Filament\Forms\Components\TextInput;
+use App\Filament\TeacherPanel\Resources\MySubjectResource\Schemas\MySubjectForm;
+use App\Filament\TeacherPanel\Resources\MySubjectResource\Tables\MySubjectTable;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Modules\Subject\Models\Subject;
@@ -67,48 +65,15 @@ class MySubjectResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->schema([
-                TextInput::make('code')
-                    ->label(__('Code'))
-                    ->disabled(),
-                TextInput::make('name')
-                    ->label(__('Name'))
-                    ->disabled(),
-                TextInput::make('faculty.name')
-                    ->label(__('Faculty'))
-                    ->disabled(),
-            ]);
+            ->schema(MySubjectForm::schema());
     }
 
     public static function table(Table $table): Table
     {
         return $table
-            ->columns([
-                TextColumn::make('code')
-                    ->label(__('Code'))
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('name')
-                    ->label(__('Name'))
-                    ->searchable()
-                    ->sortable(),
-                TextColumn::make('faculty.name')
-                    ->label(__('Faculty'))
-                    ->sortable(),
-                TextColumn::make('department.name')
-                    ->label(__('Department'))
-                    ->sortable()
-                    ->toggleable(),
-            ])
-            ->filters([
-                SelectFilter::make('faculty_id')
-                    ->label(__('Faculty'))
-                    ->relationship('faculty', 'name')
-                    ->preload(),
-            ])
-            ->actions([
-                ViewAction::make(),
-            ])
+            ->columns(MySubjectTable::columns())
+            ->filters(MySubjectTable::filters())
+            ->actions(MySubjectTable::actions())
             ->bulkActions([]);
     }
 

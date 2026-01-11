@@ -5,36 +5,32 @@ namespace Modules\Students\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Modules\Students\Database\Factories\StudentFactory;
+use Modules\Campus\Models\Campus;
+use Modules\Department\Models\Department;
+use Modules\Faculty\Models\Faculty;
+use Modules\Subject\Models\Subject;
+
 
 class Student extends Authenticatable
 {
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = [
         'name',
         'email',
         'password',
         'student_id',
         'date_of_birth',
+        'campus_id',
+        'school_id',
+        'department_id',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
     protected function casts(): array
     {
         return [
@@ -46,11 +42,24 @@ class Student extends Authenticatable
 
     public function campus()
     {
-        return $this->belongsTo(\Modules\Campus\Models\Campus::class);
+        return $this->belongsTo(Campus::class);
     }
 
-    // protected static function newFactory(): StudentFactory
-    // {
-    //     // return StudentFactory::new();
-    // }
+
+    public function school()
+    {
+        return $this->belongsTo(Faculty::class, 'school_id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
+    }
+
+    public function subjects()
+    {
+        return $this->belongsToMany(Subject::class, 'student_subject');
+    }
+
+
 }

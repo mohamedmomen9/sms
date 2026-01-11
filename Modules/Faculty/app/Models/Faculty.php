@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
+use Modules\Campus\Models\Campus;
+use Modules\Department\Models\Department;
+use Modules\Subject\Models\Subject;
+use Modules\Users\Models\User;
+
 class Faculty extends Model
 {
     use HasTranslations;
@@ -26,7 +31,7 @@ class Faculty extends Model
      */
     public function campus(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Campus\Models\Campus::class);
+        return $this->belongsTo(Campus::class);
     }
 
     /**
@@ -34,7 +39,7 @@ class Faculty extends Model
      */
     public function departments(): HasMany
     {
-        return $this->hasMany(\Modules\Department\Models\Department::class);
+        return $this->hasMany(Department::class);
     }
 
     /**
@@ -42,7 +47,7 @@ class Faculty extends Model
      */
     public function subjects(): HasMany
     {
-        return $this->hasMany(\Modules\Subject\Models\Subject::class);
+        return $this->hasMany(Subject::class);
     }
 
     /**
@@ -50,7 +55,7 @@ class Faculty extends Model
      */
     public function users(): HasMany
     {
-        return $this->hasMany(\Modules\Users\Models\User::class);
+        return $this->hasMany(User::class);
     }
 
     /**
@@ -60,7 +65,7 @@ class Faculty extends Model
     {
         $directSubjects = $this->subjects;
         
-        $departmentSubjects = \Modules\Subject\Models\Subject::whereHas('department', function ($q) {
+        $departmentSubjects = Subject::whereHas('department', function ($q) {
             $q->where('faculty_id', $this->id);
         })->get();
         

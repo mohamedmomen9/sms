@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
+use Modules\Curriculum\Models\Curriculum;
+use Modules\Department\Models\Department;
+use Modules\Faculty\Models\Faculty;
+use Modules\Users\Models\User;
+
 class Subject extends Model
 {
     use HasTranslations;
@@ -37,14 +42,14 @@ class Subject extends Model
      */
     public function curricula()
     {
-        return $this->belongsToMany(\Modules\Curriculum\Models\Curriculum::class, 'curriculum_subject')
+        return $this->belongsToMany(Curriculum::class, 'curriculum_subject')
                     ->withPivot('is_mandatory')
                     ->withTimestamps();
     }
 
     public function faculty(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Faculty\Models\Faculty::class);
+        return $this->belongsTo(Faculty::class);
     }
 
     /**
@@ -52,7 +57,7 @@ class Subject extends Model
      */
     public function department(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Department\Models\Department::class);
+        return $this->belongsTo(Department::class);
     }
 
     /**
@@ -60,7 +65,7 @@ class Subject extends Model
      */
     public function users(): HasMany
     {
-        return $this->hasMany(\Modules\Users\Models\User::class);
+        return $this->hasMany(User::class);
     }
 
     /**
