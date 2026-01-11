@@ -34,7 +34,7 @@ class Faculty extends Model
      */
     public function departments(): HasMany
     {
-        return $this->hasMany(Department::class);
+        return $this->hasMany(\Modules\Department\Models\Department::class);
     }
 
     /**
@@ -42,7 +42,7 @@ class Faculty extends Model
      */
     public function subjects(): HasMany
     {
-        return $this->hasMany(Subject::class);
+        return $this->hasMany(\Modules\Subject\Models\Subject::class);
     }
 
     /**
@@ -50,7 +50,7 @@ class Faculty extends Model
      */
     public function users(): HasMany
     {
-        return $this->hasMany(\App\Models\User::class);
+        return $this->hasMany(\Modules\Users\Models\User::class);
     }
 
     /**
@@ -60,7 +60,7 @@ class Faculty extends Model
     {
         $directSubjects = $this->subjects;
         
-        $departmentSubjects = Subject::whereHas('department', function ($q) {
+        $departmentSubjects = \Modules\Subject\Models\Subject::whereHas('department', function ($q) {
             $q->where('faculty_id', $this->id);
         })->get();
         

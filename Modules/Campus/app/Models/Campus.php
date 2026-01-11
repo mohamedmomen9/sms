@@ -30,7 +30,7 @@ class Campus extends Model
      */
     public function faculties(): HasMany
     {
-        return $this->hasMany(\Modules\Academic\Models\Faculty::class);
+        return $this->hasMany(\Modules\Faculty\Models\Faculty::class);
     }
 
     /**
@@ -38,7 +38,7 @@ class Campus extends Model
      */
     public function getDepartmentsCountAttribute(): int
     {
-        return \Modules\Academic\Models\Department::whereIn('faculty_id', $this->faculties()->pluck('id'))->count();
+        return \Modules\Department\Models\Department::whereIn('faculty_id', $this->faculties()->pluck('id'))->count();
     }
 
     /**

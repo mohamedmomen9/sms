@@ -6,7 +6,7 @@ use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
-use App\Models\User;
+use Modules\Users\Models\User;
 
 class PermissionsSeeder extends Seeder
 {
@@ -73,7 +73,7 @@ class PermissionsSeeder extends Seeder
         // $student->givePermissionTo('scope:subject'); // Example
 
         // Assign Super Admin to default user if exists
-        $user = User::where('email', env('ADMIN_EMAIL', 'admin@university.edu'))->first();
+        $user = \Modules\Users\Models\User::where('email', env('ADMIN_EMAIL', 'admin@university.edu'))->first();
         if ($user) {
             $user->assignRole($superAdmin);
         }
