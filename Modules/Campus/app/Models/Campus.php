@@ -7,6 +7,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
+use Modules\Department\Models\Department;
+use Modules\Faculty\Models\Faculty;
+
 class Campus extends Model
 {
     use HasTranslations;
@@ -30,7 +33,7 @@ class Campus extends Model
      */
     public function faculties(): HasMany
     {
-        return $this->hasMany(\Modules\Faculty\Models\Faculty::class);
+        return $this->hasMany(Faculty::class);
     }
 
     /**
@@ -38,7 +41,7 @@ class Campus extends Model
      */
     public function getDepartmentsCountAttribute(): int
     {
-        return \Modules\Department\Models\Department::whereIn('faculty_id', $this->faculties()->pluck('id'))->count();
+        return Department::whereIn('faculty_id', $this->faculties()->pluck('id'))->count();
     }
 
     /**

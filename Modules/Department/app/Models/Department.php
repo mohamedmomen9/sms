@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Translatable\HasTranslations;
 
+use Modules\Curriculum\Models\Curriculum;
+use Modules\Faculty\Models\Faculty;
+use Modules\Subject\Models\Subject;
+
 class Department extends Model
 {
     use HasTranslations;
@@ -27,7 +31,7 @@ class Department extends Model
      */
     public function faculty(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Faculty\Models\Faculty::class);
+        return $this->belongsTo(Faculty::class);
     }
 
     /**
@@ -35,7 +39,7 @@ class Department extends Model
      */
     public function curricula(): HasMany
     {
-        return $this->hasMany(\Modules\Curriculum\Models\Curriculum::class);
+        return $this->hasMany(Curriculum::class);
     }
 
     /**
@@ -43,6 +47,6 @@ class Department extends Model
      */
     public function subjects(): HasMany
     {
-        return $this->hasMany(\Modules\Subject\Models\Subject::class);
+        return $this->hasMany(Subject::class);
     }
 }

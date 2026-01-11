@@ -11,7 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Modules\Users\Database\Factories\UserFactory;
+use Modules\Faculty\Models\Faculty;
+use Modules\Subject\Models\Subject;
 
 class User extends Authenticatable implements FilamentUser
 {
@@ -57,17 +58,17 @@ class User extends Authenticatable implements FilamentUser
 
     public function faculty(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Faculty\Models\Faculty::class);
+        return $this->belongsTo(Faculty::class);
     }
 
     public function subjects(): BelongsToMany
     {
-        return $this->belongsToMany(\Modules\Subject\Models\Subject::class);
+        return $this->belongsToMany(Subject::class);
     }
 
     public function subject(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Subject\Models\Subject::class);
+        return $this->belongsTo(Subject::class);
     }
 
     public function getFilamentName(): string
