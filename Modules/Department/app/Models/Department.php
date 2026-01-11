@@ -27,7 +27,7 @@ class Department extends Model
      */
     public function faculty(): BelongsTo
     {
-        return $this->belongsTo(Faculty::class);
+        return $this->belongsTo(\Modules\Faculty\Models\Faculty::class);
     }
 
     /**
@@ -35,7 +35,7 @@ class Department extends Model
      */
     public function curricula(): HasMany
     {
-        return $this->hasMany(Curriculum::class);
+        return $this->hasMany(\Modules\Curriculum\Models\Curriculum::class);
     }
 
     /**
@@ -43,6 +43,6 @@ class Department extends Model
      */
     public function subjects(): HasMany
     {
-        return $this->hasMany(Subject::class);
+        return $this->hasMany(\Modules\Subject\Models\Subject::class);
     }
 }

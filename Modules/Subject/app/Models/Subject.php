@@ -31,9 +31,13 @@ class Subject extends Model
      * Get the curriculum group this subject belongs to
      * Naming it curriculumGroup to avoid conflict with legacy curriculum string column
      */
+    /**
+     * Get the curriculum group this subject belongs to
+     * Naming it curriculumGroup to avoid conflict with legacy curriculum string column
+     */
     public function curriculumGroup(): BelongsTo
     {
-        return $this->belongsTo(Curriculum::class, 'curriculum_id');
+        return $this->belongsTo(\Modules\Curriculum\Models\Curriculum::class, 'curriculum_id');
     }
 
     /**
@@ -41,7 +45,7 @@ class Subject extends Model
      */
     public function faculty(): BelongsTo
     {
-        return $this->belongsTo(Faculty::class);
+        return $this->belongsTo(\Modules\Faculty\Models\Faculty::class);
     }
 
     /**
@@ -49,7 +53,7 @@ class Subject extends Model
      */
     public function department(): BelongsTo
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(\Modules\Department\Models\Department::class);
     }
 
     /**
@@ -57,13 +61,13 @@ class Subject extends Model
      */
     public function users(): HasMany
     {
-        return $this->hasMany(\App\Models\User::class);
+        return $this->hasMany(\Modules\Users\Models\User::class);
     }
 
     /**
      * Get the effective faculty (either direct or through department)
      */
-    public function getEffectiveFacultyAttribute(): ?Faculty
+    public function getEffectiveFacultyAttribute(): ?\Modules\Faculty\Models\Faculty
     {
         if ($this->faculty_id) {
             return $this->faculty;

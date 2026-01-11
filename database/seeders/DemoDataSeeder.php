@@ -6,7 +6,9 @@ use Modules\Campus\Models\Campus;
 use Modules\Department\Models\Department;
 use Modules\Faculty\Models\Faculty;
 use Modules\Subject\Models\Subject;
-use App\Models\User;
+use Modules\Users\Models\User;
+use Modules\Teachers\Models\Teacher;
+use Modules\Students\Models\Student;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
@@ -26,6 +28,7 @@ class DemoDataSeeder extends Seeder
         $superAdminRole = Role::where('name', 'Super Admin')->firstOrFail();
         $facultyAdminRole = Role::where('name', 'Faculty Admin')->firstOrFail();
 
+        // 1. Create Super Admin (Dashboard User)
         $adminEmail = 'admin@university.edu';
         $admin = User::where('email', $adminEmail)->orWhere('username', 'admin')->first();
         if (!$admin) {
@@ -42,7 +45,7 @@ class DemoDataSeeder extends Seeder
             }
         }
 
-        // 3. Create Campuses
+        // 2. Create Campuses
         $cairoCampus = Campus::firstOrCreate(
             ['code' => 'CAI'],
             [
@@ -113,7 +116,7 @@ class DemoDataSeeder extends Seeder
                 ]
             );
 
-            // Create Faculty Admin
+            // Create Faculty Admin (Dashboard User)
             $facEmail = strtolower($facData['code']) . '_admin@university.edu';
             $fAdmin = User::where('email', $facEmail)->first();
             if (!$fAdmin) {
@@ -163,45 +166,43 @@ class DemoDataSeeder extends Seeder
                             'name' => ['en' => "Subject {$s} of " . $deptData['name'], 'ar' => "Subject {$s} (AR)"],
                             'curriculum' => 'Standard',
                             'max_hours' => 3,
-                            'category' => 'compulsory',
+                            'category' => 'compulsory', // Enums are not yet strictly enforced but better keep consistent
                             'type' => 'theoretical',
                         ]
                     );
                 }
 
+                // Create Teachers (using separate Teachers module)
                 for ($t = 1; $t <= 5; $t++) {
                     $teacherEmail = strtolower("{$deptData['code']}_teacher_{$t}@university.edu");
-                    $teacher = User::firstOrCreate(
+                    Teacher::firstOrCreate(
                         ['email' => $teacherEmail],
                         [
-                            'username' => "{$deptData['code']}_teacher_{$t}",
+                            'name' => "Teacher {$t} - {$deptData['name']}",
                             'password' => Hash::make('secret'),
-                            'first_name' => "Teacher {$t}",
-                            'last_name' => $deptData['code'],
-                            'display_name' => "Teacher {$t} of {$deptData['name']}",
-                            'faculty_id' => $faculty->id,
+                            'phone' => fake()->phoneNumber(),
+                            'qualification' => 'PhD',
+                            'campus_id' => $faculty->campus_id,
+                            // 'school_id' => null, // Optional
                         ]
                     );
-                    try { $teacher->assignRole('Teacher'); } catch (\Exception $e) {}
-                    $subjectsToAssign = collect($createdSubjects)->random(rand(1, 3));
-                    $teacher->subjects()->syncWithoutDetaching($subjectsToAssign->pluck('id'));
+                    // Teachers don't need Roles from Spatie anymore unless we add a guard, but for now they are just records
                 }
 
+                // Create Students (using separate Students module)
                 for ($st = 1; $st <= 5; $st++) {
                     $studentEmail = strtolower("{$deptData['code']}_student_{$st}@university.edu");
-                    $student = User::firstOrCreate(
+                    Student::firstOrCreate(
                         ['email' => $studentEmail],
                         [
-                            'username' => "{$deptData['code']}_student_{$st}",
+                            'name' => "Student {$st} - {$deptData['name']}",
                             'password' => Hash::make('secret'),
-                            'first_name' => "Student {$st}",
-                            'last_name' => $deptData['code'],
-                            'display_name' => "Student {$st} of {$deptData['name']}",
-                            'faculty_id' => $faculty->id,
+                            'student_id' => "ST-{$deptData['code']}-" . fake()->unique()->numerify('#####'),
+                            'date_of_birth' => fake()->date(),
+                            'campus_id' => $faculty->campus_id,
+                            // 'school_id' => null, // Optional
                         ]
                     );
-                        try { $student->assignRole('Student'); } catch (\Exception $e) {}
-
                 }
             }
         }

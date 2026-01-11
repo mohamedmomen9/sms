@@ -4,5 +4,8 @@
     "Faculty": true,
     "Department": true,
     "Subject": true,
-    "Curriculum": true
+    "Curriculum": true,
+    "Teachers": true,
+    "Students": true,
+    "Users": true
 }

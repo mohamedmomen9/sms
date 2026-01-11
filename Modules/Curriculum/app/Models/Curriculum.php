@@ -22,11 +22,11 @@ class Curriculum extends Model
 
     public function department()
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsTo(\Modules\Department\Models\Department::class);
     }
 
     public function subjects()
     {
-        return $this->hasMany(Subject::class);
+        return $this->hasMany(\Modules\Subject\Models\Subject::class);
     }
 }

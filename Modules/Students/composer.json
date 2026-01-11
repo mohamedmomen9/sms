@@ -1,0 +1,36 @@
+{
+    "name": "nwidart/students-module",
+    "type": "laravel-module",
+    "description": "A reusable Laravel module: Students",
+    "keywords": [
+        "laravel",
+        "module",
+        "students"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Students\\": "app/",
+            "Modules\\Students\\Database\\Factories\\": "database/factories/",
+            "Modules\\Students\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Students\\Providers\\StudentsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

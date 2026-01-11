@@ -135,7 +135,7 @@ class ManageSettings extends Page implements HasForms
 
     public static function canAccess(): bool
     {
-        /** @var \App\Models\User|null $user */
+        /** @var \Modules\Users\Models\User|null $user */
         $user = auth()->user();
         
         if (!$user) {
