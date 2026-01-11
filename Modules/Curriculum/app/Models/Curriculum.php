@@ -3,7 +3,6 @@
 namespace Modules\Curriculum\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Modules\Department\Models\Department;
 use Modules\Faculty\Models\Faculty;
@@ -17,22 +16,22 @@ class Curriculum extends Model
     public $translatable = ['name'];
 
     protected $fillable = [
-        'department_id',
         'name',
         'code',
         'status',
     ];
 
-    public function department(): BelongsTo
+    public function departments(): BelongsToMany
     {
-        return $this->belongsTo(Department::class);
+        return $this->belongsToMany(Department::class, 'curriculum_department')
+            ->withTimestamps();
     }
 
     public function subjects(): BelongsToMany
     {
         return $this->belongsToMany(Subject::class, 'curriculum_subject')
-                    ->withPivot(['is_mandatory', 'credit_hours'])
-                    ->withTimestamps();
+            ->withPivot(['is_mandatory', 'credit_hours'])
+            ->withTimestamps();
     }
 
     public function faculties(): BelongsToMany

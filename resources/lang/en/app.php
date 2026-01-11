@@ -24,6 +24,9 @@ return [
     'View' => 'View',
     'Create' => 'Create',
     'Search' => 'Search',
+    'English' => 'English',
+    'Arabic' => 'Arabic',
+    'Departments' => 'Departments',
     
     // Campus
     'Campus' => 'Campus',
