@@ -17,7 +17,7 @@ class CourseOfferingResource extends Resource
 {
     protected static ?string $model = CourseOffering::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     public static function form(Form $form): Form
     {
@@ -51,8 +51,11 @@ class CourseOfferingResource extends Resource
                     ->numeric()
                     ->default(30)
                     ->required(),
-                Forms\Components\TextInput::make('room')
-                    ->maxLength(255),
+                Forms\Components\Select::make('room_id')
+                    ->relationship('room', 'room_code') // Will need to getLabelFromRecordUsing to match fancy format 
+                    ->getOptionLabelFromRecordUsing(fn ($record) => $record->label_name)
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

@@ -16,4 +16,20 @@ class EditCourseOffering extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getSaveFormAction(),
+            
+            Actions\Action::make('saveAndClose')
+                ->label('Save & Close')
+                ->action(function () {
+                    $this->save(shouldRedirect: false);
+                    return redirect($this->getResource()::getUrl('index'));
+                }),
+                
+            $this->getCancelFormAction(),
+        ];
+    }
 }

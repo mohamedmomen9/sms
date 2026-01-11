@@ -1,0 +1,19 @@
+<?php
+
+namespace Modules\Campus\Filament\Resources\FacilityResource\Pages;
+
+use Modules\Campus\Filament\Resources\FacilityResource;
+use Filament\Actions;
+use Filament\Resources\Pages\ManageRecords;
+
+class ManageFacilities extends ManageRecords
+{
+    protected static string $resource = FacilityResource::class;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\CreateAction::make(),
+        ];
+    }
+}

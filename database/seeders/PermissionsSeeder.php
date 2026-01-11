@@ -37,8 +37,10 @@ class PermissionsSeeder extends Seeder
             'user',
             'role',
             'permission',
-            'campus',
             'curriculum',
+            'buildings',
+            'rooms',
+            'facilities',
         ];
 
         $actions = ['view_any', 'view', 'create', 'update', 'delete', 'delete_any'];

@@ -13,7 +13,12 @@ class CourseOffering extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['subject_id', 'term_id', 'teacher_id', 'section_number', 'capacity', 'room', 'schedule_json'];
+    protected $fillable = ['subject_id', 'term_id', 'teacher_id', 'section_number', 'capacity', 'room_id', 'schedule_json'];
+
+    public function room()
+    {
+        return $this->belongsTo(\Modules\Campus\Models\Room::class);
+    }
 
     protected $casts = [
         'schedule_json' => 'array',
