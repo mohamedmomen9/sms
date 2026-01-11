@@ -24,6 +24,9 @@ return [
     'View' => 'عرض',
     'Create' => 'إنشاء',
     'Search' => 'بحث',
+    'English' => 'الإنجليزية',
+    'Arabic' => 'العربية',
+    'Departments' => 'الأقسام',
     
     // Campus
     'Campus' => 'الحرم الجامعي',
