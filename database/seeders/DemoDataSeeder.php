@@ -105,6 +105,47 @@ class DemoDataSeeder extends Seeder
             ];
         }
 
+        // 3. Create Academic Structure (Year & Term)
+        $academicYear = \Modules\Academic\Models\AcademicYear::firstOrCreate(
+            ['name' => '2025-2026'],
+            ['start_date' => '2025-09-01', 'end_date' => '2026-06-30', 'is_active' => true]
+        );
+
+        $term = \Modules\Academic\Models\Term::firstOrCreate(
+            ['name' => 'Fall 2025', 'academic_year_id' => $academicYear->id],
+            ['code' => 'F25', 'start_date' => '2025-09-01', 'end_date' => '2026-01-31', 'is_active' => true, 'type' => 'semester']
+        );
+
+        // 4. Create Facilities
+        $building = \Modules\Campus\Models\Building::firstOrCreate(
+            ['code' => 'ENG-BLOCK'],
+            [
+                'name' => 'Engineering Block',
+                'campus_id' => $cairoCampus->id,
+            ]
+        );
+
+        $facilityProjector = \Modules\Campus\Models\Facility::firstOrCreate(['name' => 'Projector']);
+        $facilityWhiteboard = \Modules\Campus\Models\Facility::firstOrCreate(['name' => 'Whiteboard']);
+
+        $rooms = [];
+        for ($r = 1; $r <= 5; $r++) {
+            $room = \Modules\Campus\Models\Room::firstOrCreate(
+                ['room_code' => "EB-10{$r}"],
+                [
+                    'building_id' => $building->id,
+                    'number' => "10{$r}",
+                    'name' => "Lecture Hall {$r}",
+                    'floor_number' => 1,
+                    'type' => 'classroom',
+                    'capacity' => 40,
+                    'status' => 'active',
+                ]
+            );
+            $room->facilities()->syncWithoutDetaching([$facilityProjector->id, $facilityWhiteboard->id]);
+            $rooms[] = $room;
+        }
+
         foreach ($facultiesData as $facData) {
             $faculty = Faculty::firstOrCreate(
                 [
@@ -163,6 +204,38 @@ class DemoDataSeeder extends Seeder
                     $curriculum->faculties()->attach($faculty->id);
                 }
 
+                // Create Teachers
+                $teachers = [];
+                for ($t = 1; $t <= 5; $t++) {
+                    $teacherEmail = strtolower("{$deptData['code']}_teacher_{$t}@university.edu");
+                    $teachers[] = Teacher::firstOrCreate(
+                        ['email' => $teacherEmail],
+                        [
+                            'name' => "Teacher {$t} - {$deptData['name']}",
+                            'password' => Hash::make('secret'),
+                            'phone' => fake()->phoneNumber(),
+                            'qualification' => 'PhD',
+                            'campus_id' => $faculty->campus_id,
+                        ]
+                    );
+                }
+
+                // Create Students
+                $students = [];
+                for ($st = 1; $st <= 5; $st++) {
+                    $studentEmail = strtolower("{$deptData['code']}_student_{$st}@university.edu");
+                    $students[] = Student::firstOrCreate(
+                        ['email' => $studentEmail],
+                        [
+                            'name' => "Student {$st} - {$deptData['name']}",
+                            'password' => Hash::make('secret'),
+                            'student_id' => "ST-{$deptData['code']}-" . fake()->unique()->numerify('#####'),
+                            'date_of_birth' => fake()->date(),
+                            'campus_id' => $faculty->campus_id,
+                        ]
+                    );
+                }
+
                 $createdSubjects = [];
                 for ($s = 1; $s <= 5; $s++) {
                     $subject = Subject::firstOrCreate(
@@ -177,43 +250,35 @@ class DemoDataSeeder extends Seeder
                     );
                     $createdSubjects[] = $subject;
                     
-                    // Attach subject to curriculum via pivot table
+                    // Attach subject to curriculum
                     if (!$curriculum->subjects()->where('subject_id', $subject->id)->exists()) {
                         $curriculum->subjects()->attach($subject->id, ['is_mandatory' => true]);
                     }
-                }
 
-                // Create Teachers (using separate Teachers module)
-                for ($t = 1; $t <= 5; $t++) {
-                    $teacherEmail = strtolower("{$deptData['code']}_teacher_{$t}@university.edu");
-                    Teacher::firstOrCreate(
-                        ['email' => $teacherEmail],
+                    // Create Course Offering
+                    $teacher = $teachers[($s - 1) % count($teachers)];
+                    $room = $rooms[($s - 1) % count($rooms)];
+
+                    $offering = \Modules\Subject\Models\CourseOffering::firstOrCreate(
                         [
-                            'name' => "Teacher {$t} - {$deptData['name']}",
-                            'password' => Hash::make('secret'),
-                            'phone' => fake()->phoneNumber(),
-                            'qualification' => 'PhD',
-                            'campus_id' => $faculty->campus_id,
-                            // 'school_id' => null, // Optional
+                            'term_id' => $term->id,
+                            'subject_id' => $subject->id,
+                            'section_number' => '01',
+                        ],
+                        [
+                            'teacher_id' => $teacher->id,
+                            'room_id' => $room->id,
+                            'capacity' => 40,
                         ]
                     );
-                    // Teachers don't need Roles from Spatie anymore unless we add a guard, but for now they are just records
-                }
 
-                // Create Students (using separate Students module)
-                for ($st = 1; $st <= 5; $st++) {
-                    $studentEmail = strtolower("{$deptData['code']}_student_{$st}@university.edu");
-                    Student::firstOrCreate(
-                        ['email' => $studentEmail],
-                        [
-                            'name' => "Student {$st} - {$deptData['name']}",
-                            'password' => Hash::make('secret'),
-                            'student_id' => "ST-{$deptData['code']}-" . fake()->unique()->numerify('#####'),
-                            'date_of_birth' => fake()->date(),
-                            'campus_id' => $faculty->campus_id,
-                            // 'school_id' => null, // Optional
-                        ]
-                    );
+                    // Enroll Students
+                    foreach ($students as $student) {
+                        \Modules\Students\Models\CourseEnrollment::firstOrCreate(
+                            ['student_id' => $student->id, 'course_offering_id' => $offering->id],
+                            ['status' => 'enrolled', 'enrolled_at' => now()]
+                        );
+                    }
                 }
             }
         }
