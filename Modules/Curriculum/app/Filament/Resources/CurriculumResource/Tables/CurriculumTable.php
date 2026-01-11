@@ -10,13 +10,16 @@ class CurriculumTable
     public static function columns(): array
     {
         return [
-            TextColumn::make('department.name')
-                ->label(__('department::app.Department'))
-                ->sortable()
+            TextColumn::make('departments.name')
+                ->label(__('department::app.Departments'))
+                ->formatStateUsing(fn ($state) => $state instanceof \Illuminate\Support\Collection ? $state->map(fn($name) => self::getTranslatedName($name))->join(', ') : self::getTranslatedName($state))
+                ->badge()
+                ->separator(',')
                 ->searchable(),
 
             TextColumn::make('name')
                 ->label(__('app.Name'))
+                ->formatStateUsing(fn ($state) => self::getTranslatedName($state))
                 ->searchable(),
 
             TextColumn::make('code')
@@ -48,11 +51,11 @@ class CurriculumTable
     public static function filters(): array
     {
         return [
-            SelectFilter::make('department_id')
-                ->label(__('department::app.Department'))
-                ->relationship('department', 'name')
-                ->searchable()
-                ->preload(),
+            SelectFilter::make('departments')
+                ->label(__('department::app.Departments'))
+                ->relationship('departments', 'name')
+                ->preload()
+                ->searchable(),
 
             SelectFilter::make('status')
                 ->label(__('app.Status'))
@@ -61,5 +64,13 @@ class CurriculumTable
                     'archived' => __('app.Archived'),
                 ]),
         ];
+    }
+
+    protected static function getTranslatedName($name): string
+    {
+        if (is_array($name)) {
+            return $name[app()->getLocale()] ?? $name['en'] ?? '';
+        }
+        return $name ?? '';
     }
 }

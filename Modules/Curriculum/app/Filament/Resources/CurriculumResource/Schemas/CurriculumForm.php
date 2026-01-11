@@ -4,6 +4,7 @@ namespace Modules\Curriculum\Filament\Resources\CurriculumResource\Schemas;
 
 use App\Filament\Forms\Components\TranslatableInput;
 use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
@@ -29,11 +30,18 @@ class CurriculumForm
 
                     Select::make('faculties')
                         ->label(__('app.Faculties'))
-                        ->relationship('faculties', 'name')
                         ->multiple()
+                        ->options(fn () => Faculty::all()->mapWithKeys(fn ($f) => [
+                            $f->id => self::getTranslatedName($f->name)
+                        ]))
                         ->preload()
                         ->searchable()
                         ->live()
+                        ->afterStateHydrated(function ($component, $record) {
+                            if ($record) {
+                                $component->state($record->faculties->pluck('id')->toArray());
+                            }
+                        })
                         ->afterStateUpdated(function ($state, Set $set, Get $get) {
                             $selectedFacultyIds = $state ?? [];
                             
@@ -50,12 +58,11 @@ class CurriculumForm
                             }
                             
                             // Rebuild subjects
-                            self::rebuildSubjectsState($selectedFacultyIds, $get('departments') ?? [], $set);
+                            self::rebuildSubjectsState($selectedFacultyIds, $get('departments') ?? [], $set, $get('proxied_subjects') ?? []);
                         }),
 
                     Select::make('departments')
                         ->label(__('app.Departments'))
-                        ->relationship('departments', 'name')
                         ->multiple()
                         ->options(function (Get $get) {
                             $facultyIds = $get('faculties') ?? [];
@@ -74,10 +81,15 @@ class CurriculumForm
                         ->searchable()
                         ->preload()
                         ->live()
+                        ->afterStateHydrated(function ($component, $record) {
+                            if ($record) {
+                                $component->state($record->departments->pluck('id')->toArray());
+                            }
+                        })
                         ->afterStateUpdated(function ($state, Set $set, Get $get) {
                             $facultyIds = $get('faculties') ?? [];
                             $departmentIds = $state ?? [];
-                            self::rebuildSubjectsState($facultyIds, $departmentIds, $set);
+                            self::rebuildSubjectsState($facultyIds, $departmentIds, $set, $get('proxied_subjects') ?? []);
                         }),
 
                     TextInput::make('code')
@@ -103,42 +115,42 @@ class CurriculumForm
                 ->schema([
                     Section::make(fn (Get $get) => $get('group_label') ?? 'Group')
                         ->schema([
-                            TextInput::make('faculty_id')->hidden(),
-                            TextInput::make('department_id')->hidden(),
-                            TextInput::make('group_label')->hidden(),
+                            Hidden::make('faculty_id'),
+                            Hidden::make('department_id'),
+                            Hidden::make('group_label'),
 
                             Repeater::make('subjects')
                                 ->hiddenLabel()
                                 ->grid(3)
                                 ->schema([
-                                    TextInput::make('id')->hidden(),
-                                    TextInput::make('code')->hidden(),
-                                    TextInput::make('name')->hidden(),
+                                    Hidden::make('id'),
+                                    Hidden::make('code'),
+                                    Hidden::make('name'),
                                     
-                                    Group::make([
-                                        Placeholder::make('details')
-                                            ->hiddenLabel()
-                                            ->content(fn (Get $get) => new HtmlString(
-                                                '<div class="mb-2">' .
-                                                '<div class="font-bold text-gray-900 dark:text-gray-100">' . ($get('name') ?? '-') . '</div>' .
-                                                '<div class="text-xs font-mono text-gray-500">' . ($get('code') ?? '-') . '</div>' .
-                                                '</div>'
-                                            )),
-                                        
-                                        TextInput::make('credit_hours')
-                                            ->label(__('curriculum::app.Credit Hours'))
-                                            ->numeric()
-                                            ->default(3.0)
-                                            ->required()
-                                            ->minValue(0),
+                                    Placeholder::make('details')
+                                        ->hiddenLabel()
+                                        ->content(fn (Get $get) => new HtmlString(
+                                            '<div class="mb-2">' .
+                                            '<div class="font-bold text-gray-900 dark:text-gray-100">' . ($get('name') ?? '-') . '</div>' .
+                                            '<div class="text-xs font-mono text-gray-500">' . ($get('code') ?? '-') . '</div>' .
+                                            '</div>'
+                                        )),
+                                    
+                                    TextInput::make('credit_hours')
+                                        ->label(__('curriculum::app.Credit Hours'))
+                                        ->numeric()
+                                        ->default(3.0)
+                                        ->required()
+                                        ->minValue(0.1)
+                                        ->rule('gt:0')
+                                        ->extraInputAttributes(['min' => 0.1, 'onkeydown' => "if(event.key === '-') event.preventDefault();"]),
 
-                                        Toggle::make('is_mandatory')
-                                            ->label(__('curriculum::app.Mandatory'))
-                                            ->inline(false)
-                                            ->onColor('success')
-                                            ->offColor('danger')
-                                            ->default(true),
-                                    ])
+                                    Toggle::make('is_mandatory')
+                                        ->label(__('curriculum::app.Mandatory'))
+                                        ->inline(false)
+                                        ->onColor('success')
+                                        ->offColor('danger')
+                                        ->default(true),
                                 ])
                                 ->addable(false)
                                 ->deletable(false)
@@ -153,6 +165,7 @@ class CurriculumForm
                 ->reorderable(true)
                 ->afterStateHydrated(function (Repeater $component, $record) {
                     if (!$record) {
+                        // Initialize empty state if needed or leave empty
                         return;
                     }
 
@@ -217,8 +230,20 @@ class CurriculumForm
             ->contained(true);
     }
 
-    protected static function rebuildSubjectsState(array $facultyIds, array $departmentIds, Set $set): void
+    protected static function rebuildSubjectsState(array $facultyIds, array $departmentIds, Set $set, array $currentState = []): void
     {
+        // Build a lookup map of existing subject values [subject_id => data]
+        $existingData = [];
+        foreach ($currentState as $group) {
+            if (isset($group['subjects']) && is_array($group['subjects'])) {
+                foreach ($group['subjects'] as $sData) {
+                    if (isset($sData['id'])) {
+                        $existingData[$sData['id']] = $sData;
+                    }
+                }
+            }
+        }
+
         // If departments are selected, use those; otherwise use all from faculties
         if (!empty($departmentIds)) {
             $departments = Department::whereIn('id', $departmentIds)
@@ -241,12 +266,16 @@ class CurriculumForm
 
             $subjectList = [];
             foreach ($dept->subjects as $subj) {
+                // Check if we have existing values for this subject
+                $prev = $existingData[$subj->id] ?? [];
+
                 $subjectList[md5($subj->id)] = [
                     'id' => $subj->id,
                     'code' => $subj->code,
                     'name' => self::getTranslatedName($subj->name),
-                    'is_mandatory' => true,
-                    'credit_hours' => 3.0,
+                    // Preserve existing values if available, otherwise defaults
+                    'is_mandatory' => isset($prev['is_mandatory']) ? (bool) $prev['is_mandatory'] : true,
+                    'credit_hours' => isset($prev['credit_hours']) ? (float) $prev['credit_hours'] : 3.0,
                 ];
             }
 

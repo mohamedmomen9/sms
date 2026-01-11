@@ -149,27 +149,38 @@ class DemoDataSeeder extends Seeder
                 );
 
                 $curriculum = \Modules\Curriculum\Models\Curriculum::firstOrCreate(
-                    ['department_id' => $department->id, 'name' => ['en' => 'Standard Curriculum', 'ar' => 'Standard Curriculum']],
-                    ['code' => $deptData['code'] . '-STD', 'status' => 'active']
+                    ['code' => $deptData['code'] . '-STD'],
+                    ['name' => ['en' => 'Standard Curriculum', 'ar' => 'Standard Curriculum'], 'status' => 'active']
                 );
+                
+                // Attach department to curriculum via many-to-many relationship
+                if (!$curriculum->departments()->where('department_id', $department->id)->exists()) {
+                    $curriculum->departments()->attach($department->id);
+                }
+                
+                // Attach faculty to curriculum via many-to-many relationship
+                if (!$curriculum->faculties()->where('faculty_id', $faculty->id)->exists()) {
+                    $curriculum->faculties()->attach($faculty->id);
+                }
 
                 $createdSubjects = [];
                 for ($s = 1; $s <= 5; $s++) {
-                    $createdSubjects[] = Subject::firstOrCreate(
+                    $subject = Subject::firstOrCreate(
                         [
                             'department_id' => $department->id,
                             'code' => $deptData['code'] . '-SUB-' . $s,
                         ],
                         [
                             'faculty_id' => $faculty->id,
-                            'curriculum_id' => $curriculum->id,
                             'name' => ['en' => "Subject {$s} of " . $deptData['name'], 'ar' => "Subject {$s} (AR)"],
-                            'curriculum' => 'Standard',
-                            'max_hours' => 3,
-                            'category' => 'compulsory', // Enums are not yet strictly enforced but better keep consistent
-                            'type' => 'theoretical',
                         ]
                     );
+                    $createdSubjects[] = $subject;
+                    
+                    // Attach subject to curriculum via pivot table
+                    if (!$curriculum->subjects()->where('subject_id', $subject->id)->exists()) {
+                        $curriculum->subjects()->attach($subject->id, ['is_mandatory' => true]);
+                    }
                 }
 
                 // Create Teachers (using separate Teachers module)
