@@ -98,4 +98,23 @@ return [
     'Theoretical' => 'نظري',
     'Practical' => 'عملي',
     'Mixed' => 'مختلط',
+    
+    // Teacher
+    'Teacher' => 'المعلم',
+    'Teachers' => 'المعلمون',
+    'Teacher Dashboard' => 'لوحة تحكم المعلم',
+    'Teacher Portal' => 'بوابة المعلم',
+    'My Classes' => 'فصولي',
+    'My Subjects' => 'موادي',
+    'Qualification' => 'المؤهل',
+    'Personal Information' => 'المعلومات الشخصية',
+    'Campus Assignment' => 'تعيين الحرم الجامعي',
+    'Faculty & Subject Assignments' => 'تعيينات الكلية والمواد',
+    'Select the faculties this teacher belongs to and the subjects they teach' => 'حدد الكليات التي ينتمي إليها هذا المعلم والمواد التي يدرسها',
+    'Faculties' => 'الكليات',
+    'Subjects' => 'المواد',
+    'Subjects are filtered based on selected faculties' => 'يتم تصفية المواد بناءً على الكليات المحددة',
+    'No Faculty' => 'لا توجد كلية',
+    'Welcome, :name' => 'مرحباً، :name',
+    'Manage your subjects and classes from here' => 'قم بإدارة موادك وفصولك من هنا',
 ];

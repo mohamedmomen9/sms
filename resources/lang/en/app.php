@@ -98,4 +98,23 @@ return [
     'Theoretical' => 'Theoretical',
     'Practical' => 'Practical',
     'Mixed' => 'Mixed',
+    
+    // Teacher
+    'Teacher' => 'Teacher',
+    'Teachers' => 'Teachers',
+    'Teacher Dashboard' => 'Teacher Dashboard',
+    'Teacher Portal' => 'Teacher Portal',
+    'My Classes' => 'My Classes',
+    'My Subjects' => 'My Subjects',
+    'Qualification' => 'Qualification',
+    'Personal Information' => 'Personal Information',
+    'Campus Assignment' => 'Campus Assignment',
+    'Faculty & Subject Assignments' => 'Faculty & Subject Assignments',
+    'Select the faculties this teacher belongs to and the subjects they teach' => 'Select the faculties this teacher belongs to and the subjects they teach',
+    'Faculties' => 'Faculties',
+    'Subjects' => 'Subjects',
+    'Subjects are filtered based on selected faculties' => 'Subjects are filtered based on selected faculties',
+    'No Faculty' => 'No Faculty',
+    'Welcome, :name' => 'Welcome, :name',
+    'Manage your subjects and classes from here' => 'Manage your subjects and classes from here',
 ];

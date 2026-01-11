@@ -3,6 +3,11 @@
 namespace Modules\Curriculum\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Modules\Department\Models\Department;
+use Modules\Faculty\Models\Faculty;
+use Modules\Subject\Models\Subject;
 use Spatie\Translatable\HasTranslations;
 
 class Curriculum extends Model
@@ -18,49 +23,20 @@ class Curriculum extends Model
         'status',
     ];
 
-
-
-    public function department()
+    public function department(): BelongsTo
     {
-        return $this->belongsTo(\Modules\Department\Models\Department::class);
+        return $this->belongsTo(Department::class);
     }
 
-    public function subjects()
+    public function subjects(): BelongsToMany
     {
-        return $this->belongsToMany(\Modules\Subject\Models\Subject::class, 'curriculum_subject')
+        return $this->belongsToMany(Subject::class, 'curriculum_subject')
                     ->withPivot(['is_mandatory', 'credit_hours'])
                     ->withTimestamps();
     }
 
-    public function faculties()
+    public function faculties(): BelongsToMany
     {
-        return $this->belongsToMany(\Modules\Faculty\Models\Faculty::class, 'curriculum_faculty');
-    }
-
-    public $proxied_subjects = null;
-
-    protected static function booted()
-    {
-        static::saved(function ($model) {
-            if (is_array($model->proxied_subjects)) {
-                $activeSubjectIds = [];
-                
-                foreach ($model->proxied_subjects as $group) {
-                    if (isset($group['subjects']) && is_array($group['subjects'])) {
-                        foreach ($group['subjects'] as $subjectData) {
-                            $subjectId = $subjectData['id'] ?? null;
-                            if ($subjectId) {
-                                $activeSubjectIds[$subjectId] = [
-                                    'is_mandatory' => $subjectData['is_mandatory'] ?? true,
-                                    'credit_hours' => $subjectData['credit_hours'] ?? 3.0,
-                                ];
-                            }
-                        }
-                    }
-                }
-
-                $model->subjects()->sync($activeSubjectIds);
-            }
-        });
+        return $this->belongsToMany(Faculty::class, 'curriculum_faculty');
     }
 }
