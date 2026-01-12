@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('terms', function (Blueprint $table) {
             $table->id();
             $table->foreignId('academic_year_id')->constrained('academic_years')->cascadeOnDelete();
-            $table->string('name'); // e.g., "Fall 2025"
-            $table->string('code')->unique(); // e.g., "F25"
+            $table->string('name'); // FALL, SPRING, SUMMER, WINTER
             $table->date('start_date')->nullable();
             $table->date('end_date')->nullable();
             $table->boolean('is_active')->default(false);
