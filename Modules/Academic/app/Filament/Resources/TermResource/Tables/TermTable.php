@@ -18,10 +18,6 @@ class TermTable
                 ->sortable()
                 ->searchable(),
 
-            TextColumn::make('code')
-                ->sortable()
-                ->searchable(),
-
             TextColumn::make('start_date')
                 ->date()
                 ->sortable(),
