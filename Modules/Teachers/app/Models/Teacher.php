@@ -13,10 +13,11 @@ use Modules\Campus\Models\Campus;
 use Modules\Faculty\Models\Faculty;
 use Modules\Subject\Models\Subject;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Sanctum\HasApiTokens;
 
 class Teacher extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
     protected $fillable = [
         'name',
