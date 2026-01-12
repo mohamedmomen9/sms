@@ -16,29 +16,21 @@ use Modules\Auth\DTOs\LoginDTO;
 class AuthService
 {
     /**
-     * Authenticate a user based on role and credentials.
+     * Authenticate a user and return tokens.
      */
     public function login(LoginDTO $dto): array
     {
-        // 1. Decrypt Password
         $decryptedPassword = $this->decryptPassword($dto->password);
-        
-        // 2. Resolve Model and Config based on Role
         $modelClass = $this->getUserModelClass($dto->role);
         
-        // 3. Configure JWT dynamically
+        // Configure JWT for the specific user model
         $config = config('jwt-auth');
         $config['user_model'] = $modelClass;
-        
-        // Update global config as well for any side-effects
         Config::set('jwt-auth.user_model', $modelClass);
 
-        // 4. Instantiate JWT Manager
+        // Build JWT manager with role-specific config
         $jwtService = new JwtService($config);
         $refreshTokenService = new RefreshTokenService($config);
-        // We need the request object for JwtAuthManager, but better to use Facade or construct logic that returns tokens directly.
-        // The JwtAuthManager::attempt method requires the request object in the constructor.
-        // Let's rely on the manual instantiation pattern we found reliable.
         $jwtAuth = new JwtAuthManager($jwtService, $refreshTokenService, $config, request());
 
         $credentials = [
@@ -46,14 +38,12 @@ class AuthService
             'password' => $decryptedPassword
         ];
 
-        // 5. Attempt Authentication
         $tokenData = $jwtAuth->attempt($credentials, $dto->deviceName);
 
         if (!$tokenData) {
             throw new Exception('Invalid credentials');
         }
 
-        // 6. Retrieve User
         $user = $modelClass::where('email', $dto->username)->first();
 
         return [

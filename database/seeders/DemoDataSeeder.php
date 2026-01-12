@@ -29,7 +29,7 @@ class DemoDataSeeder extends Seeder
         $superAdminRole = Role::where('name', 'Super Admin')->firstOrFail();
         $facultyAdminRole = Role::where('name', 'Faculty Admin')->firstOrFail();
 
-        // 1. Create Super Admin (Dashboard User)
+        // Super Admin (Dashboard User)
         $adminEmail = 'admin@university.edu';
         $admin = User::where('email', $adminEmail)->orWhere('username', 'admin')->first();
         if (!$admin) {
@@ -46,7 +46,7 @@ class DemoDataSeeder extends Seeder
             }
         }
 
-        // 2. Create Campuses
+        // Campuses
         $cairoCampus = Campus::firstOrCreate(
             ['code' => 'CAI'],
             [
@@ -106,18 +106,18 @@ class DemoDataSeeder extends Seeder
             ];
         }
 
-        // 3. Create Academic Structure (Year & Term)
+        // Academic Structure
         $academicYear = \Modules\Academic\Models\AcademicYear::firstOrCreate(
             ['name' => '2025-2026'],
             ['start_date' => '2025-09-01', 'end_date' => '2026-06-30', 'is_active' => true]
         );
 
         $term = \Modules\Academic\Models\Term::firstOrCreate(
-            ['name' => 'Fall 2025', 'academic_year_id' => $academicYear->id],
-            ['code' => 'F25', 'start_date' => '2025-09-01', 'end_date' => '2026-01-31', 'is_active' => true, 'type' => 'semester']
+            ['name' => 'FALL', 'academic_year_id' => $academicYear->id],
+            ['start_date' => '2025-09-01', 'end_date' => '2026-01-31', 'is_active' => true]
         );
 
-        // 4. Create Facilities
+        // Campus Facilities
         $building = \Modules\Campus\Models\Building::firstOrCreate(
             ['code' => 'ENG-BLOCK'],
             [
@@ -158,7 +158,7 @@ class DemoDataSeeder extends Seeder
                 ]
             );
 
-            // Create Faculty Admin (Dashboard User)
+            // Faculty Admin
             $facEmail = strtolower($facData['code']) . '_admin@university.edu';
             $fAdmin = User::where('email', $facEmail)->first();
             if (!$fAdmin) {
@@ -195,17 +195,15 @@ class DemoDataSeeder extends Seeder
                     ['name' => ['en' => 'Standard Curriculum', 'ar' => 'Standard Curriculum'], 'status' => 'active']
                 );
                 
-                // Attach department to curriculum via many-to-many relationship
                 if (!$curriculum->departments()->where('department_id', $department->id)->exists()) {
                     $curriculum->departments()->attach($department->id);
                 }
                 
-                // Attach faculty to curriculum via many-to-many relationship
                 if (!$curriculum->faculties()->where('faculty_id', $faculty->id)->exists()) {
                     $curriculum->faculties()->attach($faculty->id);
                 }
 
-                // Create Teachers
+                // Teachers
                 $teachers = [];
                 for ($t = 1; $t <= 5; $t++) {
                     $teacherEmail = strtolower("{$deptData['code']}_teacher_{$t}@university.edu");
@@ -221,7 +219,7 @@ class DemoDataSeeder extends Seeder
                     );
                 }
 
-                // Create Students
+                // Students
                 $students = [];
                 for ($st = 1; $st <= 5; $st++) {
                     $studentEmail = strtolower("{$deptData['code']}_student_{$st}@university.edu");
@@ -251,14 +249,27 @@ class DemoDataSeeder extends Seeder
                     );
                     $createdSubjects[] = $subject;
                     
-                    // Attach subject to curriculum
                     if (!$curriculum->subjects()->where('subject_id', $subject->id)->exists()) {
                         $curriculum->subjects()->attach($subject->id, ['is_mandatory' => true]);
                     }
 
-                    // Create Course Offering
+                    // Course Offering
                     $teacher = $teachers[($s - 1) % count($teachers)];
                     $room = $rooms[($s - 1) % count($rooms)];
+
+                    // Schedule: 2 sessions per week
+                    $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+                    $timeSlots = [
+                        ['start_time' => '08:00:00', 'end_time' => '09:30:00'],
+                        ['start_time' => '10:00:00', 'end_time' => '11:30:00'],
+                        ['start_time' => '12:00:00', 'end_time' => '13:30:00'],
+                        ['start_time' => '14:00:00', 'end_time' => '15:30:00'],
+                        ['start_time' => '16:00:00', 'end_time' => '17:30:00'],
+                    ];
+
+                    $primaryDayIndex = ($s - 1) % count($days);
+                    $secondaryDayIndex = ($primaryDayIndex + 2) % count($days);
+                    $timeSlotIndex = ($s - 1) % count($timeSlots);
 
                     $offering = \Modules\Subject\Models\CourseOffering::firstOrCreate(
                         [
@@ -273,7 +284,29 @@ class DemoDataSeeder extends Seeder
                         ]
                     );
 
-                    // Enroll Students
+                    \Modules\Subject\Models\CourseSchedule::firstOrCreate(
+                        [
+                            'course_offering_id' => $offering->id,
+                            'day' => $days[$primaryDayIndex],
+                            'start_time' => $timeSlots[$timeSlotIndex]['start_time'],
+                        ],
+                        [
+                            'end_time' => $timeSlots[$timeSlotIndex]['end_time'],
+                        ]
+                    );
+
+                    \Modules\Subject\Models\CourseSchedule::firstOrCreate(
+                        [
+                            'course_offering_id' => $offering->id,
+                            'day' => $days[$secondaryDayIndex],
+                            'start_time' => $timeSlots[$timeSlotIndex]['start_time'],
+                        ],
+                        [
+                            'end_time' => $timeSlots[$timeSlotIndex]['end_time'],
+                        ]
+                    );
+
+                    // Enroll students in course
                     foreach ($students as $student) {
                         \Modules\Students\Models\CourseEnrollment::firstOrCreate(
                             ['student_id' => $student->id, 'course_offering_id' => $offering->id],

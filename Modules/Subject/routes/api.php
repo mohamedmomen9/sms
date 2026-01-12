@@ -4,11 +4,10 @@ use Illuminate\Support\Facades\Route;
 use Modules\Subject\Http\Controllers\CourseController;
 use Modules\Auth\Http\Middleware\UniversalJwtMiddleware;
 
-Route::prefix('api')->middleware('api')->group(function () {
-    // Public routes (if any)
-});
+Route::prefix('v1')->middleware('api')->group(function () {
 
-// Common Course Endpoint
-Route::middleware(['api', UniversalJwtMiddleware::class])->prefix('courses')->group(function () {
-    Route::get('current', [CourseController::class, 'index']);
+    // Common Course Endpoint
+    Route::prefix('courses')->middleware(UniversalJwtMiddleware::class)->group(function () {
+        Route::get('current', [CourseController::class, 'index']);
+    });
 });

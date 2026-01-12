@@ -20,7 +20,6 @@ class StudentCourseService implements CourseServiceInterface
 
     public function getCurrentCourses(): Collection
     {
-        // Logic moved from CoursesController
         $enrollments = $this->student->currentClasses()
             ->with(['courseOffering.subject', 'courseOffering.teacher', 'courseOffering.room', 'courseOffering.term'])
             ->get();
