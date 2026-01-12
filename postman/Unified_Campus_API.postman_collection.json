@@ -1,8 +1,8 @@
 {
 	"info": {
-		"_postman_id": "unified-campus-api-collection",
+		"_postman_id": "unified-campus-api-collection-v2",
 		"name": "Unified Campus Management API",
-		"description": "Comprehensive collection covering Auth (Student/Teacher) and Common Course Management.",
+		"description": "Comprehensive collection covering Auth (Student/Teacher), Academic, Schedule, and Course Management APIs.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -40,7 +40,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"username\": \"test_student@example.com\",\n    \"password\": \"JNMD83GbYoTh6Pr5RVeoZ22qmBTkoRheBUqeK1XJDmiRDVE6SdkqE68yiy65Hw00Qioh2bhwEzBw0pMQHStFFzfD8rMgi02FUssNxEdm5SJjR4Oo1VCJ9zqNU0Ocqvz8/x5s3BiZMox2bmgtuva6O6q8xwPOppLSje2V/+q3fPnqHsOwV02HUIJQ4gtBdehNs/cQCkhdGY02FovurT+UhouWsaQhSzyqTcKCAWJMXRqgzSCy0x5qTMbGl7Y4smTQNRsT7Fw8pAC/hGQJ6x5qX1MivpJep6T6cU32ykR5xvO5zSxfMIclMC7B9y4BpiaplaNVxNrbiu795/jtOZCeiQ==\",\n    \"role\": \"student\",\n    \"device_name\": \"My Laptop\"\n}",
+									"raw": "{\n    \"username\": \"cs_student_1@university.edu\",\n    \"password\": \"secret\",\n    \"role\": \"student\",\n    \"device_name\": \"Postman Test\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -57,7 +57,7 @@
 										"login"
 									]
 								},
-								"description": "Generic login endpoint. Saves token to student_token variable."
+								"description": "Login as a student. Uses demo seeder credentials. Saves token to student_token variable."
 							},
 							"response": []
 						},
@@ -89,7 +89,7 @@
 								],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"username\": \"test_teacher@example.com\",\n    \"password\": \"JNMD83GbYoTh6Pr5RVeoZ22qmBTkoRheBUqeK1XJDmiRDVE6SdkqE68yiy65Hw00Qioh2bhwEzBw0pMQHStFFzfD8rMgi02FUssNxEdm5SJjR4Oo1VCJ9zqNU0Ocqvz8/x5s3BiZMox2bmgtuva6O6q8xwPOppLSje2V/+q3fPnqHsOwV02HUIJQ4gtBdehNs/cQCkhdGY02FovurT+UhouWsaQhSzyqTcKCAWJMXRqgzSCy0x5qTMbGl7Y4smTQNRsT7Fw8pAC/hGQJ6x5qX1MivpJep6T6cU32ykR5xvO5zSxfMIclMC7B9y4BpiaplaNVxNrbiu795/jtOZCeiQ==\",\n    \"role\": \"teacher\",\n    \"device_name\": \"Office PC\"\n}",
+									"raw": "{\n    \"username\": \"cs_teacher_1@university.edu\",\n    \"password\": \"secret\",\n    \"role\": \"teacher\",\n    \"device_name\": \"Postman Test\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -106,7 +106,7 @@
 										"login"
 									]
 								},
-								"description": "Generic login endpoint. Saves token to teacher_token variable."
+								"description": "Login as a teacher. Uses demo seeder credentials. Saves token to teacher_token variable."
 							},
 							"response": []
 						}
@@ -116,7 +116,7 @@
 					"name": "Token Management",
 					"item": [
 						{
-							"name": "Refresh Token",
+							"name": "Refresh Token (Student)",
 							"request": {
 								"method": "POST",
 								"header": [
@@ -129,6 +129,39 @@
 								"body": {
 									"mode": "raw",
 									"raw": "{\n    \"refresh_token\": \"{{student_refresh_token}}\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/auth/refresh",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"auth",
+										"refresh"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Refresh Token (Teacher)",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"refresh_token\": \"{{teacher_refresh_token}}\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -189,7 +222,7 @@
 			"name": "Academic",
 			"item": [
 				{
-					"name": "Current Period",
+					"name": "Get Current Period",
 					"request": {
 						"method": "GET",
 						"header": [
@@ -208,9 +241,250 @@
 								"academic",
 								"current"
 							]
-						}
+						},
+						"description": "Get the current active academic year and term."
 					},
 					"response": []
+				}
+			]
+		},
+		{
+			"name": "Schedule",
+			"description": "Schedule management endpoints for students and teachers.",
+			"item": [
+				{
+					"name": "Student Schedule",
+					"item": [
+						{
+							"name": "Get Full Schedule",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{student_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/student/schedule",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"schedule"
+									]
+								},
+								"description": "Get the authenticated student's full schedule for the current term."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Full Schedule (Grouped by Day)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{student_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/student/schedule?grouped=true",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"schedule"
+									],
+									"query": [
+										{
+											"key": "grouped",
+											"value": "true"
+										}
+									]
+								},
+								"description": "Get the authenticated student's schedule grouped by day of week."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Today's Schedule",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{student_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/student/schedule/today",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"student",
+										"schedule",
+										"today"
+									]
+								},
+								"description": "Get only the authenticated student's classes for today."
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Teacher Schedule",
+					"item": [
+						{
+							"name": "Get Full Schedule",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{teacher_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/teacher/schedule",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"teacher",
+										"schedule"
+									]
+								},
+								"description": "Get the authenticated teacher's full teaching schedule for the current term. Includes enrollment counts."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Full Schedule (Grouped by Day)",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{teacher_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/teacher/schedule?grouped=true",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"teacher",
+										"schedule"
+									],
+									"query": [
+										{
+											"key": "grouped",
+											"value": "true"
+										}
+									]
+								},
+								"description": "Get the authenticated teacher's schedule grouped by day of week."
+							},
+							"response": []
+						},
+						{
+							"name": "Get Today's Schedule",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{teacher_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"url": {
+									"raw": "{{base_url}}/teacher/schedule/today",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"teacher",
+										"schedule",
+										"today"
+									]
+								},
+								"description": "Get only the authenticated teacher's classes for today."
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
@@ -218,7 +492,7 @@
 			"name": "Courses",
 			"item": [
 				{
-					"name": "Get Current (As Student)",
+					"name": "Get Current Courses (As Student)",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -253,7 +527,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Current (As Teacher)",
+					"name": "Get Current Courses (As Teacher)",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -293,7 +567,7 @@
 	"variable": [
 		{
 			"key": "base_url",
-			"value": "http://localhost:8000/api",
+			"value": "https://sms.local/api/v1",
 			"type": "string"
 		},
 		{
