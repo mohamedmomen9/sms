@@ -15,3 +15,7 @@ Route::middleware(['api'])->prefix('auth/student')->group(function () {
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('logout', [AuthController::class, 'logout']);
 });
+
+Route::middleware(['api', \Modules\Students\Http\Middleware\StudentJwtAuth::class])->prefix('students')->group(function () {
+   Route::get('courses/current', [\Modules\Students\Http\Controllers\CoursesController::class, 'current']);
+});
