@@ -8,5 +8,6 @@
     "Teachers": true,
     "Students": true,
     "Users": true,
-    "Academic": true
+    "Academic": true,
+    "Auth": true
 }

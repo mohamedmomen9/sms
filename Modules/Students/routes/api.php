@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Students\Http\Controllers\AuthController;
 use Modules\Students\Http\Controllers\StudentsController;
 
 Route::middleware(['api'])->prefix('students')->name('api.students.')->group(function () {
@@ -10,12 +9,9 @@ Route::middleware(['api'])->prefix('students')->name('api.students.')->group(fun
     // Route::apiResource('students', StudentsController::class);
 });
 
-Route::middleware(['api'])->prefix('auth/student')->group(function () {
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('refresh', [AuthController::class, 'refresh']);
-    Route::post('logout', [AuthController::class, 'logout']);
-});
+// Auth routes moved to Modules/Auth
 
-Route::middleware(['api', \Modules\Students\Http\Middleware\StudentJwtAuth::class])->prefix('students')->group(function () {
-   Route::get('courses/current', [\Modules\Students\Http\Controllers\CoursesController::class, 'current']);
-});
+
+// Auth routes moved to Modules/Auth
+// Course routes moved to Modules/Subject
+

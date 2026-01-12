@@ -1,10 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Subject\Http\Controllers\SubjectController;
+use Modules\Subject\Http\Controllers\CourseController;
+use Modules\Auth\Http\Middleware\UniversalJwtMiddleware;
 
-Route::middleware(['api'])->prefix('api/subject')->name('api.subject.')->group(function () {
-    // Define your module API routes here
-    // Example:
-    // Route::apiResource('subjects', SubjectController::class);
+Route::prefix('api')->middleware('api')->group(function () {
+    // Public routes (if any)
+});
+
+// Common Course Endpoint
+Route::middleware(['api', UniversalJwtMiddleware::class])->prefix('courses')->group(function () {
+    Route::get('current', [CourseController::class, 'index']);
 });
