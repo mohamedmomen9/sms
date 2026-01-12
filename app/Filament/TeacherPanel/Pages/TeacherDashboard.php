@@ -2,6 +2,7 @@
 
 namespace App\Filament\TeacherPanel\Pages;
 
+use App\Filament\TeacherPanel\Widgets\TeacherScheduleWidget;
 use Filament\Pages\Dashboard;
 
 class TeacherDashboard extends Dashboard
@@ -33,5 +34,12 @@ class TeacherDashboard extends Dashboard
     public function getSubheading(): ?string
     {
         return __('Manage your subjects and classes from here');
+    }
+
+    public function getWidgets(): array
+    {
+        return [
+            TeacherScheduleWidget::class,
+        ];
     }
 }

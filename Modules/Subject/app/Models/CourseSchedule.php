@@ -1,0 +1,93 @@
+<?php
+
+namespace Modules\Subject\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class CourseSchedule extends Model
+{
+    use HasFactory;
+
+    protected $fillable = [
+        'course_offering_id',
+        'day',
+        'start_time',
+        'end_time',
+    ];
+
+    protected $casts = [
+        'start_time' => 'datetime:H:i:s',
+        'end_time' => 'datetime:H:i:s',
+    ];
+
+    /**
+     * Days of the week options
+     */
+    public const DAYS = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+    ];
+
+    /**
+     * Day order for sorting
+     */
+    public const DAY_ORDER = [
+        'Sunday' => 1,
+        'Monday' => 2,
+        'Tuesday' => 3,
+        'Wednesday' => 4,
+        'Thursday' => 5,
+        'Friday' => 6,
+        'Saturday' => 7,
+    ];
+
+    /**
+     * Get the course offering this schedule belongs to
+     */
+    public function courseOffering(): BelongsTo
+    {
+        return $this->belongsTo(CourseOffering::class);
+    }
+
+    /**
+     * Get the day order for sorting
+     */
+    public function getDayOrderAttribute(): int
+    {
+        return self::DAY_ORDER[$this->day] ?? 99;
+    }
+
+    /**
+     * Get formatted time range
+     */
+    public function getTimeRangeAttribute(): string
+    {
+        $start = $this->start_time ? $this->start_time->format('g:i A') : '';
+        $end = $this->end_time ? $this->end_time->format('g:i A') : '';
+        return "{$start} - {$end}";
+    }
+
+    /**
+     * Get display label (Day + Time Range)
+     */
+    public function getLabelAttribute(): string
+    {
+        return "{$this->day} ({$this->time_range})";
+    }
+
+    /**
+     * Scope to order by day and time
+     */
+    public function scopeOrdered($query)
+    {
+        return $query->orderByRaw("FIELD(day, 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday')")
+                     ->orderBy('start_time');
+    }
+}
