@@ -13,6 +13,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Database\Seeders\PermissionsSeeder;
 
 class DemoDataSeeder extends Seeder
 {
