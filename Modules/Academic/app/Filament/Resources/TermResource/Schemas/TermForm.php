@@ -26,10 +26,6 @@ class TermForm
                 ->required()
                 ->native(false),
 
-            TextInput::make('code')
-                ->required()
-                ->maxLength(255),
-
             DatePicker::make('start_date')
                 ->required(),
 
