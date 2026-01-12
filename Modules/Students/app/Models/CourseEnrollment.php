@@ -10,9 +10,6 @@ class CourseEnrollment extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = ['student_id', 'course_offering_id', 'grade', 'status', 'enrolled_at'];
 
     public function student()
