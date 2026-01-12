@@ -22,8 +22,6 @@ class TermResource extends Resource
 
     protected static ?string $navigationGroup = 'Academic Structure';
 
-    protected static ?string $navigationParentItem = 'Academic Years';
-
     public static function form(Form $form): Form
     {
         return $form->schema(TermForm::schema());
