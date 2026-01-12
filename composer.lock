@@ -2091,12 +2091,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/kz370/jwt-auth.git",
-                "reference": "6cf35b1adb0fade94e0204fe32bdc78f38bf18db"
+                "reference": "0e8034708cbd98b35e68156bd04046856248b866"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/kz370/jwt-auth/zipball/6cf35b1adb0fade94e0204fe32bdc78f38bf18db",
-                "reference": "6cf35b1adb0fade94e0204fe32bdc78f38bf18db",
+                "url": "https://api.github.com/repos/kz370/jwt-auth/zipball/0e8034708cbd98b35e68156bd04046856248b866",
+                "reference": "0e8034708cbd98b35e68156bd04046856248b866",
                 "shasum": ""
             },
             "require": {
@@ -2135,9 +2135,9 @@
             "description": "Secure JWT access token + refresh token authentication for Laravel",
             "support": {
                 "issues": "https://github.com/kz370/jwt-auth/issues",
-                "source": "https://github.com/kz370/jwt-auth/tree/v1.0.0"
+                "source": "https://github.com/kz370/jwt-auth/tree/main"
             },
-            "time": "2026-01-12T10:48:26+00:00"
+            "time": "2026-01-12T13:09:01+00:00"
         },
         {
             "name": "kz370/laravel-modular",

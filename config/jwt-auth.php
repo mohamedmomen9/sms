@@ -33,7 +33,7 @@ return [
     | Recommended: 15 minutes for high security, up to 60 for convenience.
     |
     */
-    'access_token_ttl' => (int) env('JWT_ACCESS_TOKEN_TTL', 15),
+    'access_token_ttl' => env('JWT_ACCESS_TOKEN_TTL', 15),
 
     /*
     |--------------------------------------------------------------------------
@@ -44,7 +44,7 @@ return [
     | Recommended: 7 days for high security, up to 30 for convenience.
     |
     */
-    'refresh_token_ttl' => (int) env('JWT_REFRESH_TOKEN_TTL', 7),
+    'refresh_token_ttl' => env('JWT_REFRESH_TOKEN_TTL', 7),
 
     /*
     |--------------------------------------------------------------------------
@@ -67,7 +67,7 @@ return [
     | race conditions.
     |
     */
-    'blacklist_grace_period' => (int) env('JWT_BLACKLIST_GRACE_PERIOD', 30),
+    'blacklist_grace_period' => env('JWT_BLACKLIST_GRACE_PERIOD', 30),
 
     /*
     |--------------------------------------------------------------------------
@@ -145,7 +145,7 @@ return [
     | clock skew between servers. Recommended: 60 seconds.
     |
     */
-    'leeway' => (int) env('JWT_LEEWAY', 60),
+    'leeway' => env('JWT_LEEWAY', 60),
 
     /*
     |--------------------------------------------------------------------------
@@ -193,7 +193,7 @@ return [
     | Set to 0 for unlimited. Oldest sessions will be revoked when limit is reached.
     |
     */
-    'max_devices' => (int) env('JWT_MAX_DEVICES', 5),
+    'max_devices' => env('JWT_MAX_DEVICES', 5),
 
     /*
     |--------------------------------------------------------------------------
