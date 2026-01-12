@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ed73f954aff310fe8e36bddf93a54029",
+    "content-hash": "682c1ad963ad48b55f6f439f9103bfe0",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -2084,6 +2084,60 @@
                 "source": "https://github.com/kirschbaum-development/eloquent-power-joins/tree/4.2.11"
             },
             "time": "2025-12-17T00:37:48+00:00"
+        },
+        {
+            "name": "kz370/jwt-auth",
+            "version": "dev-main",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kz370/jwt-auth.git",
+                "reference": "0e8034708cbd98b35e68156bd04046856248b866"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kz370/jwt-auth/zipball/0e8034708cbd98b35e68156bd04046856248b866",
+                "reference": "0e8034708cbd98b35e68156bd04046856248b866",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/auth": "^10.0|^11.0|^12.0",
+                "illuminate/database": "^10.0|^11.0|^12.0",
+                "illuminate/support": "^10.0|^11.0|^12.0",
+                "php": "^8.1"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "aliases": {
+                        "JwtAuth": "Kz370\\JwtAuth\\Facades\\JwtAuth"
+                    },
+                    "providers": [
+                        "Kz370\\JwtAuth\\JwtAuthServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Kz370\\JwtAuth\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Achievers Dashboard",
+                    "email": "dev@achievers.com"
+                }
+            ],
+            "description": "Secure JWT access token + refresh token authentication for Laravel",
+            "support": {
+                "issues": "https://github.com/kz370/jwt-auth/issues",
+                "source": "https://github.com/kz370/jwt-auth/tree/main"
+            },
+            "time": "2026-01-12T13:09:01+00:00"
         },
         {
             "name": "kz370/laravel-modular",
@@ -10649,6 +10703,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "kz370/jwt-auth": 20,
         "kz370/laravel-modular": 20
     },
     "prefer-stable": true,

@@ -113,8 +113,8 @@ class DemoDataSeeder extends Seeder
         );
 
         $term = \Modules\Academic\Models\Term::firstOrCreate(
-            ['name' => 'Fall 2025', 'academic_year_id' => $academicYear->id],
-            ['code' => 'F25', 'start_date' => '2025-09-01', 'end_date' => '2026-01-31', 'is_active' => true, 'type' => 'semester']
+            ['name' => 'FALL', 'academic_year_id' => $academicYear->id],
+            ['start_date' => '2025-09-01', 'end_date' => '2026-01-31', 'is_active' => true]
         );
 
         // 4. Create Facilities
@@ -256,9 +256,24 @@ class DemoDataSeeder extends Seeder
                         $curriculum->subjects()->attach($subject->id, ['is_mandatory' => true]);
                     }
 
-                    // Create Course Offering
+                    // Create Course Offering with schedule
                     $teacher = $teachers[($s - 1) % count($teachers)];
                     $room = $rooms[($s - 1) % count($rooms)];
+
+                    // Generate schedule based on subject index
+                    $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
+                    $timeSlots = [
+                        ['start_time' => '08:00:00', 'end_time' => '09:30:00'],
+                        ['start_time' => '10:00:00', 'end_time' => '11:30:00'],
+                        ['start_time' => '12:00:00', 'end_time' => '13:30:00'],
+                        ['start_time' => '14:00:00', 'end_time' => '15:30:00'],
+                        ['start_time' => '16:00:00', 'end_time' => '17:30:00'],
+                    ];
+
+                    // Each subject gets 2 sessions per week
+                    $primaryDayIndex = ($s - 1) % count($days);
+                    $secondaryDayIndex = ($primaryDayIndex + 2) % count($days);
+                    $timeSlotIndex = ($s - 1) % count($timeSlots);
 
                     $offering = \Modules\Subject\Models\CourseOffering::firstOrCreate(
                         [
@@ -270,6 +285,29 @@ class DemoDataSeeder extends Seeder
                             'teacher_id' => $teacher->id,
                             'room_id' => $room->id,
                             'capacity' => 40,
+                        ]
+                    );
+
+                    // Create schedule entries in the course_schedules table
+                    \Modules\Subject\Models\CourseSchedule::firstOrCreate(
+                        [
+                            'course_offering_id' => $offering->id,
+                            'day' => $days[$primaryDayIndex],
+                            'start_time' => $timeSlots[$timeSlotIndex]['start_time'],
+                        ],
+                        [
+                            'end_time' => $timeSlots[$timeSlotIndex]['end_time'],
+                        ]
+                    );
+
+                    \Modules\Subject\Models\CourseSchedule::firstOrCreate(
+                        [
+                            'course_offering_id' => $offering->id,
+                            'day' => $days[$secondaryDayIndex],
+                            'start_time' => $timeSlots[$timeSlotIndex]['start_time'],
+                        ],
+                        [
+                            'end_time' => $timeSlots[$timeSlotIndex]['end_time'],
                         ]
                     );
 

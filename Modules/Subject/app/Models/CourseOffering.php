@@ -4,7 +4,7 @@ namespace Modules\Subject\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Subject\Database\Factories\CourseOfferingFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CourseOffering extends Model
 {
@@ -15,14 +15,14 @@ class CourseOffering extends Model
      */
     protected $fillable = ['subject_id', 'term_id', 'teacher_id', 'section_number', 'capacity', 'room_id', 'schedule_json'];
 
+    protected $casts = [
+        'schedule_json' => 'array',
+    ];
+
     public function room()
     {
         return $this->belongsTo(\Modules\Campus\Models\Room::class);
     }
-
-    protected $casts = [
-        'schedule_json' => 'array',
-    ];
 
     public function subject()
     {
@@ -50,8 +50,11 @@ class CourseOffering extends Model
             ->withPivot('grade', 'status', 'enrolled_at');
     }
 
-    // protected static function newFactory(): CourseOfferingFactory
-    // {
-    //     // return CourseOfferingFactory::new();
-    // }
+    /**
+     * Get the class schedules for this course offering
+     */
+    public function schedules(): HasMany
+    {
+        return $this->hasMany(CourseSchedule::class)->ordered();
+    }
 }

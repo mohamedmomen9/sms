@@ -13,7 +13,7 @@ class Term extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = ['academic_year_id', 'name', 'code', 'start_date', 'end_date', 'is_active', 'type'];
+    protected $fillable = ['academic_year_id', 'name', 'start_date', 'end_date', 'is_active'];
 
     public function academicYear()
     {

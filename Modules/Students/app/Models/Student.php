@@ -5,6 +5,7 @@ namespace Modules\Students\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Modules\Campus\Models\Campus;
 use Modules\Department\Models\Department;
 use Modules\Faculty\Models\Faculty;
@@ -13,7 +14,7 @@ use Modules\Subject\Models\Subject;
 
 class Student extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     protected $fillable = [
         'name',
