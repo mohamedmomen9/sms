@@ -1,4 +1,39 @@
 <x-filament-panels::page>
+    {{-- Quick Stats Section - At Top --}}
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8">
+        @php
+            $stats = [
+                ['label' => __('Total Students'), 'value' => \Modules\Students\Models\Student::count(), 'icon' => 'heroicon-o-academic-cap', 'color' => 'primary'],
+                ['label' => __('Total Teachers'), 'value' => \Modules\Teachers\Models\Teacher::count(), 'icon' => 'heroicon-o-user-group', 'color' => 'success'],
+                ['label' => __('Active Courses'), 'value' => \Modules\Subject\Models\CourseOffering::whereHas('term', fn($q) => $q->where('is_active', true))->count(), 'icon' => 'heroicon-o-book-open', 'color' => 'warning'],
+                ['label' => __('Departments'), 'value' => \Modules\Department\Models\Department::count(), 'icon' => 'heroicon-o-building-office', 'color' => 'info'],
+            ];
+        @endphp
+        
+        @foreach($stats as $stat)
+            <div class="fi-wi-stats-overview-stat relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+                <div class="flex items-center gap-4">
+                    <div class="rounded-lg bg-{{ $stat['color'] }}-50 p-3 dark:bg-{{ $stat['color'] }}-400/10">
+                        <x-filament::icon
+                            :icon="$stat['icon']"
+                            class="h-6 w-6 text-{{ $stat['color'] }}-600 dark:text-{{ $stat['color'] }}-400"
+                        />
+                    </div>
+                    <div>
+                        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
+                            {{ $stat['label'] }}
+                        </p>
+                        <p class="text-2xl font-semibold text-gray-950 dark:text-white">
+                            {{ number_format($stat['value']) }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    {{-- Navigation Groups --}}
+    <h2 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">{{ __('Quick Access') }}</h2>
     <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         @foreach($this->getGroupedNavigation() as $group)
             <div class="fi-section rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
@@ -40,41 +75,5 @@
                 </div>
             </div>
         @endforeach
-    </div>
-
-    {{-- Quick Stats Section --}}
-    <div class="mt-8">
-        <h2 class="text-lg font-semibold text-gray-950 dark:text-white mb-4">{{ __('Quick Overview') }}</h2>
-        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            @php
-                $stats = [
-                    ['label' => __('Total Students'), 'value' => \Modules\Students\Models\Student::count(), 'icon' => 'heroicon-o-academic-cap', 'color' => 'primary'],
-                    ['label' => __('Total Teachers'), 'value' => \Modules\Teachers\Models\Teacher::count(), 'icon' => 'heroicon-o-user-group', 'color' => 'success'],
-                    ['label' => __('Active Courses'), 'value' => \Modules\Subject\Models\CourseOffering::whereHas('term', fn($q) => $q->where('is_active', true))->count(), 'icon' => 'heroicon-o-book-open', 'color' => 'warning'],
-                    ['label' => __('Departments'), 'value' => \Modules\Department\Models\Department::count(), 'icon' => 'heroicon-o-building-office', 'color' => 'info'],
-                ];
-            @endphp
-            
-            @foreach($stats as $stat)
-                <div class="fi-wi-stats-overview-stat relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
-                    <div class="flex items-center gap-4">
-                        <div class="rounded-lg bg-{{ $stat['color'] }}-50 p-3 dark:bg-{{ $stat['color'] }}-400/10">
-                            <x-filament::icon
-                                :icon="$stat['icon']"
-                                class="h-6 w-6 text-{{ $stat['color'] }}-600 dark:text-{{ $stat['color'] }}-400"
-                            />
-                        </div>
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 dark:text-gray-400">
-                                {{ $stat['label'] }}
-                            </p>
-                            <p class="text-2xl font-semibold text-gray-950 dark:text-white">
-                                {{ number_format($stat['value']) }}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
     </div>
 </x-filament-panels::page>
