@@ -10,9 +10,6 @@ class AcademicYear extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     */
     protected $fillable = ['name', 'start_date', 'end_date', 'is_active', 'status'];
 
     public function terms()

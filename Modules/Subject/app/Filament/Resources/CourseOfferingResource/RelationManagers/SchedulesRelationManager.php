@@ -8,6 +8,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Modules\Subject\Models\CourseSchedule;
+use Modules\Subject\Models\SessionType;
 
 class SchedulesRelationManager extends RelationManager
 {
@@ -19,8 +20,26 @@ class SchedulesRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
+        // Get the instructor options from the parent course offering
+        $instructorOptions = $this->getOwnerRecord()
+            ->teachers()
+            ->pluck('name', 'teachers.id')
+            ->toArray();
+
         return $form
             ->schema([
+                Forms\Components\Select::make('session_type_id')
+                    ->label(__('Session Type'))
+                    ->options(SessionType::active()->pluck('name', 'id'))
+                    ->required()
+                    ->default(fn () => SessionType::where('code', 'LECT')->first()?->id)
+                    ->helperText(__('Type of session (Class, Lab, Lecture, etc.)')),
+                Forms\Components\Select::make('teacher_id')
+                    ->label(__('Instructor'))
+                    ->options($instructorOptions)
+                    ->searchable()
+                    ->required()
+                    ->helperText(__('Select the instructor for this session')),
                 Forms\Components\Select::make('day')
                     ->label(__('Day'))
                     ->options(array_combine(CourseSchedule::DAYS, array_map(fn($d) => __($d), CourseSchedule::DAYS)))
@@ -35,7 +54,7 @@ class SchedulesRelationManager extends RelationManager
                     ->required()
                     ->after('start_time'),
             ])
-            ->columns(3);
+            ->columns(2);
     }
 
     public function table(Table $table): Table
@@ -43,6 +62,18 @@ class SchedulesRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('day')
             ->columns([
+                Tables\Columns\TextColumn::make('sessionType.code')
+                    ->label(__('Type'))
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'C' => 'primary',
+                        'LAB' => 'success',
+                        'LECT' => 'info',
+                        'PR' => 'warning',
+                        'TUT' => 'gray',
+                        default => 'secondary',
+                    })
+                    ->tooltip(fn ($record) => $record->sessionType?->name),
                 Tables\Columns\TextColumn::make('day')
                     ->label(__('Day'))
                     ->badge()
@@ -62,9 +93,18 @@ class SchedulesRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('end_time')
                     ->label(__('End Time'))
                     ->time('g:i A'),
+                Tables\Columns\TextColumn::make('teacher.name')
+                    ->label(__('Instructor'))
+                    ->placeholder(__('Not assigned'))
+                    ->sortable(),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('session_type_id')
+                    ->label(__('Session Type'))
+                    ->options(SessionType::active()->pluck('name', 'id')),
+                Tables\Filters\SelectFilter::make('teacher_id')
+                    ->label(__('Instructor'))
+                    ->options(fn () => $this->getOwnerRecord()->teachers()->pluck('name', 'teachers.id')),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
@@ -83,3 +123,5 @@ class SchedulesRelationManager extends RelationManager
             ->reorderable(false);
     }
 }
+
+

@@ -14,7 +14,6 @@ class CourseController extends Controller
     public function index(Request $request)
     {
         try {
-            // User is injected by UniversalJwtMiddleware -> Auth::user() works
             $user = Auth::user();
 
             if (!$user) {

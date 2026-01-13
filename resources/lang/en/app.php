@@ -3,6 +3,7 @@
 return [
     // Navigation Groups
     'Academic Structure' => 'Academic Structure',
+    'Course Management' => 'Course Management',
     'User Management' => 'User Management',
     'Settings' => 'Settings',
     

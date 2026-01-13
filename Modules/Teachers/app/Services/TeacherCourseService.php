@@ -19,13 +19,12 @@ class TeacherCourseService implements CourseServiceInterface
 
     public function getCurrentCourses(): Collection
     {
-        // Fetch offerings where this teacher is assigned AND term is active
         $offerings = CourseOffering::where('teacher_id', $this->teacher->id)
             ->whereHas('term', function ($query) {
                 $query->where('is_active', true);
             })
             ->with(['subject', 'room', 'term'])
-            ->withCount('enrollments') // Extra for teachers: know how many students
+            ->withCount('enrollments')
             ->get();
 
         return $offerings->map(function ($offering) {
@@ -36,7 +35,7 @@ class TeacherCourseService implements CourseServiceInterface
                 section: $offering->section_number,
                 schedule: $offering->schedule_json,
                 room: $offering->room->name ?? null,
-                teacherName: $this->teacher->name, // It's me
+                teacherName: $this->teacher->name,
                 enrollmentCount: $offering->enrollments_count,
                 termName: $offering->term->name ?? null
             );

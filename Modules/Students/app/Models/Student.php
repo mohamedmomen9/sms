@@ -59,7 +59,6 @@ class Student extends Authenticatable
 
     public function subjects()
     {
-        // Dynamic subjects based on current enrollments
         return Subject::whereHas('offerings.enrollments', function ($query) {
             $query->where('student_id', $this->id);
         });

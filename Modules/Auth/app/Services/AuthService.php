@@ -4,57 +4,53 @@ namespace Modules\Auth\Services;
 
 use Exception;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Auth;
 use Modules\Students\Models\Student;
 use Modules\Teachers\Models\Teacher;
 use Kz370\JwtAuth\Services\JwtService;
 use Kz370\JwtAuth\Services\RefreshTokenService;
-use Kz370\JwtAuth\JwtAuthManager;
 use Kz370\JwtAuth\Facades\JwtAuth;
 use Modules\Auth\DTOs\LoginDTO;
 
 class AuthService
 {
-    /**
-     * Authenticate a user based on role and credentials.
-     */
     public function login(LoginDTO $dto): array
     {
-        // 1. Decrypt Password
         $decryptedPassword = $this->decryptPassword($dto->password);
-        
-        // 2. Resolve Model and Config based on Role
         $modelClass = $this->getUserModelClass($dto->role);
         
-        // 3. Configure JWT dynamically
         $config = config('jwt-auth');
         $config['user_model'] = $modelClass;
-        
-        // Update global config as well for any side-effects
         Config::set('jwt-auth.user_model', $modelClass);
 
-        // 4. Instantiate JWT Manager
-        $jwtService = new JwtService($config);
-        $refreshTokenService = new RefreshTokenService($config);
-        // We need the request object for JwtAuthManager, but better to use Facade or construct logic that returns tokens directly.
-        // The JwtAuthManager::attempt method requires the request object in the constructor.
-        // Let's rely on the manual instantiation pattern we found reliable.
-        $jwtAuth = new JwtAuthManager($jwtService, $refreshTokenService, $config, request());
-
-        $credentials = [
-            'email' => $dto->username,
-            'password' => $decryptedPassword
-        ];
-
-        // 5. Attempt Authentication
-        $tokenData = $jwtAuth->attempt($credentials, $dto->deviceName);
-
-        if (!$tokenData) {
+        $user = $modelClass::where('email', $dto->username)->first();
+        
+        if (!$user || !password_verify($decryptedPassword, $user->password)) {
             throw new Exception('Invalid credentials');
         }
-
-        // 6. Retrieve User
-        $user = $modelClass::where('email', $dto->username)->first();
+        
+        $jwtService = new JwtService($config);
+        $refreshTokenService = new RefreshTokenService($config);
+        
+        $refreshTokenData = $refreshTokenService->create(
+            $user,
+            $dto->deviceName,
+            request()->ip(),
+            request()->userAgent()
+        );
+        
+        // Role claim enables proper guard selection in UniversalJwtMiddleware
+        $accessToken = $jwtService->generateAccessToken($user, [
+            'role' => $dto->role,
+            'rth' => hash('sha256', $refreshTokenData['token'])
+        ]);
+        
+        $tokenData = [
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshTokenData['token'],
+            'token_type' => 'Bearer',
+            'expires_in' => (int) $config['access_token_ttl'] * 60,
+            'refresh_expires_in' => (int) $config['refresh_token_ttl'] * 24 * 60 * 60,
+        ];
 
         return [
             'user' => $user,
@@ -65,8 +61,7 @@ class AuthService
 
     public function refresh(string $refreshToken)
     {
-        // Refresh logic is generic enough to use the Facade usually, but if we encounter issues we might need context.
-        // For now, use Facade as it works for polymorphic tokens if `jwt_refresh_tokens` table is polymorphic (it is).
+        // Facade handles polymorphic tokens via jwt_refresh_tokens table
         return JwtAuth::refresh($refreshToken);
     }
 

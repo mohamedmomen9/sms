@@ -18,6 +18,11 @@ class CourseOfferingResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('app.Course Management');
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema(CourseOfferingForm::schema());
