@@ -27,6 +27,11 @@ class StudentTable
 
     public static function filters(): array
     {
-        return [];
+        return [
+            \Filament\Tables\Filters\SelectFilter::make('campus')
+                ->relationship('campus', 'name'),
+            \Filament\Tables\Filters\SelectFilter::make('department')
+                ->relationship('department', 'name'),
+        ];
     }
 }
