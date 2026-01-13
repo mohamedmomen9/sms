@@ -4,12 +4,12 @@
     <div class="grid gap-4 grid-cols-2 md:grid-cols-3 xl:grid-cols-6 mb-8">
         @php
             $stats = [
-                ['label' => __('Campuses'), 'value' => \Modules\Campus\Models\Campus::count(), 'icon' => 'heroicon-o-map-pin', 'color' => 'danger'],
-                ['label' => __('Faculties'), 'value' => \Modules\Faculty\Models\Faculty::count(), 'icon' => 'heroicon-o-building-library', 'color' => 'primary'],
-                ['label' => __('Departments'), 'value' => \Modules\Department\Models\Department::count(), 'icon' => 'heroicon-o-building-office', 'color' => 'info'],
-                ['label' => __('Teachers'), 'value' => \Modules\Teachers\Models\Teacher::count(), 'icon' => 'heroicon-o-user-group', 'color' => 'success'],
-                ['label' => __('Students'), 'value' => \Modules\Students\Models\Student::count(), 'icon' => 'heroicon-o-academic-cap', 'color' => 'warning'],
-                ['label' => __('Active Courses'), 'value' => \Modules\Subject\Models\CourseOffering::whereHas('term', fn($q) => $q->where('is_active', true))->count(), 'icon' => 'heroicon-o-book-open', 'color' => 'gray'],
+                ['label' => __('Campuses'), 'value' => \Modules\Campus\Models\Campus::count(), 'icon' => 'heroicon-o-map-pin', 'color' => 'red'],
+                ['label' => __('Faculties'), 'value' => \Modules\Faculty\Models\Faculty::count(), 'icon' => 'heroicon-o-building-library', 'color' => 'cyan'],
+                ['label' => __('Departments'), 'value' => \Modules\Department\Models\Department::count(), 'icon' => 'heroicon-o-building-office', 'color' => 'sky'],
+                ['label' => __('Teachers'), 'value' => \Modules\Teachers\Models\Teacher::count(), 'icon' => 'heroicon-o-user-group', 'color' => 'rose'],
+                ['label' => __('Students'), 'value' => \Modules\Students\Models\Student::count(), 'icon' => 'heroicon-o-academic-cap', 'color' => 'fuchsia'],
+                ['label' => __('Active Courses'), 'value' => \Modules\Subject\Models\CourseOffering::whereHas('term', fn($q) => $q->where('is_active', true))->count(), 'icon' => 'heroicon-o-book-open', 'color' => 'indigo'],
             ];
         @endphp
         
@@ -61,22 +61,31 @@
                                     @if($item['icon'])
                                         @php
                                             $iconColor = match($item['label']) {
-                                                __('Campus') => 'text-red-500',
-                                                __('Campuses') => 'text-red-500', 
-                                                __('Faculty') => 'text-blue-500',
-                                                __('Faculties') => 'text-blue-500',
-                                                __('Department') => 'text-sky-500',
-                                                __('Departments') => 'text-sky-500',
-                                                __('Teacher') => 'text-emerald-500',
-                                                __('Teachers') => 'text-emerald-500',
-                                                __('Student') => 'text-amber-500',
-                                                __('Students') => 'text-amber-500',
-                                                __('Course Offering') => 'text-indigo-500',
-                                                __('Course Offerings') => 'text-indigo-500',
-                                                __('Subject') => 'text-violet-500',
-                                                __('Subjects') => 'text-violet-500',
-                                                __('User') => 'text-gray-500',
-                                                __('Users') => 'text-gray-500',
+                                                // Campus Management
+                                                __('Campus'), __('Campuses') => 'text-red-500', 
+                                                __('Building'), __('Buildings') => 'text-orange-500',
+                                                __('Room'), __('Rooms') => 'text-amber-500',
+                                                __('Facility'), __('Facilities') => 'text-lime-500',
+
+                                                // Academic Structure
+                                                __('Academic Year'), __('Academic Years') => 'text-emerald-500',
+                                                __('Term'), __('Terms') => 'text-teal-500',
+                                                __('Faculty'), __('Faculties') => 'text-cyan-500',
+                                                __('Department'), __('Departments') => 'text-sky-500',
+                                                __('Curriculum'), __('Curricula') => 'text-blue-500',
+
+                                                // Course Management
+                                                __('Course Offering'), __('Course Offerings') => 'text-indigo-500',
+                                                __('Subject'), __('Subjects') => 'text-violet-500',
+                                                __('Session Type'), __('Session Types') => 'text-purple-500',
+
+                                                // Users
+                                                __('Student'), __('Students') => 'text-fuchsia-500',
+                                                __('Teacher'), __('Teachers') => 'text-rose-500',
+                                                __('User'), __('Users') => 'text-slate-500',
+                                                __('Role'), __('Roles') => 'text-zinc-500',
+                                                __('Permission'), __('Permissions') => 'text-neutral-500',
+
                                                 default => 'text-primary-500',
                                             };
                                         @endphp
