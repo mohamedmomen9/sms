@@ -3,27 +3,13 @@
 namespace App\Filament\Pages;
 
 use Filament\Facades\Filament;
-use Filament\Pages\Page;
+use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Navigation\NavigationItem;
 use Illuminate\Support\Collection;
 
-class Dashboard extends Page
+class Dashboard extends BaseDashboard
 {
-    protected static ?string $navigationIcon = 'heroicon-o-home';
-
     protected static string $view = 'filament.pages.dashboard';
-
-    protected static ?int $navigationSort = -2;
-
-    public function getTitle(): string
-    {
-        return __('Dashboard');
-    }
-
-    public static function getNavigationLabel(): string
-    {
-        return __('Dashboard');
-    }
 
     public function getGroupedNavigation(): Collection
     {
@@ -48,3 +34,4 @@ class Dashboard extends Page
             ->values();
     }
 }
+
