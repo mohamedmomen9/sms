@@ -59,9 +59,30 @@
                                     class="flex items-center gap-3 px-6 py-3 text-sm transition hover:bg-gray-50 dark:hover:bg-white/5 {{ $item['isActive'] ? 'bg-primary-50 dark:bg-primary-400/10' : '' }}"
                                 >
                                     @if($item['icon'])
+                                        @php
+                                            $iconColor = match($item['label']) {
+                                                __('Campus') => 'text-red-500',
+                                                __('Campuses') => 'text-red-500', 
+                                                __('Faculty') => 'text-blue-500',
+                                                __('Faculties') => 'text-blue-500',
+                                                __('Department') => 'text-sky-500',
+                                                __('Departments') => 'text-sky-500',
+                                                __('Teacher') => 'text-emerald-500',
+                                                __('Teachers') => 'text-emerald-500',
+                                                __('Student') => 'text-amber-500',
+                                                __('Students') => 'text-amber-500',
+                                                __('Course Offering') => 'text-indigo-500',
+                                                __('Course Offerings') => 'text-indigo-500',
+                                                __('Subject') => 'text-violet-500',
+                                                __('Subjects') => 'text-violet-500',
+                                                __('User') => 'text-gray-500',
+                                                __('Users') => 'text-gray-500',
+                                                default => 'text-primary-500',
+                                            };
+                                        @endphp
                                         <x-filament::icon
                                             :icon="$item['icon']"
-                                            class="h-5 w-5 text-gray-400 dark:text-gray-500"
+                                            class="h-5 w-5 {{ $iconColor }} dark:{{ str_replace('500', '400', $iconColor) }}"
                                         />
                                     @endif
                                     <span class="font-medium text-gray-700 dark:text-gray-200">
