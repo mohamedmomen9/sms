@@ -4,22 +4,23 @@
     <div class="grid gap-4 grid-cols-2 md:grid-cols-3 xl:grid-cols-6 mb-8">
         @php
             $stats = [
-                ['label' => __('Campuses'), 'value' => \Modules\Campus\Models\Campus::count(), 'icon' => 'heroicon-o-map-pin', 'color' => 'red'],
-                ['label' => __('Faculties'), 'value' => \Modules\Faculty\Models\Faculty::count(), 'icon' => 'heroicon-o-building-library', 'color' => 'cyan'],
-                ['label' => __('Departments'), 'value' => \Modules\Department\Models\Department::count(), 'icon' => 'heroicon-o-building-office', 'color' => 'sky'],
-                ['label' => __('Teachers'), 'value' => \Modules\Teachers\Models\Teacher::count(), 'icon' => 'heroicon-o-user-group', 'color' => 'rose'],
-                ['label' => __('Students'), 'value' => \Modules\Students\Models\Student::count(), 'icon' => 'heroicon-o-academic-cap', 'color' => 'fuchsia'],
-                ['label' => __('Active Courses'), 'value' => \Modules\Subject\Models\CourseOffering::whereHas('term', fn($q) => $q->where('is_active', true))->count(), 'icon' => 'heroicon-o-book-open', 'color' => 'indigo'],
+                ['label' => __('Campuses'), 'value' => \Modules\Campus\Models\Campus::count(), 'icon' => 'heroicon-o-map-pin', 'color' => 'rgb(239, 68, 68)'], // Red
+                ['label' => __('Faculties'), 'value' => \Modules\Faculty\Models\Faculty::count(), 'icon' => 'heroicon-o-building-library', 'color' => 'rgb(6, 182, 212)'], // Cyan
+                ['label' => __('Departments'), 'value' => \Modules\Department\Models\Department::count(), 'icon' => 'heroicon-o-building-office', 'color' => 'rgb(14, 165, 233)'], // Sky
+                ['label' => __('Teachers'), 'value' => \Modules\Teachers\Models\Teacher::count(), 'icon' => 'heroicon-o-user-group', 'color' => 'rgb(244, 63, 94)'], // Rose
+                ['label' => __('Students'), 'value' => \Modules\Students\Models\Student::count(), 'icon' => 'heroicon-o-academic-cap', 'color' => 'rgb(217, 70, 239)'], // Fuchsia
+                ['label' => __('Active Courses'), 'value' => \Modules\Subject\Models\CourseOffering::whereHas('term', fn($q) => $q->where('is_active', true))->count(), 'icon' => 'heroicon-o-book-open', 'color' => 'rgb(99, 102, 241)'], // Indigo
             ];
         @endphp
         
         @foreach($stats as $stat)
             <div class="fi-wi-stats-overview-stat relative rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                 <div class="flex items-center gap-4">
-                    <div class="rounded-lg bg-{{ $stat['color'] }}-50 p-3 dark:bg-{{ $stat['color'] }}-400/10">
+                    <div class="rounded-lg p-3 custom-stat-icon" style="background-color: {{ str_replace('rgb(', 'rgba(', str_replace(')', ', 0.1)', $stat['color'])) }};">
                         <x-filament::icon
                             :icon="$stat['icon']"
-                            class="h-6 w-6 text-{{ $stat['color'] }}-600 dark:text-{{ $stat['color'] }}-400"
+                            class="h-6 w-6"
+                            style="color: {{ $stat['color'] }}"
                         />
                     </div>
                     <div>
@@ -62,36 +63,37 @@
                                         @php
                                             $iconColor = match($item['label']) {
                                                 // Campus Management
-                                                __('Campus'), __('Campuses') => 'text-red-500', 
-                                                __('Building'), __('Buildings') => 'text-orange-500',
-                                                __('Room'), __('Rooms') => 'text-amber-500',
-                                                __('Facility'), __('Facilities') => 'text-lime-500',
+                                                __('Campus'), __('Campuses') => 'rgb(239, 68, 68)', // Red
+                                                __('Building'), __('Buildings') => 'rgb(249, 115, 22)', // Orange
+                                                __('Room'), __('Rooms') => 'rgb(245, 158, 11)', // Amber
+                                                __('Facility'), __('Facilities') => 'rgb(132, 204, 22)', // Lime
 
                                                 // Academic Structure
-                                                __('Academic Year'), __('Academic Years') => 'text-emerald-500',
-                                                __('Term'), __('Terms') => 'text-teal-500',
-                                                __('Faculty'), __('Faculties') => 'text-cyan-500',
-                                                __('Department'), __('Departments') => 'text-sky-500',
-                                                __('Curriculum'), __('Curricula') => 'text-blue-500',
+                                                __('Academic Year'), __('Academic Years') => 'rgb(16, 185, 129)', // Emerald
+                                                __('Term'), __('Terms') => 'rgb(20, 184, 166)', // Teal
+                                                __('Faculty'), __('Faculties') => 'rgb(6, 182, 212)', // Cyan
+                                                __('Department'), __('Departments') => 'rgb(14, 165, 233)', // Sky
+                                                __('Curriculum'), __('Curricula') => 'rgb(59, 130, 246)', // Blue
 
                                                 // Course Management
-                                                __('Course Offering'), __('Course Offerings') => 'text-indigo-500',
-                                                __('Subject'), __('Subjects') => 'text-violet-500',
-                                                __('Session Type'), __('Session Types') => 'text-purple-500',
+                                                __('Course Offering'), __('Course Offerings') => 'rgb(99, 102, 241)', // Indigo
+                                                __('Subject'), __('Subjects') => 'rgb(139, 92, 246)', // Violet
+                                                __('Session Type'), __('Session Types') => 'rgb(168, 85, 247)', // Purple
 
                                                 // Users
-                                                __('Student'), __('Students') => 'text-fuchsia-500',
-                                                __('Teacher'), __('Teachers') => 'text-rose-500',
-                                                __('User'), __('Users') => 'text-slate-500',
-                                                __('Role'), __('Roles') => 'text-zinc-500',
-                                                __('Permission'), __('Permissions') => 'text-neutral-500',
+                                                __('Student'), __('Students') => 'rgb(217, 70, 239)', // Fuchsia
+                                                __('Teacher'), __('Teachers') => 'rgb(244, 63, 94)', // Rose
+                                                __('User'), __('Users') => 'rgb(100, 116, 139)', // Slate
+                                                __('Role'), __('Roles') => 'rgb(113, 113, 122)', // Zinc
+                                                __('Permission'), __('Permissions') => 'rgb(115, 115, 115)', // Neutral
 
-                                                default => 'text-primary-500',
+                                                default => 'rgb(99, 102, 241)', // Primary/Indigo
                                             };
                                         @endphp
                                         <x-filament::icon
                                             :icon="$item['icon']"
-                                            class="h-5 w-5 {{ $iconColor }} dark:{{ str_replace('500', '400', $iconColor) }}"
+                                            class="h-5 w-5"
+                                            style="color: {{ $iconColor }}"
                                         />
                                     @endif
                                     <span class="font-medium text-gray-700 dark:text-gray-200">
