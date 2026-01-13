@@ -22,7 +22,7 @@ class SubjectResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
-    protected static ?string $navigationGroup = 'Academic Structure';
+    protected static ?string $navigationGroup = 'Course Management';
 
     protected static ?int $navigationSort = 5;
 
@@ -45,7 +45,7 @@ class SubjectResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.Academic Structure');
+        return __('app.Course Management');
     }
 
     public static function form(Form $form): Form

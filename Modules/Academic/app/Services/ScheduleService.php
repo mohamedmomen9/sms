@@ -11,17 +11,11 @@ use Modules\Teachers\Models\Teacher;
 
 class ScheduleService
 {
-    /**
-     * Get the current active term
-     */
     public function getCurrentTerm(): ?Term
     {
         return Term::where('is_active', true)->first();
     }
 
-    /**
-     * Get schedule for a student
-     */
     public function getStudentSchedule(Student $student, ?Term $term = null): Collection
     {
         $term = $term ?? $this->getCurrentTerm();
@@ -38,9 +32,11 @@ class ScheduleService
         })
         ->with([
             'courseOffering.subject',
-            'courseOffering.teacher',
+            'courseOffering.teachers',
             'courseOffering.room.building.campus',
             'courseOffering.term',
+            'sessionType',
+            'teacher',
         ])
         ->ordered()
         ->get();
@@ -48,9 +44,6 @@ class ScheduleService
         return $this->formatScheduleItems($schedules, false);
     }
 
-    /**
-     * Get schedule for a teacher
-     */
     public function getTeacherSchedule(Teacher $teacher, ?Term $term = null): Collection
     {
         $term = $term ?? $this->getCurrentTerm();
@@ -59,15 +52,23 @@ class ScheduleService
             return collect();
         }
 
+        // Include sessions directly assigned OR unassigned (teacher is on offering's instructor list)
         $schedules = CourseSchedule::whereHas('courseOffering', function ($query) use ($teacher, $term) {
             $query->where('term_id', $term->id)
-                  ->where('teacher_id', $teacher->id);
+                  ->whereHas('teachers', fn ($tq) => $tq->where('teachers.id', $teacher->id));
+        })
+        ->where(function ($query) use ($teacher) {
+            $query->where('teacher_id', $teacher->id)
+                  ->orWhereNull('teacher_id');
         })
         ->with([
             'courseOffering.subject',
             'courseOffering.room.building.campus',
             'courseOffering.term',
             'courseOffering.enrollments',
+            'courseOffering.teachers',
+            'sessionType',
+            'teacher',
         ])
         ->ordered()
         ->get();
@@ -75,9 +76,6 @@ class ScheduleService
         return $this->formatScheduleItems($schedules, true);
     }
 
-    /**
-     * Format schedule items from CourseSchedule models
-     */
     protected function formatScheduleItems(Collection $schedules, bool $includeEnrollmentCount = false): Collection
     {
         return $schedules->map(function (CourseSchedule $schedule) use ($includeEnrollmentCount) {
@@ -86,48 +84,35 @@ class ScheduleService
             $building = $room?->building;
             $campus = $building?->campus;
 
+            // Prefer session-specific instructor, fallback to primary from offering
+            $instructor = $schedule->teacher ?? $offering->primaryInstructor();
+
             $item = [
                 'schedule_id' => $schedule->id,
                 'course_offering_id' => $offering->id,
-                'subject' => [
-                    'id' => $offering->subject->id,
-                    'code' => $offering->subject->code,
-                    'name' => $offering->subject->name,
-                ],
+                'subject_id' => $offering->subject->id,
+                'subject_code' => $offering->subject->code,
+                'subject_name' => $offering->subject->name,
                 'section_number' => $offering->section_number,
                 'day' => $schedule->day,
                 'day_order' => $schedule->day_order,
-                'start_time' => $schedule->start_time?->format('H:i:s'),
-                'end_time' => $schedule->end_time?->format('H:i:s'),
-                'location' => [
-                    'campus' => $campus?->name,
-                    'building' => [
-                        'name' => $building?->name,
-                        'code' => $building?->code,
-                    ],
-                    'room' => [
-                        'number' => $room?->number,
-                        'name' => $room?->name,
-                        'floor' => $room?->floor_number,
-                        'label' => $room?->label_name,
-                    ],
-                ],
-                'term' => [
-                    'id' => $offering->term->id,
-                    'name' => $offering->term->name,
-                ],
+                'start_time' => $schedule->start_time?->format('H:i'),
+                'end_time' => $schedule->end_time?->format('H:i'),
+                'session_type_code' => $schedule->sessionType?->code,
+                'session_type_name' => $schedule->sessionType?->name,
+                'campus' => $campus?->name,
+                'building_name' => $building?->name,
+                'building_code' => $building?->code,
+                'room_number' => $room?->number,
+                'room_name' => $room?->name,
+                'room_label' => $room?->label_name,
+                'term_id' => $offering->term->id,
+                'term_name' => $offering->term->name,
+                'instructor_id' => $instructor?->id,
+                'instructor_name' => $instructor?->name,
+                'instructor_email' => $instructor?->email,
             ];
 
-            // Include instructor info for students
-            if (!$includeEnrollmentCount && $offering->teacher) {
-                $item['instructor'] = [
-                    'id' => $offering->teacher->id,
-                    'name' => $offering->teacher->name,
-                    'email' => $offering->teacher->email,
-                ];
-            }
-
-            // Include class size for teachers
             if ($includeEnrollmentCount) {
                 $item['enrollment_count'] = $offering->enrollments->count();
                 $item['capacity'] = $offering->capacity;
@@ -137,9 +122,6 @@ class ScheduleService
         });
     }
 
-    /**
-     * Group schedule by day
-     */
     public function groupScheduleByDay(Collection $schedule): Collection
     {
         return $schedule->groupBy('day')->map(function ($items, $day) {
@@ -151,9 +133,33 @@ class ScheduleService
         })->sortBy('day_order')->values();
     }
 
-    /**
-     * Get today's schedule for a student
-     */
+    public function groupScheduleByCourse(Collection $schedule): Collection
+    {
+        return $schedule->groupBy('subject_code')->map(function ($items, $code) {
+            $first = $items->first();
+            return [
+                'subject_id' => $first['subject_id'],
+                'subject_code' => $code,
+                'subject_name' => $first['subject_name'],
+                'section_number' => $first['section_number'],
+                'course_offering_id' => $first['course_offering_id'],
+                'sessions' => $items->map(fn ($item) => [
+                    'schedule_id' => $item['schedule_id'],
+                    'day' => $item['day'],
+                    'day_order' => $item['day_order'],
+                    'start_time' => $item['start_time'],
+                    'end_time' => $item['end_time'],
+                    'session_type_code' => $item['session_type_code'],
+                    'session_type_name' => $item['session_type_name'],
+                    'room_label' => $item['room_label'],
+                    'instructor_id' => $item['instructor_id'],
+                    'instructor_name' => $item['instructor_name'],
+                    'instructor_email' => $item['instructor_email'],
+                ])->sortBy('day_order')->values()->toArray(),
+            ];
+        })->sortBy('subject_code')->values();
+    }
+
     public function getStudentTodaySchedule(Student $student): Collection
     {
         $schedule = $this->getStudentSchedule($student);
@@ -164,9 +170,6 @@ class ScheduleService
         })->values();
     }
 
-    /**
-     * Get today's schedule for a teacher
-     */
     public function getTeacherTodaySchedule(Teacher $teacher): Collection
     {
         $schedule = $this->getTeacherSchedule($teacher);
@@ -177,3 +180,4 @@ class ScheduleService
         })->values();
     }
 }
+
