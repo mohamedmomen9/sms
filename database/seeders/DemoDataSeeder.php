@@ -111,7 +111,7 @@ class DemoDataSeeder extends Seeder
 
                 // 8 rooms per building
                 for ($r = 1; $r <= 8; $r++) {
-                    $roomTypes = ['classroom', 'lab', 'lecture_hall', 'seminar'];
+                    $roomTypes = ['classroom', 'lab', 'auditorium', 'classroom']; // mapped to allowed enums
                     $room = Room::firstOrCreate(
                         ['room_code' => "{$building->code}-{$b}0{$r}"],
                         [
