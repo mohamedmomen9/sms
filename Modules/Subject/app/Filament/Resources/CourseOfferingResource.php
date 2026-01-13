@@ -16,6 +16,16 @@ class CourseOfferingResource extends Resource
 {
     protected static ?string $model = CourseOffering::class;
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['subject.name', 'section_number'];
+    }
+
+    public static function getGlobalSearchResultTitle(\Illuminate\Database\Eloquent\Model $record): string
+    {
+        return $record->subject->name . ' - Section ' . $record->section_number;
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-book-open';
 
     public static function getNavigationGroup(): ?string
