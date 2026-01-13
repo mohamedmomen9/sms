@@ -253,11 +253,16 @@ class DemoDataSeeder extends Seeder
                         $curriculum->subjects()->attach($subject->id, ['is_mandatory' => true]);
                     }
 
-                    // Course Offering
-                    $teacher = $teachers[($s - 1) % count($teachers)];
+                    // Course Offering with multiple instructors
+                    $primaryTeacher = $teachers[($s - 1) % count($teachers)];
+                    $secondaryTeacher = $teachers[($s) % count($teachers)];
                     $room = $rooms[($s - 1) % count($rooms)];
 
-                    // Schedule: 2 sessions per week
+                    // Get session types for schedules
+                    $lectureType = \Modules\Subject\Models\SessionType::where('code', 'LECT')->first();
+                    $labType = \Modules\Subject\Models\SessionType::where('code', 'LAB')->first();
+
+                    // Schedule: 2 sessions per week (1 lecture, 1 lab)
                     $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
                     $timeSlots = [
                         ['start_time' => '08:00:00', 'end_time' => '09:30:00'],
@@ -278,12 +283,20 @@ class DemoDataSeeder extends Seeder
                             'section_number' => '01',
                         ],
                         [
-                            'teacher_id' => $teacher->id,
                             'room_id' => $room->id,
                             'capacity' => 40,
                         ]
                     );
 
+                    // Attach instructors via pivot table (many-to-many)
+                    if (!$offering->teachers()->where('teacher_id', $primaryTeacher->id)->exists()) {
+                        $offering->teachers()->attach($primaryTeacher->id, ['is_primary' => true]);
+                    }
+                    if ($primaryTeacher->id !== $secondaryTeacher->id && !$offering->teachers()->where('teacher_id', $secondaryTeacher->id)->exists()) {
+                        $offering->teachers()->attach($secondaryTeacher->id, ['is_primary' => false]);
+                    }
+
+                    // Lecture session
                     \Modules\Subject\Models\CourseSchedule::firstOrCreate(
                         [
                             'course_offering_id' => $offering->id,
@@ -291,10 +304,12 @@ class DemoDataSeeder extends Seeder
                             'start_time' => $timeSlots[$timeSlotIndex]['start_time'],
                         ],
                         [
+                            'session_type_id' => $lectureType?->id,
                             'end_time' => $timeSlots[$timeSlotIndex]['end_time'],
                         ]
                     );
 
+                    // Lab/Practical session
                     \Modules\Subject\Models\CourseSchedule::firstOrCreate(
                         [
                             'course_offering_id' => $offering->id,
@@ -302,6 +317,7 @@ class DemoDataSeeder extends Seeder
                             'start_time' => $timeSlots[$timeSlotIndex]['start_time'],
                         ],
                         [
+                            'session_type_id' => $labType?->id,
                             'end_time' => $timeSlots[$timeSlotIndex]['end_time'],
                         ]
                     );

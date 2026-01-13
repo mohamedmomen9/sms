@@ -5,6 +5,7 @@ namespace Modules\Subject\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\Teachers\Models\Teacher;
 
 class CourseSchedule extends Model
 {
@@ -12,6 +13,8 @@ class CourseSchedule extends Model
 
     protected $fillable = [
         'course_offering_id',
+        'session_type_id',
+        'teacher_id',
         'day',
         'start_time',
         'end_time',
@@ -57,6 +60,22 @@ class CourseSchedule extends Model
     }
 
     /**
+     * Get the session type for this schedule
+     */
+    public function sessionType(): BelongsTo
+    {
+        return $this->belongsTo(SessionType::class);
+    }
+
+    /**
+     * Get the instructor assigned to this specific session
+     */
+    public function teacher(): BelongsTo
+    {
+        return $this->belongsTo(Teacher::class);
+    }
+
+    /**
      * Get the day order for sorting
      */
     public function getDayOrderAttribute(): int
@@ -75,11 +94,13 @@ class CourseSchedule extends Model
     }
 
     /**
-     * Get display label (Day + Time Range)
+     * Get display label (Session Type + Day + Time Range)
      */
     public function getLabelAttribute(): string
     {
-        return "{$this->day} ({$this->time_range})";
+        $typeCode = $this->sessionType?->code ?? '';
+        $prefix = $typeCode ? "[{$typeCode}] " : '';
+        return "{$prefix}{$this->day} ({$this->time_range})";
     }
 
     /**

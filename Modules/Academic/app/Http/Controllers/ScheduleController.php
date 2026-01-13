@@ -20,12 +20,9 @@ class ScheduleController extends Controller
         $this->scheduleService = $scheduleService;
     }
 
-    /**
-     * Get the current student's full schedule.
-     */
     public function studentSchedule(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('student')->user();
 
         if (!$user || !($user instanceof Student)) {
             return ApiResponse::unauthorized('Student not authenticated. Please login as a student.');
@@ -37,23 +34,27 @@ class ScheduleController extends Controller
             return ApiResponse::success([], 'No schedule found for the current term');
         }
 
-        if ($request->boolean('grouped')) {
+        $groupBy = $request->get('group_by', 'course'); // Options: day, flat, course (default)
+        
+        if ($groupBy === 'day') {
             $grouped = $this->scheduleService->groupScheduleByDay($schedule);
             return ApiResponse::success($grouped, 'Student schedule retrieved successfully (grouped by day)');
         }
+        
+        if ($groupBy === 'flat') {
+            return ApiResponse::success(
+                new ScheduleCollection($schedule),
+                'Student schedule retrieved successfully'
+            );
+        }
 
-        return ApiResponse::success(
-            new ScheduleCollection($schedule),
-            'Student schedule retrieved successfully'
-        );
+        $grouped = $this->scheduleService->groupScheduleByCourse($schedule);
+        return ApiResponse::success($grouped, 'Student schedule retrieved successfully');
     }
 
-    /**
-     * Get the current student's schedule for today only.
-     */
     public function studentTodaySchedule(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('student')->user();
 
         if (!$user || !($user instanceof Student)) {
             return ApiResponse::unauthorized('Student not authenticated. Please login as a student.');
@@ -67,12 +68,9 @@ class ScheduleController extends Controller
         );
     }
 
-    /**
-     * Get the current teacher's full schedule.
-     */
     public function teacherSchedule(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('teacher')->user();
 
         if (!$user || !($user instanceof Teacher)) {
             return ApiResponse::unauthorized('Teacher not authenticated. Please login as a teacher.');
@@ -95,12 +93,9 @@ class ScheduleController extends Controller
         );
     }
 
-    /**
-     * Get the current teacher's schedule for today only.
-     */
     public function teacherTodaySchedule(Request $request)
     {
-        $user = Auth::user();
+        $user = Auth::guard('teacher')->user();
 
         if (!$user || !($user instanceof Teacher)) {
             return ApiResponse::unauthorized('Teacher not authenticated. Please login as a teacher.');
@@ -114,3 +109,4 @@ class ScheduleController extends Controller
         );
     }
 }
+

@@ -59,14 +59,21 @@ class Teacher extends Authenticatable implements FilamentUser
 
     public function subjects()
     {
-        // Dynamic subjects based on course offerings
-        return $this->belongsToMany(Subject::class, 'course_offerings', 'teacher_id', 'subject_id')
+        // Dynamic subjects based on course offerings (via new pivot)
+        return $this->belongsToMany(Subject::class, 'course_offering_teacher', 'teacher_id', 'course_offering_id')
+            ->join('course_offerings', 'course_offering_teacher.course_offering_id', '=', 'course_offerings.id')
+            ->select('subjects.*')
             ->distinct();
     }
 
-    public function offerings()
+    /**
+     * Course offerings this teacher is assigned to (many-to-many)
+     */
+    public function offerings(): BelongsToMany
     {
-        return $this->hasMany(\Modules\Subject\Models\CourseOffering::class);
+        return $this->belongsToMany(\Modules\Subject\Models\CourseOffering::class, 'course_offering_teacher')
+            ->withPivot('is_primary')
+            ->withTimestamps();
     }
 
     public function getAccessibleSubjectsAttribute()
