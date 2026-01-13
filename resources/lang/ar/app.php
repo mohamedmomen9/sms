@@ -9,6 +9,8 @@ return [
     
     // Common
     'Name' => 'الاسم',
+    'Overview' => 'نظرة عامة',
+    'Quick Access' => 'الوصول السريع',
     'Code' => 'الكود',
     'Status' => 'الحالة',
     'Active' => 'نشط',
