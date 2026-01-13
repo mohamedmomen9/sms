@@ -37,9 +37,6 @@ class Subject extends Model
             ->withTimestamps();
     }
 
-    /**
-     * Get the faculty this subject belongs to (direct relationship)
-     */
     public function curricula()
     {
         return $this->belongsToMany(Curriculum::class, 'curriculum_subject')
@@ -52,9 +49,6 @@ class Subject extends Model
         return $this->belongsTo(Faculty::class);
     }
 
-    /**
-     * Get the department this subject belongs to
-     */
     public function department(): BelongsTo
     {
         return $this->belongsTo(Department::class);

@@ -27,14 +27,12 @@ class AuthController extends Controller
             'device_name' => 'nullable|string',
         ]);
 
-        // Determine role from route param or body
         $role = $role ?? $request->input('role');
         
         if (!$role) {
             return ApiResponse::error('Role is required', 400);
         }
         
-        // Normalize role
         $role = strtolower($role);
 
         try {
@@ -46,10 +44,6 @@ class AuthController extends Controller
             );
 
             $result = $this->authService->login($dto);
-
-            // Return standardized response
-            // We can reuse the Transformers if valid, or a generic structure
-            // Since we promised a generic structure, let's keep it clean
             
             return ApiResponse::success([
                 'user' => $result['user'],
@@ -58,7 +52,6 @@ class AuthController extends Controller
             ], ucfirst($role) . ' login successful');
 
         } catch (Exception $e) {
-            // Check for specific error message to determine code
             $code = $e->getMessage() === 'Invalid credentials' ? 401 : 400;
             return ApiResponse::error($e->getMessage(), $code);
         }

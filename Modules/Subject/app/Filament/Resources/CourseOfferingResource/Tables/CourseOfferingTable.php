@@ -4,6 +4,7 @@ namespace Modules\Subject\Filament\Resources\CourseOfferingResource\Tables;
 
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Modules\Teachers\Models\Teacher;
 
 class CourseOfferingTable
 {
@@ -21,10 +22,19 @@ class CourseOfferingTable
             TextColumn::make('section_number')
                 ->label(__('Section'))
                 ->sortable(),
-            TextColumn::make('teacher.name')
-                ->label(__('Instructor'))
-                ->sortable()
-                ->searchable(),
+            TextColumn::make('instructor_names')
+                ->label(__('Instructors'))
+                ->wrap()
+                ->searchable(query: function ($query, string $search) {
+                    return $query->whereHas('teachers', function ($q) use ($search) {
+                        $q->where('name', 'like', "%{$search}%");
+                    });
+                }),
+            TextColumn::make('teachers_count')
+                ->counts('teachers')
+                ->label(__('# Instructors'))
+                ->badge()
+                ->color('success'),
             TextColumn::make('schedules_count')
                 ->counts('schedules')
                 ->label(__('Schedule'))
@@ -46,7 +56,14 @@ class CourseOfferingTable
             SelectFilter::make('term')
                 ->relationship('term', 'name'),
             SelectFilter::make('teacher')
-                ->relationship('teacher', 'name'),
+                ->label(__('Instructor'))
+                ->options(Teacher::pluck('name', 'id'))
+                ->query(function ($query, array $data) {
+                    if ($data['value']) {
+                        $query->whereHas('teachers', fn ($q) => $q->where('teachers.id', $data['value']));
+                    }
+                }),
         ];
     }
 }
+

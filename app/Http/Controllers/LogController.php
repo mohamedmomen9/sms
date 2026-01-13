@@ -15,16 +15,14 @@ class LogController extends Controller
     public function index(Request $request)
     {
         try {
-            // Ensure table exists
             if (!Schema::hasTable('channel_logs')) {
                 Log::channel('db')->warning('Tried to access logs page, but the channel_logs table does not exist.');
                 abort(500, 'Logs table not found. Please run migrations first.');
             }
 
-            // Base query
             $query = DB::table('channel_logs')->orderByDesc('id');
 
-            // --- Filters ---
+            // Apply filters
             if ($request->filled('level')) {
                 $query->where('level', $request->input('level'));
             }
@@ -45,13 +43,10 @@ class LogController extends Controller
                 });
             }
 
-            // Paginate & retain filters
             $logs = $query->paginate(20)->appends($request->all());
 
-            // Get distinct log levels for filter dropdown
             $levels = DB::table('channel_logs')->select('level')->distinct()->pluck('level');
 
-            // ✅ Correct variable name passed to view
             return view('logs.index', compact('logs', 'levels'));
         } catch (\Exception $e) {
             return $e->getMessage();
@@ -89,7 +84,7 @@ class LogController extends Controller
         try {
             DB::table('channel_logs')->delete();
 
-            // Reset index
+            // Reset auto-increment after clearing
             DB::statement('ALTER TABLE channel_logs AUTO_INCREMENT = 1');
 
             return redirect()

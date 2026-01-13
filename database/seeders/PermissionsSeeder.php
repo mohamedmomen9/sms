@@ -18,7 +18,7 @@ class PermissionsSeeder extends Seeder
         // Reset cached roles and permissions
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // 1. Create Scopes
+        // Scopes
         $scopes = [
             'scope:global', // Used for Super Admin
             'scope:faculty',
@@ -29,7 +29,7 @@ class PermissionsSeeder extends Seeder
             Permission::firstOrCreate(['name' => $scope]);
         }
 
-        // 2. Create Functional Permissions
+        // Functional permissions
         $resources = [
             'faculty',
             'department',
@@ -51,7 +51,7 @@ class PermissionsSeeder extends Seeder
             }
         }
 
-        // 3. Define Roles and Assign Permissions
+        // Roles and their permissions
         
         // Super Admin
         $superAdmin = Role::firstOrCreate(['name' => 'Super Admin']);

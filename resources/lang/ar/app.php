@@ -3,6 +3,7 @@
 return [
     // Navigation Groups
     'Academic Structure' => 'الهيكل الأكاديمي',
+    'Course Management' => 'إدارة المقررات',
     'User Management' => 'إدارة المستخدمين',
     'Settings' => 'الإعدادات',
     
