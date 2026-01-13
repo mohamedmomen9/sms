@@ -9,6 +9,8 @@ return [
     
     // Common
     'Name' => 'Name',
+    'Overview' => 'Overview',
+    'Quick Access' => 'Quick Access',
     'Code' => 'Code',
     'Status' => 'Status',
     'Active' => 'Active',
