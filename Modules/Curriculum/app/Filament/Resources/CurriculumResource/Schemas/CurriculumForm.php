@@ -25,7 +25,6 @@ class CurriculumForm
         return [
             Section::make(__('curriculum::app.Curriculum Details'))
                 ->schema([
-                    // Name with tabs - English required, Arabic optional
                     self::makeNameInput(),
 
                     Select::make('faculties')
@@ -45,10 +44,8 @@ class CurriculumForm
                         ->afterStateUpdated(function ($state, Set $set, Get $get) {
                             $selectedFacultyIds = $state ?? [];
                             
-                            // Filter departments to only those in selected faculties
                             $currentDepts = $get('departments') ?? [];
                             if (!empty($selectedFacultyIds)) {
-                                // Filter departments to only those belonging to selected faculties
                                 if (!empty($currentDepts)) {
                                     $validDepts = Department::whereIn('id', $currentDepts)
                                         ->whereIn('faculty_id', $selectedFacultyIds)
@@ -57,11 +54,9 @@ class CurriculumForm
                                     $set('departments', $validDepts);
                                 }
                             } else {
-                                // No faculties selected - clear departments
                                 $set('departments', []);
                             }
                             
-                            // Rebuild subjects based on updated selection
                             self::rebuildSubjectsState($selectedFacultyIds, $get('departments') ?? [], $set, $get('proxied_subjects') ?? []);
                         }),
 
@@ -110,11 +105,9 @@ class CurriculumForm
                 ])
                 ->columns(2),
 
-            // Subjects grouped by Faculty -> Department
             Repeater::make('proxied_subjects')
                 ->label(__('curriculum::app.Subjects (Grouped by Faculty)'))
                 ->columnSpanFull()
-                // Use the custom view that renders the table
                 ->view('curriculum::filament.forms.components.subjects-table')
                 ->dehydrated(true)
                 ->schema([
@@ -122,13 +115,10 @@ class CurriculumForm
                     Hidden::make('department_id'),
                     Hidden::make('group_label'),
 
-                    // Inner Repeater (Subjects)
-                    // Preserve structure for Filament state management
                     Repeater::make('subjects')
                         ->hiddenLabel()
                         ->schema([
                             Hidden::make('id'),
-                            // Hidden inputs to store static data so we can access it in View via getState()
                             Hidden::make('code'),
                             Hidden::make('name'),
                             
@@ -161,19 +151,17 @@ class CurriculumForm
                                         ->maxValue(5.0)
                                         ->step(0.01)
                                         ->placeholder('—')
-                                        // Enabled only if Mandatory AND Requires GPA are both true
                                         ->disabled(fn (Get $get) => !($get('uses_gpa') && $get('is_mandatory')))
-                                        // Don't make it required during live updates - validate on save instead
                                         ->nullable()
                                         ->extraInputAttributes(['class' => 'h-8 text-sm']),
 
                                     Select::make('prerequisites_ids')
                                         ->hiddenLabel()
                                         ->multiple()
+                                        ->placeholder('None')
                                         ->options(fn () => Subject::all()->mapWithKeys(fn ($s) => [$s->id => self::getTranslatedName($s->name) . " ({$s->code})"]))
                                         ->searchable()
                                         ->preload()
-                                        // Ensure styling is compact
                                         ->extraAttributes(['class' => 'min-w-[200px]']),
                                 ])
                                 ->addable(false)
@@ -187,19 +175,12 @@ class CurriculumForm
                     if (!$record) {
                         return;
                     }
-                    // Re-use logic for consistency, passing current record state
                     $facultyIds = $record->faculties->pluck('id')->toArray();
                     $departmentIds = $record->departments->pluck('id')->toArray();
                     
-                    // We need to pass the *current database state* of subjects to the rebuilder
-                    // Logic inside rebuildSubjectsState expects a clean slate or preserving form state
-                    // Here we are hydrating from DB.
-                    
-                    // Build initial state manually to ensure DB values are loaded
                     $state = [];
                     $linkedSubjects = $record->subjects->keyBy('id');
                     
-                    // Logic similar to rebuild logic but using DB relations
                      $faculties = Faculty::whereIn('id', $facultyIds)->with(['departments', 'subjects.prerequisites'])->get();
                      $selectedDeptIds = collect($departmentIds);
 
@@ -208,14 +189,11 @@ class CurriculumForm
                          $groupLabel = "";
                          $deptId = null;
 
-                         // Case 1: Faculty has departments. Only show selected departments.
                          if ($faculty->departments->count() > 0) {
                              $validDepts = $faculty->departments->whereIn('id', $selectedDeptIds);
                              
-                             // We iterate PER DEPARTMENT to create groups
                              foreach ($validDepts as $dept) {
-                                  // Load subjects for this department
-                                  $dept->load('subjects.prerequisites'); // Ensure subjects are loaded
+                                  $dept->load('subjects.prerequisites');
                                   $facultyName = self::getTranslatedName($faculty->name);
                                   $deptName = self::getTranslatedName($dept->name);
                                   $groupLabel = "{$facultyName} → {$deptName}";
@@ -223,7 +201,6 @@ class CurriculumForm
                                   self::addSubjectsToState($state, $dept->subjects, $linkedSubjects, $faculty->id, $dept->id, $groupLabel);
                              }
                          } else {
-                             // Case 2: Faculty has NO departments. Show all faculty subjects.
                              $facultyName = self::getTranslatedName($faculty->name);
                              $groupLabel = "{$facultyName} (" . __('subject::app.Direct to Faculty') . ")";
                              
@@ -236,18 +213,11 @@ class CurriculumForm
         ];
     }
     
-    // Helper to add subjects to state array
     protected static function addSubjectsToState(array &$state, $subjects, $linkedSubjects, $facultyId, $deptId, $groupLabel) 
     {
         $subjectList = [];
         foreach ($subjects as $subj) {
             $linked = $linkedSubjects->get($subj->id);
-            // If hydrating from DB, we want current DB values. If linked does not exist, it's not in curriculum, 
-            // but if we are rebuilding, we might show it. 
-            // In 'afterStateHydrated' we usually only show what is already saved OR what is potential?
-            // Usually 'afterStateHydrated' sets the initial view. 
-            // The user wants to see "available" subjects based on selection.
-            // So even if not linked yet, it should appear if it belongs to definition.
             
             $subjectList[md5($subj->id)] = [
                 'id' => $subj->id,
@@ -262,7 +232,6 @@ class CurriculumForm
         }
 
         if (count($subjectList) > 0) {
-            // Unique key for the group
             $key = md5('group_' . $facultyId . '_' . ($deptId ?? 'null'));
             $state[$key] = [
                 'faculty_id' => $facultyId,
@@ -288,7 +257,7 @@ class CurriculumForm
                     ->schema([
                         TextInput::make('name.ar')
                             ->label(__('app.Name') . ' (' . __('app.Arabic') . ')')
-                            ->maxLength(255), // Not required
+                            ->maxLength(255),
                     ]),
             ])
             ->columnSpanFull()
@@ -297,7 +266,6 @@ class CurriculumForm
 
     protected static function rebuildSubjectsState(array $facultyIds, array $departmentIds, Set $set, array $currentState = []): void
     {
-        // Build a lookup map of existing FORM values [subject_id => data] to preserve user input
         $existingData = [];
         foreach ($currentState as $group) {
             if (isset($group['subjects']) && is_array($group['subjects'])) {
@@ -316,20 +284,16 @@ class CurriculumForm
             return;
         }
 
-        // Fetch Faculties with necessary relations
         $faculties = Faculty::whereIn('id', $facultyIds)
-            ->with(['departments.subjects.prerequisites', 'subjects.prerequisites']) // Load direct subjects too just in case
+            ->with(['departments.subjects.prerequisites', 'subjects.prerequisites'])
             ->get();
         
         $selectedDeptIds = collect($departmentIds);
 
         foreach ($faculties as $faculty) {
-             // Logic: Check if faculty has departments in the SYSTEM (not just selected)
-             // If we rely on $faculty->departments (relation), it returns all departments.
              $hasDepartmentsInSystem = $faculty->departments->isNotEmpty();
 
              if ($hasDepartmentsInSystem) {
-                 // ONLY subjects from SELECTED departments
                  $validDepts = $faculty->departments->whereIn('id', $selectedDeptIds);
                  foreach ($validDepts as $dept) {
                       $facultyName = self::getTranslatedName($faculty->name);
@@ -340,7 +304,6 @@ class CurriculumForm
                  }
                  
              } else {
-                 // Faculty has NO departments at all. Show direct subjects.
                  $facultyName = self::getTranslatedName($faculty->name);
                  $groupLabel = "{$facultyName} (" . __('subject::app.Direct to Faculty') . ")";
                  
@@ -351,14 +314,12 @@ class CurriculumForm
         $set('proxied_subjects', $state);
     }
     
-    // Helper to add subjects preserving state
     protected static function addSubjectsToStateFromRebuild(array &$state, $subjects, $existingData, $facultyId, $deptId, $groupLabel)
     {
         $subjectList = [];
         foreach ($subjects as $subj) {
             $prev = $existingData[$subj->id] ?? [];
             
-            // Prerequisites IDs: Use preserved if exists, else DB
             $prereqIds = [];
             if (isset($prev['prerequisites_ids'])) {
                 $prereqIds = $prev['prerequisites_ids'];
