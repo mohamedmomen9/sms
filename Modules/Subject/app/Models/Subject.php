@@ -40,7 +40,7 @@ class Subject extends Model
     public function curricula()
     {
         return $this->belongsToMany(Curriculum::class, 'curriculum_subject')
-                    ->withPivot('is_mandatory')
+                    ->withPivot(['is_mandatory', 'uses_gpa', 'gpa_requirement'])
                     ->withTimestamps();
     }
 

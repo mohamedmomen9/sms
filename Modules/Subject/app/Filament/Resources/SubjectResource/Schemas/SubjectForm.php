@@ -8,6 +8,8 @@ use Modules\Faculty\Models\Faculty;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
 use Illuminate\Support\Facades\Auth;
@@ -93,14 +95,6 @@ class SubjectForm
                         ->required()
                         ->maxLength(255)
                         ->unique(ignoreRecord: true),
-
-                    Select::make('prerequisites')
-                        ->label(__('subject::app.Prerequisites'))
-                        ->relationship('prerequisites', 'name')
-                        ->multiple()
-                        ->preload()
-                        ->searchable()
-                        ->columnSpanFull(),
                 ])
                 ->columns(2),
         ];

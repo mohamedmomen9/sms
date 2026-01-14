@@ -24,8 +24,6 @@ class Department extends Model
         'status',
     ];
 
-
-
     /**
      * Get the faculty this department belongs to
      */

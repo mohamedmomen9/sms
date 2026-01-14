@@ -11,4 +11,7 @@ return [
     'Subjects (Grouped by Faculty)' => 'Subjects (Grouped by Faculty)',
     'Mandatory' => 'Mandatory',
     'Credit Hours' => 'Credit Hours',
+    'No subjects loaded. Select Faculty and Departments first.' => 'No subjects loaded. Select Faculty and Departments first.',
+    'No subjects in this group.' => 'No subjects in this group.',
+    'Subject repeater not found.' => 'Subject repeater not found.',
 ];
