@@ -26,8 +26,6 @@ class Campus extends Model
         'status',
     ];
 
-
-
     /**
      * Get all faculties in this campus
      */
