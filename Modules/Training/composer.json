@@ -1,0 +1,36 @@
+{
+    "name": "nwidart/training-module",
+    "type": "laravel-module",
+    "description": "A reusable Laravel module: Training",
+    "keywords": [
+        "laravel",
+        "module",
+        "training"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Training\\": "app/",
+            "Modules\\Training\\Database\\Factories\\": "database/factories/",
+            "Modules\\Training\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Training\\Providers\\TrainingServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -1,0 +1,36 @@
+{
+    "name": "nwidart/services-module",
+    "type": "laravel-module",
+    "description": "A reusable Laravel module: Services",
+    "keywords": [
+        "laravel",
+        "module",
+        "services"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Nicolas Widart",
+            "email": "n.widart@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Services\\": "app/",
+            "Modules\\Services\\Database\\Factories\\": "database/factories/",
+            "Modules\\Services\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Services\\Providers\\ServicesServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
