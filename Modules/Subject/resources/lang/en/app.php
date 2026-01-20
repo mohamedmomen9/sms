@@ -18,4 +18,9 @@ return [
     'Prerequisites' => 'Prerequisites',
     'Hours' => 'Hours',
     'Maximum Hours' => 'Maximum Hours',
+    'Requires GPA?' => 'Requires GPA?',
+    'Minimum GPA' => 'Minimum GPA',
+    'Min GPA' => 'Min GPA',
+    'Name' => 'Name',
+    'Code' => 'Code',
 ];

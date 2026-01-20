@@ -23,7 +23,6 @@ class FirebaseNotificationService
         $this->fcmUrl = 'https://fcm.googleapis.com/v1/projects/' . env('FIREBASE_PROJECT_ID') . '/messages:send';
     }
 
-    // Generate JWT using the firebase/php-jwt package
     private function generateJWT()
     {
         $now = Carbon::now();
@@ -38,7 +37,6 @@ class FirebaseNotificationService
             'scope' => 'https://www.googleapis.com/auth/firebase.messaging',
         ];
 
-        // Use the JWT library to encode the payload and sign it with the private key
         return JWT::encode($payload, $privateKey, 'RS256');
     }
 

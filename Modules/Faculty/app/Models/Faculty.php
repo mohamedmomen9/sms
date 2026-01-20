@@ -24,8 +24,6 @@ class Faculty extends Model
         'name',
     ];
 
-
-
     /**
      * Get the campus this faculty belongs to (optional)
      */
