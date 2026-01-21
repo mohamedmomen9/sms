@@ -14,9 +14,9 @@ class Dashboard extends BaseDashboard
     public function getGroupedNavigation(): Collection
     {
         $navigation = Filament::getCurrentPanel()->getNavigation();
-        
+
         return collect($navigation)
-            ->filter(fn ($group) => $group->getLabel() !== null)
+            ->filter(fn($group) => $group->getLabel() !== null)
             ->map(function ($group) {
                 return [
                     'label' => $group->getLabel(),
@@ -31,7 +31,10 @@ class Dashboard extends BaseDashboard
                     })->values()->all(),
                 ];
             })
+            ->sortBy(function ($group) {
+                $isUserManagement = ($group['label'] === __('users::app.User Management') || $group['label'] === 'User Management') ? 1 : 0;
+                return [$isUserManagement, -count($group['items'])];
+            })
             ->values();
     }
 }
-
