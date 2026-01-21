@@ -3,6 +3,7 @@
 namespace Modules\Evaluation\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Academic\Models\Term;
@@ -23,16 +24,10 @@ class EvaluationController extends Controller
         $structure = $this->evaluationService->getAssessmentStructure($category);
 
         if (!$structure) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No active assessment found',
-            ], 404);
+            return ApiResponse::notFound('No active assessment found');
         }
 
-        return response()->json([
-            'success' => true,
-            'data' => $structure,
-        ]);
+        return ApiResponse::success($structure);
     }
 
     /**
@@ -45,10 +40,7 @@ class EvaluationController extends Controller
 
         $courses = $this->evaluationService->getEvaluableCourses($student, $term);
 
-        return response()->json([
-            'success' => true,
-            'data' => $courses,
-        ]);
+        return ApiResponse::success($courses);
     }
 
     /**
@@ -75,10 +67,7 @@ class EvaluationController extends Controller
             $request->course_code,
             $request->instructor_id
         )) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Evaluation already submitted',
-            ], 409);
+            return ApiResponse::error('Evaluation already submitted', 409);
         }
 
         $evaluation = $this->evaluationService->submit(
@@ -90,10 +79,6 @@ class EvaluationController extends Controller
             $request->responses
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Evaluation submitted successfully',
-            'data' => $evaluation,
-        ], 201);
+        return ApiResponse::created($evaluation, 'Evaluation submitted successfully');
     }
 }

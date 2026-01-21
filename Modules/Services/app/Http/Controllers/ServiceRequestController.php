@@ -3,6 +3,7 @@
 namespace Modules\Services\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Academic\Models\Term;
@@ -22,10 +23,7 @@ class ServiceRequestController extends Controller
         $term = Term::where('is_active', true)->firstOrFail();
         $services = $this->serviceRequestService->getAvailableServices($term);
 
-        return response()->json([
-            'success' => true,
-            'data' => $services,
-        ]);
+        return ApiResponse::success($services);
     }
 
     /**
@@ -38,10 +36,7 @@ class ServiceRequestController extends Controller
 
         $requests = $this->serviceRequestService->getStudentRequests($student, $term);
 
-        return response()->json([
-            'success' => true,
-            'data' => $requests,
-        ]);
+        return ApiResponse::success($requests);
     }
 
     /**
@@ -66,10 +61,9 @@ class ServiceRequestController extends Controller
             $request->boolean('shipping_required')
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Service request submitted',
-            'data' => $serviceRequest->load('serviceType'),
-        ], 201);
+        return ApiResponse::created(
+            $serviceRequest->load('serviceType'),
+            'Service request submitted'
+        );
     }
 }

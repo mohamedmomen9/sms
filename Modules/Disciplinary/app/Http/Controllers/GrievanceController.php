@@ -3,6 +3,7 @@
 namespace Modules\Disciplinary\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Disciplinary\Models\Grievance;
@@ -22,10 +23,7 @@ class GrievanceController extends Controller
         $student = $request->user();
         $grievances = $this->grievanceService->getStudentGrievances($student);
 
-        return response()->json([
-            'success' => true,
-            'data' => $grievances,
-        ]);
+        return ApiResponse::success($grievances);
     }
 
     /**
@@ -43,17 +41,11 @@ class GrievanceController extends Controller
             ->firstOrFail();
 
         if (!$this->grievanceService->canSubmitAppeal($grievance)) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cannot submit appeal for this grievance',
-            ], 409);
+            return ApiResponse::error('Cannot submit appeal for this grievance', 409);
         }
 
         $this->grievanceService->submitAppeal($grievance, $request->appeal_text);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Appeal submitted',
-        ]);
+        return ApiResponse::success(null, 'Appeal submitted');
     }
 }

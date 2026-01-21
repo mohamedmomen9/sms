@@ -3,6 +3,7 @@
 namespace Modules\Training\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Modules\Academic\Models\Term;
@@ -27,10 +28,7 @@ class FieldTrainingController extends Controller
             $request->cohort
         );
 
-        return response()->json([
-            'success' => true,
-            'data' => $opportunities,
-        ]);
+        return ApiResponse::success($opportunities);
     }
 
     /**
@@ -48,11 +46,7 @@ class FieldTrainingController extends Controller
 
         $application = $this->trainingService->apply($student, $opportunity, $term);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Application submitted',
-            'data' => $application,
-        ], 201);
+        return ApiResponse::created($application, 'Application submitted');
     }
 
     /**
@@ -65,10 +59,7 @@ class FieldTrainingController extends Controller
 
         $wishlist = $this->trainingService->getStudentWishlist($student, $term);
 
-        return response()->json([
-            'success' => true,
-            'data' => $wishlist,
-        ]);
+        return ApiResponse::success($wishlist);
     }
 
     /**
@@ -91,10 +82,6 @@ class FieldTrainingController extends Controller
             $request->item_names
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Wishlist submitted',
-            'data' => $wishlist,
-        ], 201);
+        return ApiResponse::created($wishlist, 'Wishlist submitted');
     }
 }

@@ -3,6 +3,7 @@
 namespace Modules\Services\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Support\ApiResponse;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,10 +27,7 @@ class AppointmentController extends Controller
             ->with('purposes')
             ->get();
 
-        return response()->json([
-            'success' => true,
-            'data' => $departments,
-        ]);
+        return ApiResponse::success($departments);
     }
 
     /**
@@ -51,10 +49,7 @@ class AppointmentController extends Controller
             $date
         );
 
-        return response()->json([
-            'success' => true,
-            'data' => $slots,
-        ]);
+        return ApiResponse::success($slots);
     }
 
     /**
@@ -80,10 +75,7 @@ class AppointmentController extends Controller
             $date,
             $request->slot_id
         )) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Slot is no longer available',
-            ], 409);
+            return ApiResponse::error('Slot is no longer available', 409);
         }
 
         $appointment = $this->appointmentService->book(
@@ -97,11 +89,10 @@ class AppointmentController extends Controller
             $request->notes
         );
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Appointment booked successfully',
-            'data' => $appointment->load(['department', 'purpose', 'slot']),
-        ], 201);
+        return ApiResponse::created(
+            $appointment->load(['department', 'purpose', 'slot']),
+            'Appointment booked successfully'
+        );
     }
 
     /**
@@ -114,10 +105,7 @@ class AppointmentController extends Controller
 
         $appointments = $this->appointmentService->getStudentAppointments($student, $term);
 
-        return response()->json([
-            'success' => true,
-            'data' => $appointments,
-        ]);
+        return ApiResponse::success($appointments);
     }
 
     /**
@@ -133,9 +121,6 @@ class AppointmentController extends Controller
 
         $this->appointmentService->cancel($appointment);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Appointment cancelled',
-        ]);
+        return ApiResponse::success(null, 'Appointment cancelled');
     }
 }
