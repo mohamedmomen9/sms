@@ -788,10 +788,11 @@ class DemoDataSeeder extends Seeder
             if ($index % 3 === 0) { // 33% of students
                 $type = $serviceTypes[array_rand($serviceTypes)];
 
-                $request = ServiceRequest::create([
+                $request = ServiceRequest::firstOrCreate([
                     'student_id' => $student->student_id,
                     'term_id' => $term->id,
                     'service_type_id' => $type->id,
+                ], [
                     'payment_amount' => $type->price,
                     'status' => 'pending',
                     'payment_status' => 'pending',
@@ -799,9 +800,10 @@ class DemoDataSeeder extends Seeder
 
                 // 80% Pay
                 if (rand(0, 100) < 80) {
-                    PaymentRegistration::create([
-                        'student_id' => $student->student_id,
+                    PaymentRegistration::firstOrCreate([
                         'service_request_id' => $request->id,
+                    ], [
+                        'student_id' => $student->student_id,
                         'amount' => $request->payment_amount,
                         'payment_method' => 'credit_card',
                         'callback_status' => 'success',
@@ -832,34 +834,44 @@ class DemoDataSeeder extends Seeder
         // Slots
         $slots = [];
         $startTime = \Carbon\Carbon::parse('2025-09-01 09:00:00');
-        for ($i = 0; $i < 20; $i++) { // 20 slots
+        // Generate standard daily slots (9 AM to 5 PM)
+        for ($i = 0; $i < 16; $i++) { // 16 half-hour slots = 8 hours
             $start = $startTime->copy()->addMinutes($i * 30);
             $end = $start->copy()->addMinutes(30);
-            // Skip weekends ideally but simplify
-            if ($start->hour >= 17) {
-                $startTime->addDay()->setHour(9);
-                continue;
+
+            try {
+                $slots[] = AppointmentSlot::firstOrCreate([
+                    'start_time' => $start->format('H:i'),
+                    'end_time' => $end->format('H:i'),
+                ], [
+                    'label' => $start->format('g:i A') . ' - ' . $end->format('g:i A'),
+                    'is_active' => true,
+                    'capacity' => 5
+                ]);
+            } catch (\Exception $e) {
+                // If race condition or weird error, try to fetch existing
+                $slots[] = AppointmentSlot::where('start_time', $start->format('H:i'))
+                    ->where('end_time', $end->format('H:i'))
+                    ->first();
             }
-            $slots[] = AppointmentSlot::firstOrCreate([
-                'start_time' => $start->format('H:i'),
-                'end_time' => $end->format('H:i'),
-            ], ['label' => $start->format('g:i A') . ' - ' . $end->format('g:i A'), 'is_active' => true, 'capacity' => 5]);
         }
+        $slots = array_filter($slots); // Remove nulls if any
 
         // Book Appointments
         foreach ($students as $index => $student) {
-            if ($index % 5 === 0) { // 20%
+            if ($index % 5 === 0 && count($slots) > 0) { // 20%
                 $dept = $appDepts[array_rand($appDepts)];
                 $purpose = $dept->purposes->random();
                 $slot = $slots[array_rand($slots)];
 
-                Appointment::create([
+                Appointment::firstOrCreate([
                     'student_id' => $student->student_id,
+                    'appointment_date' => now()->addDays(rand(1, 10))->format('Y-m-d'), // Use date string for lookup
+                    'slot_id' => $slot->id,
+                ], [
                     'term_id' => $term->id,
                     'department_id' => $dept->id,
                     'purpose_id' => $purpose->id,
-                    'slot_id' => $slot->id,
-                    'appointment_date' => now()->addDays(rand(1, 10)),
                     'status' => 'booked',
                     'notes' => 'Demo appointment',
                 ]);
