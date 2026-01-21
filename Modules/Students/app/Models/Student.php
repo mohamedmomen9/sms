@@ -16,6 +16,11 @@ class Student extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
 
+    protected static function newFactory()
+    {
+        return \Modules\Students\Database\Factories\StudentFactory::new();
+    }
+
     protected $fillable = [
         'name',
         'email',
@@ -75,6 +80,4 @@ class Student extends Authenticatable
             $query->where('is_active', true);
         });
     }
-
-
 }

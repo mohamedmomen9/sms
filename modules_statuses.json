@@ -1,6 +1,5 @@
 {
     "Campus": true,
-
     "Faculty": true,
     "Department": true,
     "Subject": true,
@@ -9,5 +8,10 @@
     "Students": true,
     "Users": true,
     "Academic": true,
-    "Auth": true
+    "Auth": true,
+    "Services": true,
+    "Evaluation": true,
+    "Training": true,
+    "Payment": true,
+    "Disciplinary": true
 }

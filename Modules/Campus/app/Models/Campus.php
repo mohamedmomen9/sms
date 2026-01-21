@@ -2,6 +2,7 @@
 
 namespace Modules\Campus\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,12 @@ use Modules\Faculty\Models\Faculty;
 
 class Campus extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Modules\Campus\Database\Factories\CampusFactory::new();
+    }
 
     public $translatable = ['name'];
 

@@ -2,6 +2,7 @@
 
 namespace Modules\Department\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,12 @@ use Modules\Subject\Models\Subject;
 
 class Department extends Model
 {
-    use HasTranslations;
+    use HasTranslations, HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Modules\Department\Database\Factories\DepartmentFactory::new();
+    }
 
     public $translatable = ['name'];
 

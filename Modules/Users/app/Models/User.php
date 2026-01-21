@@ -18,6 +18,11 @@ class User extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable, HasApiTokens, HasRoles, HasAcademicScope;
 
+    protected static function newFactory()
+    {
+        return \Modules\Users\Database\Factories\UserFactory::new();
+    }
+
     /**
      * The attributes that are mass assignable.
      */

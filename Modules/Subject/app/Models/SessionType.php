@@ -10,6 +10,11 @@ class SessionType extends Model
 {
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return \Modules\Subject\Database\Factories\SessionTypeFactory::new();
+    }
+
     protected $fillable = [
         'code',
         'name',

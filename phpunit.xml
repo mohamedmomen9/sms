@@ -7,15 +7,24 @@
     <testsuites>
         <testsuite name="Unit">
             <directory>tests/Unit</directory>
+            <directory>Modules/*/tests/Unit</directory>
         </testsuite>
         <testsuite name="Feature">
             <directory>tests/Feature</directory>
+            <directory>Modules/*/tests/Feature</directory>
         </testsuite>
     </testsuites>
     <source>
         <include>
             <directory>app</directory>
+            <directory>Modules</directory>
         </include>
+        <exclude>
+            <directory>Modules/*/database</directory>
+            <directory>Modules/*/resources</directory>
+            <directory>Modules/*/routes</directory>
+            <directory>Modules/*/config</directory>
+        </exclude>
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>
