@@ -38,7 +38,11 @@ class GrievanceController extends Controller
         $student = $request->user();
         $grievance = Grievance::where('id', $id)
             ->where('student_id', $student->student_id)
-            ->firstOrFail();
+            ->first();
+
+        if (!$grievance) {
+            return ApiResponse::notFound('Grievance not found');
+        }
 
         if (!$this->grievanceService->canSubmitAppeal($grievance)) {
             return ApiResponse::error('Cannot submit appeal for this grievance', 409);

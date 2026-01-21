@@ -20,7 +20,12 @@ class ServiceRequestController extends Controller
      */
     public function available(): JsonResponse
     {
-        $term = Term::where('is_active', true)->firstOrFail();
+        $term = Term::where('is_active', true)->first();
+
+        if (!$term) {
+            return ApiResponse::notFound('No active term found');
+        }
+
         $services = $this->serviceRequestService->getAvailableServices($term);
 
         return ApiResponse::success($services);
@@ -32,7 +37,11 @@ class ServiceRequestController extends Controller
     public function myRequests(Request $request): JsonResponse
     {
         $student = $request->user();
-        $term = Term::where('is_active', true)->firstOrFail();
+        $term = Term::where('is_active', true)->first();
+
+        if (!$term) {
+            return ApiResponse::notFound('No active term found');
+        }
 
         $requests = $this->serviceRequestService->getStudentRequests($student, $term);
 
@@ -51,7 +60,11 @@ class ServiceRequestController extends Controller
         ]);
 
         $student = $request->user();
-        $term = Term::where('is_active', true)->firstOrFail();
+        $term = Term::where('is_active', true)->first();
+
+        if (!$term) {
+            return ApiResponse::notFound('No active term found');
+        }
 
         $serviceRequest = $this->serviceRequestService->submit(
             $student,

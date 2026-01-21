@@ -67,7 +67,12 @@ class AppointmentController extends Controller
         ]);
 
         $student = $request->user();
-        $term = Term::where('is_active', true)->firstOrFail();
+        $term = Term::where('is_active', true)->first();
+
+        if (!$term) {
+            return ApiResponse::notFound('No active term found');
+        }
+
         $date = Carbon::parse($request->date);
 
         if (!$this->appointmentService->isSlotAvailable(
@@ -117,7 +122,11 @@ class AppointmentController extends Controller
         $appointment = Appointment::where('id', $id)
             ->where('student_id', $student->student_id)
             ->where('status', 'booked')
-            ->firstOrFail();
+            ->first();
+
+        if (!$appointment) {
+            return ApiResponse::notFound('Appointment not found');
+        }
 
         $this->appointmentService->cancel($appointment);
 

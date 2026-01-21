@@ -41,8 +41,17 @@ class FieldTrainingController extends Controller
         ]);
 
         $student = $request->user();
-        $term = Term::where('is_active', true)->firstOrFail();
-        $opportunity = TrainingOpportunity::findOrFail($request->opportunity_id);
+        $term = Term::where('is_active', true)->first();
+
+        if (!$term) {
+            return ApiResponse::notFound('No active term found');
+        }
+
+        $opportunity = TrainingOpportunity::find($request->opportunity_id);
+
+        if (!$opportunity) {
+            return ApiResponse::notFound('Training opportunity not found');
+        }
 
         $application = $this->trainingService->apply($student, $opportunity, $term);
 
@@ -55,7 +64,11 @@ class FieldTrainingController extends Controller
     public function getWishlist(Request $request): JsonResponse
     {
         $student = $request->user();
-        $term = Term::where('is_active', true)->firstOrFail();
+        $term = Term::where('is_active', true)->first();
+
+        if (!$term) {
+            return ApiResponse::notFound('No active term found');
+        }
 
         $wishlist = $this->trainingService->getStudentWishlist($student, $term);
 
@@ -73,7 +86,11 @@ class FieldTrainingController extends Controller
         ]);
 
         $student = $request->user();
-        $term = Term::where('is_active', true)->firstOrFail();
+        $term = Term::where('is_active', true)->first();
+
+        if (!$term) {
+            return ApiResponse::notFound('No active term found');
+        }
 
         $wishlist = $this->trainingService->submitWishlist(
             $student,

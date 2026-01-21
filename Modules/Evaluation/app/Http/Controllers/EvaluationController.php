@@ -36,7 +36,11 @@ class EvaluationController extends Controller
     public function courses(Request $request): JsonResponse
     {
         $student = $request->user();
-        $term = Term::where('is_active', true)->firstOrFail();
+        $term = Term::where('is_active', true)->first();
+
+        if (!$term) {
+            return ApiResponse::notFound('No active term found');
+        }
 
         $courses = $this->evaluationService->getEvaluableCourses($student, $term);
 
@@ -58,7 +62,11 @@ class EvaluationController extends Controller
         ]);
 
         $student = $request->user();
-        $term = Term::where('is_active', true)->firstOrFail();
+        $term = Term::where('is_active', true)->first();
+
+        if (!$term) {
+            return ApiResponse::notFound('No active term found');
+        }
 
         if ($this->evaluationService->hasSubmitted(
             $student,
