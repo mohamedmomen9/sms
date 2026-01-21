@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Academic;
+namespace Modules\Academic\Tests\Feature;
 
 use Tests\TestCase;
 use Tests\Traits\CreatesTestUser;

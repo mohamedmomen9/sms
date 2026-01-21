@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\Auth;
+namespace Modules\Auth\Tests\Feature;
 
 use Tests\TestCase;
 use Tests\Traits\CreatesTestUser;
