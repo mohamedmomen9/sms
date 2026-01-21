@@ -14,7 +14,12 @@ use Modules\Users\Models\User;
 
 class Subject extends Model
 {
-    use HasTranslations;
+    use HasTranslations, \Illuminate\Database\Eloquent\Factories\HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Modules\Subject\Database\Factories\SubjectFactory::new();
+    }
 
     public $translatable = ['name'];
 
@@ -40,8 +45,8 @@ class Subject extends Model
     public function curricula()
     {
         return $this->belongsToMany(Curriculum::class, 'curriculum_subject')
-                    ->withPivot(['is_mandatory', 'uses_gpa', 'gpa_requirement'])
-                    ->withTimestamps();
+            ->withPivot(['is_mandatory', 'uses_gpa', 'gpa_requirement'])
+            ->withTimestamps();
     }
 
     public function faculty(): BelongsTo
@@ -72,7 +77,7 @@ class Subject extends Model
         if ($this->faculty_id) {
             return $this->faculty;
         }
-        
+
         if ($this->department_id && $this->department) {
             return $this->department->faculty;
         }

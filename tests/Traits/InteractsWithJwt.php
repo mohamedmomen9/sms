@@ -61,13 +61,23 @@ trait InteractsWithJwt
     }
 
     /**
-     * Create a mock JWT token for testing protected routes.
+     * Create a real JWT token for testing protected routes.
      */
     protected function createMockJwtToken(object $user, string $role): string
     {
-        // For integration tests, use the actual JWT generation
-        // This is a simplified mock for unit tests
-        return 'test_jwt_token_' . $user->id . '_' . $role;
+        $modelClass = get_class($user);
+
+        $config = config('jwt-auth');
+        $config['user_model'] = $modelClass;
+        Config::set('jwt-auth.user_model', $modelClass);
+
+        $jwtService = new \Kz370\JwtAuth\Services\JwtService($config);
+
+        return $jwtService->generateAccessToken($user, [
+            'role' => $role,
+            // We don't strictly need 'rth' for middleware auth check, as it only validates signature and sub/exp
+            // But if we did, we'd need a refresh token hash. For now, skip it.
+        ]);
     }
 
     /**

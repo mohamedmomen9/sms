@@ -11,6 +11,11 @@ class CourseSchedule extends Model
 {
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return \Modules\Subject\Database\Factories\CourseScheduleFactory::new();
+    }
+
     protected $fillable = [
         'course_offering_id',
         'session_type_id',
@@ -108,7 +113,20 @@ class CourseSchedule extends Model
      */
     public function scopeOrdered($query)
     {
+        if (config('database.default') === 'sqlite') {
+            $sql = "CASE day 
+                WHEN 'Sunday' THEN 1 
+                WHEN 'Monday' THEN 2 
+                WHEN 'Tuesday' THEN 3 
+                WHEN 'Wednesday' THEN 4 
+                WHEN 'Thursday' THEN 5 
+                WHEN 'Friday' THEN 6 
+                WHEN 'Saturday' THEN 7 
+                ELSE 8 END";
+            return $query->orderByRaw($sql)->orderBy('start_time');
+        }
+
         return $query->orderByRaw("FIELD(day, 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday')")
-                     ->orderBy('start_time');
+            ->orderBy('start_time');
     }
 }

@@ -10,7 +10,12 @@ class CourseEnrollment extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['student_id', 'course_offering_id', 'grade', 'status', 'enrolled_at'];
+    protected static function newFactory()
+    {
+        return \Modules\Students\Database\Factories\CourseEnrollmentFactory::new();
+    }
+
+    protected $fillable = ['student_id', 'course_offering_id', 'status', 'enrolled_at'];
 
     public function student()
     {

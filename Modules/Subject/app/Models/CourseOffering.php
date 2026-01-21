@@ -17,6 +17,11 @@ class CourseOffering extends Model
 {
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return \Modules\Subject\Database\Factories\CourseOfferingFactory::new();
+    }
+
     protected $fillable = [
         'subject_id',
         'term_id',
