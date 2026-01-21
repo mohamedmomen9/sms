@@ -1,10 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\Training\Http\Controllers\TrainingController;
+use Modules\Training\Http\Controllers\FieldTrainingController;
 
-Route::middleware(['api'])->prefix('api/training')->name('api.training.')->group(function () {
-    // Define your module API routes here
-    // Example:
-    // Route::apiResource('trainings', TrainingController::class);
+Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('training')->group(function () {
+        Route::get('opportunities', [FieldTrainingController::class, 'opportunities']);
+        Route::post('apply', [FieldTrainingController::class, 'apply']);
+        Route::get('wishlist', [FieldTrainingController::class, 'getWishlist']);
+        Route::post('wishlist', [FieldTrainingController::class, 'submitWishlist']);
+    });
 });

@@ -1,0 +1,75 @@
+<?php
+
+namespace Modules\Services\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Modules\Academic\Models\Term;
+use Modules\Services\Services\ServiceRequestService;
+
+class ServiceRequestController extends Controller
+{
+    public function __construct(
+        private ServiceRequestService $serviceRequestService
+    ) {}
+
+    /**
+     * GET /api/v1/services
+     */
+    public function available(): JsonResponse
+    {
+        $term = Term::where('is_active', true)->firstOrFail();
+        $services = $this->serviceRequestService->getAvailableServices($term);
+
+        return response()->json([
+            'success' => true,
+            'data' => $services,
+        ]);
+    }
+
+    /**
+     * GET /api/v1/services/my
+     */
+    public function myRequests(Request $request): JsonResponse
+    {
+        $student = $request->user();
+        $term = Term::where('is_active', true)->firstOrFail();
+
+        $requests = $this->serviceRequestService->getStudentRequests($student, $term);
+
+        return response()->json([
+            'success' => true,
+            'data' => $requests,
+        ]);
+    }
+
+    /**
+     * POST /api/v1/services/request
+     */
+    public function submit(Request $request): JsonResponse
+    {
+        $request->validate([
+            'service_type_id' => 'required|exists:service_types,id',
+            'notes' => 'nullable|string|max:1000',
+            'shipping_required' => 'boolean',
+        ]);
+
+        $student = $request->user();
+        $term = Term::where('is_active', true)->firstOrFail();
+
+        $serviceRequest = $this->serviceRequestService->submit(
+            $student,
+            $term,
+            $request->service_type_id,
+            $request->notes,
+            $request->boolean('shipping_required')
+        );
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Service request submitted',
+            'data' => $serviceRequest->load('serviceType'),
+        ], 201);
+    }
+}

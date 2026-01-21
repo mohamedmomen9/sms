@@ -3,8 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Evaluation\Http\Controllers\EvaluationController;
 
-Route::middleware(['api'])->prefix('api/evaluation')->name('api.evaluation.')->group(function () {
-    // Define your module API routes here
-    // Example:
-    // Route::apiResource('evaluations', EvaluationController::class);
+Route::prefix('v1')->middleware(['auth:sanctum'])->group(function () {
+    Route::prefix('evaluation')->group(function () {
+        Route::get('structure', [EvaluationController::class, 'structure']);
+        Route::get('courses', [EvaluationController::class, 'courses']);
+        Route::post('submit', [EvaluationController::class, 'submit']);
+    });
 });
