@@ -10,6 +10,11 @@ class AcademicYear extends Model
 {
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return \Modules\Academic\Database\Factories\AcademicYearFactory::new();
+    }
+
     protected $fillable = ['name', 'start_date', 'end_date', 'is_active', 'status'];
 
     public function terms()

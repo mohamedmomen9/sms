@@ -10,6 +10,11 @@ class Term extends Model
 {
     use HasFactory;
 
+    protected static function newFactory()
+    {
+        return \Modules\Academic\Database\Factories\TermFactory::new();
+    }
+
     /**
      * The attributes that are mass assignable.
      */

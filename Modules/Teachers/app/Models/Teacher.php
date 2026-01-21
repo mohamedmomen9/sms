@@ -19,6 +19,11 @@ class Teacher extends Authenticatable implements FilamentUser
 {
     use HasFactory, Notifiable, HasRoles, HasApiTokens;
 
+    protected static function newFactory()
+    {
+        return \Modules\Teachers\Database\Factories\TeacherFactory::new();
+    }
+
     protected $fillable = [
         'name',
         'email',
@@ -79,7 +84,7 @@ class Teacher extends Authenticatable implements FilamentUser
     public function getAccessibleSubjectsAttribute()
     {
         $facultyIds = $this->faculties()->pluck('faculties.id')->toArray();
-        
+
         if (empty($facultyIds)) {
             return $this->subjects;
         }
@@ -99,7 +104,7 @@ class Teacher extends Authenticatable implements FilamentUser
         }
 
         $facultyIds = $this->faculties()->pluck('faculties.id')->toArray();
-        
+
         if (empty($facultyIds)) {
             return false;
         }
