@@ -24,3 +24,4 @@ yarn-error.log
 database/null.txt
 plan/*
 *.md
+postman_collection.json
