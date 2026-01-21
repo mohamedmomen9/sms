@@ -38,9 +38,29 @@ class PermissionsSeeder extends Seeder
             'role',
             'permission',
             'curriculum',
-            'buildings',
-            'rooms',
-            'facilities',
+            'academic_year',
+            'term',
+            'building',
+            'room',
+            'facility',
+            'teacher',
+            'student',
+            'course_offering',
+            'course_enrollment',
+            'course_schedule',
+            'session_type',
+            'appointment',
+            'appointment_slot',
+            'appointment_department',
+            'appointment_purpose',
+            'service_request',
+            'service_type',
+            'payment_registration',
+            'training_opportunity',
+            'field_training',
+            'assessment',
+            'evaluation',
+            'grievance',
         ];
 
         $actions = ['view_any', 'view', 'create', 'update', 'delete', 'delete_any'];
@@ -52,7 +72,7 @@ class PermissionsSeeder extends Seeder
         }
 
         // Roles and their permissions
-        
+
         // Super Admin
         $superAdmin = Role::firstOrCreate(['name' => 'Super Admin']);
         $superAdmin->givePermissionTo(Permission::all());
