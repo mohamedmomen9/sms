@@ -24,6 +24,15 @@ use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
 use Database\Seeders\PermissionsSeeder;
+use Modules\Services\Models\ServiceType;
+use Modules\Services\Models\ServiceRequest;
+use Modules\Services\Models\Appointment;
+use Modules\Services\Models\AppointmentDepartment;
+use Modules\Services\Models\AppointmentPurpose;
+use Modules\Services\Models\AppointmentSlot;
+use Modules\Payment\Models\PaymentRegistration;
+use Modules\Training\Models\TrainingOpportunity;
+use Modules\Services\Database\Factories\ServiceTypeFactory;
 
 /**
  * Demo data seeder with realistic, curated names for staging/demo environments.
@@ -42,16 +51,56 @@ class DemoDataSeeder extends Seeder
      * Diverse selection representing common academic surnames from various backgrounds.
      */
     private const TEACHER_SURNAMES = [
-        'Anderson', 'Chen', 'Williams', 'Martinez', 'Thompson',
-        'Patel', 'Johnson', 'Kim', 'Garcia', 'Brown',
-        'Wilson', 'Taylor', 'Lee', 'Moore', 'Jackson',
-        'White', 'Harris', 'Clark', 'Lewis', 'Robinson',
-        'Walker', 'Young', 'Allen', 'King', 'Wright',
-        'Scott', 'Green', 'Baker', 'Adams', 'Nelson',
-        'Hill', 'Ramirez', 'Campbell', 'Mitchell', 'Roberts',
-        'Carter', 'Phillips', 'Evans', 'Turner', 'Torres',
-        'Parker', 'Collins', 'Edwards', 'Stewart', 'Flores',
-        'Morris', 'Nguyen', 'Murphy', 'Rivera', 'Cook',
+        'Anderson',
+        'Chen',
+        'Williams',
+        'Martinez',
+        'Thompson',
+        'Patel',
+        'Johnson',
+        'Kim',
+        'Garcia',
+        'Brown',
+        'Wilson',
+        'Taylor',
+        'Lee',
+        'Moore',
+        'Jackson',
+        'White',
+        'Harris',
+        'Clark',
+        'Lewis',
+        'Robinson',
+        'Walker',
+        'Young',
+        'Allen',
+        'King',
+        'Wright',
+        'Scott',
+        'Green',
+        'Baker',
+        'Adams',
+        'Nelson',
+        'Hill',
+        'Ramirez',
+        'Campbell',
+        'Mitchell',
+        'Roberts',
+        'Carter',
+        'Phillips',
+        'Evans',
+        'Turner',
+        'Torres',
+        'Parker',
+        'Collins',
+        'Edwards',
+        'Stewart',
+        'Flores',
+        'Morris',
+        'Nguyen',
+        'Murphy',
+        'Rivera',
+        'Cook',
     ];
 
     /**
@@ -59,21 +108,81 @@ class DemoDataSeeder extends Seeder
      * Gender-neutral and diverse selection for inclusive demos.
      */
     private const STUDENT_FIRST_NAMES = [
-        'James', 'Emma', 'Oliver', 'Sophia', 'William',
-        'Ava', 'Benjamin', 'Isabella', 'Lucas', 'Mia',
-        'Henry', 'Charlotte', 'Alexander', 'Amelia', 'Sebastian',
-        'Harper', 'Jack', 'Evelyn', 'Aiden', 'Abigail',
-        'Owen', 'Emily', 'Samuel', 'Elizabeth', 'Ryan',
-        'Sofia', 'Nathan', 'Avery', 'Leo', 'Ella',
-        'Adam', 'Scarlett', 'Daniel', 'Grace', 'Matthew',
-        'Chloe', 'Joseph', 'Victoria', 'David', 'Riley',
-        'Andrew', 'Aria', 'Ethan', 'Lily', 'Michael',
-        'Zoey', 'Noah', 'Hannah', 'Liam', 'Nora',
-        'Omar', 'Fatima', 'Ahmed', 'Layla', 'Yusuf',
-        'Sara', 'Ali', 'Nadia', 'Hassan', 'Mariam',
-        'Wei', 'Mei', 'Jin', 'Yuki', 'Hiroshi',
-        'Sakura', 'Raj', 'Priya', 'Arun', 'Ananya',
-        'Carlos', 'Maria', 'Diego', 'Ana', 'Luis',
+        'James',
+        'Emma',
+        'Oliver',
+        'Sophia',
+        'William',
+        'Ava',
+        'Benjamin',
+        'Isabella',
+        'Lucas',
+        'Mia',
+        'Henry',
+        'Charlotte',
+        'Alexander',
+        'Amelia',
+        'Sebastian',
+        'Harper',
+        'Jack',
+        'Evelyn',
+        'Aiden',
+        'Abigail',
+        'Owen',
+        'Emily',
+        'Samuel',
+        'Elizabeth',
+        'Ryan',
+        'Sofia',
+        'Nathan',
+        'Avery',
+        'Leo',
+        'Ella',
+        'Adam',
+        'Scarlett',
+        'Daniel',
+        'Grace',
+        'Matthew',
+        'Chloe',
+        'Joseph',
+        'Victoria',
+        'David',
+        'Riley',
+        'Andrew',
+        'Aria',
+        'Ethan',
+        'Lily',
+        'Michael',
+        'Zoey',
+        'Noah',
+        'Hannah',
+        'Liam',
+        'Nora',
+        'Omar',
+        'Fatima',
+        'Ahmed',
+        'Layla',
+        'Yusuf',
+        'Sara',
+        'Ali',
+        'Nadia',
+        'Hassan',
+        'Mariam',
+        'Wei',
+        'Mei',
+        'Jin',
+        'Yuki',
+        'Hiroshi',
+        'Sakura',
+        'Raj',
+        'Priya',
+        'Arun',
+        'Ananya',
+        'Carlos',
+        'Maria',
+        'Diego',
+        'Ana',
+        'Luis',
     ];
 
     /**
@@ -81,21 +190,81 @@ class DemoDataSeeder extends Seeder
      * Diverse selection representing various cultural backgrounds.
      */
     private const STUDENT_LAST_NAMES = [
-        'Smith', 'Johnson', 'Williams', 'Brown', 'Jones',
-        'Garcia', 'Miller', 'Davis', 'Rodriguez', 'Martinez',
-        'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson',
-        'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin',
-        'Lee', 'Perez', 'Thompson', 'White', 'Harris',
-        'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson',
-        'Walker', 'Young', 'Allen', 'King', 'Wright',
-        'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores',
-        'Green', 'Adams', 'Nelson', 'Baker', 'Hall',
-        'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts',
-        'Ahmed', 'Hassan', 'Ali', 'Khan', 'Ibrahim',
-        'Chen', 'Wang', 'Li', 'Zhang', 'Liu',
-        'Patel', 'Shah', 'Kumar', 'Singh', 'Sharma',
-        'Tanaka', 'Yamamoto', 'Suzuki', 'Kim', 'Park',
-        'Santos', 'Oliveira', 'Silva', 'Costa', 'Ferreira',
+        'Smith',
+        'Johnson',
+        'Williams',
+        'Brown',
+        'Jones',
+        'Garcia',
+        'Miller',
+        'Davis',
+        'Rodriguez',
+        'Martinez',
+        'Hernandez',
+        'Lopez',
+        'Gonzalez',
+        'Wilson',
+        'Anderson',
+        'Thomas',
+        'Taylor',
+        'Moore',
+        'Jackson',
+        'Martin',
+        'Lee',
+        'Perez',
+        'Thompson',
+        'White',
+        'Harris',
+        'Sanchez',
+        'Clark',
+        'Ramirez',
+        'Lewis',
+        'Robinson',
+        'Walker',
+        'Young',
+        'Allen',
+        'King',
+        'Wright',
+        'Scott',
+        'Torres',
+        'Nguyen',
+        'Hill',
+        'Flores',
+        'Green',
+        'Adams',
+        'Nelson',
+        'Baker',
+        'Hall',
+        'Rivera',
+        'Campbell',
+        'Mitchell',
+        'Carter',
+        'Roberts',
+        'Ahmed',
+        'Hassan',
+        'Ali',
+        'Khan',
+        'Ibrahim',
+        'Chen',
+        'Wang',
+        'Li',
+        'Zhang',
+        'Liu',
+        'Patel',
+        'Shah',
+        'Kumar',
+        'Singh',
+        'Sharma',
+        'Tanaka',
+        'Yamamoto',
+        'Suzuki',
+        'Kim',
+        'Park',
+        'Santos',
+        'Oliveira',
+        'Silva',
+        'Costa',
+        'Ferreira',
     ];
 
     /**
@@ -436,8 +605,11 @@ class DemoDataSeeder extends Seeder
         $sessionTypes = SessionType::all()->keyBy('code');
         $days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday'];
         $timeSlots = [
-            ['08:00', '09:30'], ['10:00', '11:30'], ['12:00', '13:30'],
-            ['14:00', '15:30'], ['16:00', '17:30'],
+            ['08:00', '09:30'],
+            ['10:00', '11:30'],
+            ['12:00', '13:30'],
+            ['14:00', '15:30'],
+            ['16:00', '17:30'],
         ];
 
         foreach ($facultiesData as $facData) {
@@ -584,7 +756,134 @@ class DemoDataSeeder extends Seeder
             }
         }
 
+        // Seed additional features (Services, Appointments, Training)
+        $this->seedAdditionalFeatures($students, $activeTerm, $facultiesData);
+
         $this->command->info('Demo data seeded successfully!');
+    }
+
+    private function seedAdditionalFeatures(array $students, Term $term, array $facultiesData): void
+    {
+        // 1. Service Types
+        $types = [
+            ['name' => 'Official Transcript', 'code' => 'DOC-001', 'price' => 50.00, 'days' => 3],
+            ['name' => 'Student ID Replacement', 'code' => 'ID-002', 'price' => 100.00, 'days' => 7],
+            ['name' => 'Graduation Certificate', 'code' => 'DOC-003', 'price' => 200.00, 'days' => 14],
+        ];
+
+        $serviceTypes = [];
+        foreach ($types as $t) {
+            $serviceTypes[] = ServiceType::firstOrCreate(['code' => $t['code']], [
+                'name' => $t['name'],
+                'price' => $t['price'],
+                'duration_days' => $t['days'],
+                'is_active' => true,
+                'description' => $t['name'] . ' for students.',
+                'requires_shipping' => $t['code'] !== 'ID-002',
+            ]);
+        }
+
+        // 2. Service Requests & Payments
+        foreach ($students as $index => $student) {
+            if ($index % 3 === 0) { // 33% of students
+                $type = $serviceTypes[array_rand($serviceTypes)];
+
+                $request = ServiceRequest::create([
+                    'student_id' => $student->student_id,
+                    'term_id' => $term->id,
+                    'service_type_id' => $type->id,
+                    'payment_amount' => $type->price,
+                    'status' => 'pending',
+                    'payment_status' => 'pending',
+                ]);
+
+                // 80% Pay
+                if (rand(0, 100) < 80) {
+                    PaymentRegistration::create([
+                        'student_id' => $student->student_id,
+                        'service_request_id' => $request->id,
+                        'amount' => $request->payment_amount,
+                        'payment_method' => 'credit_card',
+                        'callback_status' => 'success',
+                        'payment_date' => now(),
+                        'transaction_id' => 'TXN-' . uniqid(),
+                    ]);
+                    $request->update(['payment_status' => 'paid', 'status' => 'processing']);
+                }
+            }
+        }
+
+        // 3. Appointments
+        $depts = [
+            ['name' => 'Academic Advising', 'purposes' => ['Course Selection', 'Career Advice', 'Probation']],
+            ['name' => 'Financial Aid', 'purposes' => ['Scholarship Inquiry', 'Tuition Payment', 'Loan Application']],
+            ['name' => 'Student Affairs', 'purposes' => ['Housing', 'Clubs', 'Complaints']],
+        ];
+
+        $appDepts = [];
+        foreach ($depts as $d) {
+            $dept = AppointmentDepartment::firstOrCreate(['name' => $d['name']], ['is_active' => true]);
+            $appDepts[] = $dept;
+            foreach ($d['purposes'] as $p) {
+                AppointmentPurpose::firstOrCreate(['name' => $p, 'department_id' => $dept->id], ['is_active' => true]);
+            }
+        }
+
+        // Slots
+        $slots = [];
+        $startTime = \Carbon\Carbon::parse('2025-09-01 09:00:00');
+        for ($i = 0; $i < 20; $i++) { // 20 slots
+            $start = $startTime->copy()->addMinutes($i * 30);
+            $end = $start->copy()->addMinutes(30);
+            // Skip weekends ideally but simplify
+            if ($start->hour >= 17) {
+                $startTime->addDay()->setHour(9);
+                continue;
+            }
+            $slots[] = AppointmentSlot::firstOrCreate([
+                'start_time' => $start->format('H:i'),
+                'end_time' => $end->format('H:i'),
+            ], ['label' => $start->format('g:i A') . ' - ' . $end->format('g:i A'), 'is_active' => true, 'capacity' => 5]);
+        }
+
+        // Book Appointments
+        foreach ($students as $index => $student) {
+            if ($index % 5 === 0) { // 20%
+                $dept = $appDepts[array_rand($appDepts)];
+                $purpose = $dept->purposes->random();
+                $slot = $slots[array_rand($slots)];
+
+                Appointment::create([
+                    'student_id' => $student->student_id,
+                    'term_id' => $term->id,
+                    'department_id' => $dept->id,
+                    'purpose_id' => $purpose->id,
+                    'slot_id' => $slot->id,
+                    'appointment_date' => now()->addDays(rand(1, 10)),
+                    'status' => 'booked',
+                    'notes' => 'Demo appointment',
+                ]);
+            }
+        }
+
+        // 4. Training Opportunities
+        $engFaculty = Faculty::where('code', 'ENG')->first();
+        if ($engFaculty) {
+            TrainingOpportunity::create([
+                'organization_name' => 'Tech Corp',
+                'description' => 'Summer Internship',
+                'faculty_id' => $engFaculty->id,
+                'department_id' => $engFaculty->departments->first()->id,
+                'concentration' => 'Software',
+                'cohort' => '2025',
+                'capacity' => 10,
+                'start_date' => now()->addMonths(2),
+                'end_date' => now()->addMonths(5),
+                'is_available' => true,
+                'conditions' => ['GPA > 3.0'],
+                'required_documents' => ['CV', 'Transcript'],
+            ]);
+        }
     }
 
     /**
