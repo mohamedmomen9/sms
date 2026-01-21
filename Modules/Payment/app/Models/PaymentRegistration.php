@@ -4,11 +4,19 @@ namespace Modules\Payment\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Students\Models\Student;
 use Modules\Services\Models\ServiceRequest;
 
 class PaymentRegistration extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Modules\Payment\Database\Factories\PaymentRegistrationFactory::new();
+    }
+
     protected $fillable = [
         'student_id',
         'service_request_id',
