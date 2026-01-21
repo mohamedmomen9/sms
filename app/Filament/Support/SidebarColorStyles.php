@@ -31,7 +31,15 @@ class SidebarColorStyles
                 a[href*="/teachers"] .fi-sidebar-item-icon { color: rgb(244 63 94) !important; } /* Rose-500 */
                 a[href*="/users"] .fi-sidebar-item-icon { color: rgb(100 116 139) !important; } /* Slate-500 */
                 a[href*="/roles"] .fi-sidebar-item-icon { color: rgb(113 113 122) !important; } /* Zinc-500 */
-                a[href*="/permissions"] .fi-sidebar-item-icon { color: rgb(115 115 115) !important; } /* Neutral-500 */
+                    a[href*="/permissions"] .fi-sidebar-item-icon { color: rgb(115 115 115) !important; } /* Neutral-500 */
+
+                /* Services & Appointments */
+                a[href*="/appointments"] .fi-sidebar-item-icon { color: rgb(236 72 153) !important; } /* Pink-500 */
+                a[href*="/service-requests"] .fi-sidebar-item-icon { color: rgb(37 99 235) !important; } /* Blue-600 */
+
+                /* Disciplinary & Evaluation */
+                a[href*="/grievances"] .fi-sidebar-item-icon { color: rgb(220 38 38) !important; } /* Red-600 */
+                a[href*="/assessments"] .fi-sidebar-item-icon { color: rgb(147 51 234) !important; } /* Purple-600 */
             </style>
         CSS;
     }
