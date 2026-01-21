@@ -3,12 +3,20 @@
 namespace Modules\Services\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Students\Models\Student;
 use Modules\Academic\Models\Term;
 
 class Appointment extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Modules\Services\Database\Factories\AppointmentFactory::new();
+    }
+
     protected $fillable = [
         'student_id',
         'term_id',

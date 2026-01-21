@@ -3,10 +3,18 @@
 namespace Modules\Services\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class ServiceType extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Modules\Services\Database\Factories\ServiceTypeFactory::new();
+    }
+
     protected $fillable = [
         'name',
         'code',

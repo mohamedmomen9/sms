@@ -4,9 +4,17 @@ namespace Modules\Services\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AppointmentSlot extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Modules\Services\Database\Factories\AppointmentSlotFactory::new();
+    }
+
     protected $fillable = [
         'start_time',
         'end_time',

@@ -4,9 +4,17 @@ namespace Modules\Services\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class AppointmentPurpose extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Modules\Services\Database\Factories\AppointmentPurposeFactory::new();
+    }
+
     protected $fillable = [
         'department_id',
         'name',

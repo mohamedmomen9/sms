@@ -6,12 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Students\Models\Student;
 use Modules\Academic\Models\Term;
 use Modules\Payment\Models\PaymentRegistration;
 
 class ServiceRequest extends Model
 {
+    use HasFactory;
+
+    protected static function newFactory()
+    {
+        return \Modules\Services\Database\Factories\ServiceRequestFactory::new();
+    }
+
     protected $fillable = [
         'student_id',
         'term_id',
