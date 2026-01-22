@@ -22,7 +22,7 @@ class PaymentServiceTest extends TestCase
     {
         parent::setUp();
         $this->service = new PaymentService();
-        $this->seed(\Database\Seeders\TestDatabaseSeeder::class);
+        $this->seed(\Database\Seeders\Demo\DemoTestSeeder::class);
     }
 
     public function test_create_registration_stores_correct_data()

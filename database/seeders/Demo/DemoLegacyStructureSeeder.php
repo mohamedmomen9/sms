@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Demo;
 
 use Modules\Campus\Models\Campus;
 use Modules\Department\Models\Department;
@@ -18,12 +18,36 @@ class DemoLegacyStructureSeeder extends Seeder
     {
         // Create Permissions
         $permissions = [
-            'view_any_campus', 'view_campus', 'create_campus', 'update_campus', 'delete_campus',
-            'view_any_faculty', 'view_faculty', 'create_faculty', 'update_faculty', 'delete_faculty',
-            'view_any_department', 'view_department', 'create_department', 'update_department', 'delete_department',
-            'view_any_curriculum', 'view_curriculum', 'create_curriculum', 'update_curriculum', 'delete_curriculum',
-            'view_any_subject', 'view_subject', 'create_subject', 'update_subject', 'delete_subject',
-            'view_any_user', 'view_user', 'create_user', 'update_user', 'delete_user',
+            'view_any_campus',
+            'view_campus',
+            'create_campus',
+            'update_campus',
+            'delete_campus',
+            'view_any_faculty',
+            'view_faculty',
+            'create_faculty',
+            'update_faculty',
+            'delete_faculty',
+            'view_any_department',
+            'view_department',
+            'create_department',
+            'update_department',
+            'delete_department',
+            'view_any_curriculum',
+            'view_curriculum',
+            'create_curriculum',
+            'update_curriculum',
+            'delete_curriculum',
+            'view_any_subject',
+            'view_subject',
+            'create_subject',
+            'update_subject',
+            'delete_subject',
+            'view_any_user',
+            'view_user',
+            'create_user',
+            'update_user',
+            'delete_user',
         ];
 
         foreach ($permissions as $permission) {
@@ -37,11 +61,16 @@ class DemoLegacyStructureSeeder extends Seeder
         // Create User Role
         $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
         $userRole->syncPermissions([
-            'view_any_campus', 'view_campus',
-            'view_any_faculty', 'view_faculty',
-            'view_any_department', 'view_department',
-            'view_any_curriculum', 'view_curriculum',
-            'view_any_subject', 'view_subject',
+            'view_any_campus',
+            'view_campus',
+            'view_any_faculty',
+            'view_faculty',
+            'view_any_department',
+            'view_department',
+            'view_any_curriculum',
+            'view_curriculum',
+            'view_any_subject',
+            'view_subject',
         ]);
 
         // Create Campuses
@@ -52,7 +81,7 @@ class DemoLegacyStructureSeeder extends Seeder
                 'location' => 'Giza',
                 'address' => 'Giza, Egypt',
                 'status' => 'active',
-                'email' => 'main@example.com', 
+                'email' => 'main@example.com',
                 'phone' => '123456789',
             ]
         );
@@ -116,7 +145,7 @@ class DemoLegacyStructureSeeder extends Seeder
             ['department_id' => $dept2->id, 'name' => ['en' => '2024 Electrical Engineering', 'ar' => '2024 Electrical Engineering']],
             ['code' => 'EE-2024', 'status' => 'active']
         );
-         // Link Curriculum 2 to Faculty 1
+        // Link Curriculum 2 to Faculty 1
         if (!$curr2->faculties()->where('faculty_id', $faculty1->id)->exists()) {
             $curr2->faculties()->attach($faculty1->id);
         }
@@ -167,7 +196,7 @@ class DemoLegacyStructureSeeder extends Seeder
             ]);
         }
         $adminUser->assignRole('admin');
-        
+
         // Faculty Scoped User
         $facultyUser = User::firstOrCreate(
             ['email' => 'faculty.admin@university.edu'],

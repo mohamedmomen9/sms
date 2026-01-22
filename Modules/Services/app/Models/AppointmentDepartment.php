@@ -41,6 +41,15 @@ class AppointmentDepartment extends Model
         return $this->hasMany(Appointment::class, 'department_id');
     }
 
+    public function toArray()
+    {
+        $attributes = parent::toArray();
+        foreach ($this->getTranslatableAttributes() as $name) {
+            $attributes[$name] = $this->getTranslation($name, app()->getLocale());
+        }
+        return $attributes;
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

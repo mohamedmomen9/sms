@@ -21,7 +21,7 @@ class ServiceRequestServiceTest extends TestCase
     {
         parent::setUp();
         $this->service = new ServiceRequestService();
-        $this->seed(\Database\Seeders\TestDatabaseSeeder::class);
+        $this->seed(\Database\Seeders\Demo\DemoTestSeeder::class);
     }
 
     public function test_submit_creates_request_with_correct_price()

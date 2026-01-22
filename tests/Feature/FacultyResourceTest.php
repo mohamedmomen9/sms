@@ -18,9 +18,9 @@ class FacultyResourceTest extends TestCase
 
     public function test_super_admin_can_list_faculties()
     {
-        $admin = \App\Models\User::where('email', 'admin@example.com')->first();
+        $admin = \Modules\Users\Models\User::where('email', 'admin@example.com')->first();
         if (!$admin) {
-            $admin = \App\Models\User::factory()->create([
+            $admin = \Modules\Users\Models\User::factory()->create([
                 'email' => 'admin@example.com', 
                 'is_admin' => true, 
                 'role' => 'admin'

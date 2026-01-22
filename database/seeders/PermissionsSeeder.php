@@ -29,6 +29,7 @@ class PermissionsSeeder extends Seeder
 
         // Functional permissions
         $resources = [
+            'campus',
             'faculty',
             'department',
             'subject',

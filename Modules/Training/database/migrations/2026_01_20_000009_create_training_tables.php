@@ -10,8 +10,11 @@ return new class extends Migration
     {
         Schema::create('training_opportunities', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
             $table->string('organization_name');
             $table->text('description')->nullable();
+            $table->string('location')->nullable();
+            $table->date('deadline')->nullable();
             $table->foreignId('faculty_id')->nullable()->constrained('faculties');
             $table->foreignId('department_id')->nullable()->constrained('departments');
             $table->string('concentration')->nullable();

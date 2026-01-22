@@ -27,8 +27,14 @@ class DemoTrainingSeeder extends Seeder
         ];
 
         foreach ($opportunities as $op) {
-            TrainingOpportunity::firstOrCreate(['title' => $op['title']], $op + [
-                'is_active' => true,
+            TrainingOpportunity::firstOrCreate([
+                'title' => $op['title']
+            ], [
+                'organization_name' => $op['company'],
+                'description' => $op['description'],
+                'location' => $op['location'],
+                'start_date' => $op['start_date'],
+                'is_available' => true,
                 'deadline' => '2026-05-30',
             ]);
         }

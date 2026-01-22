@@ -33,7 +33,7 @@ class AppLaunchSeeder extends Seeder
                 'first_name' => 'System',
                 'last_name' => 'Admin',
                 'display_name' => 'Super Administrator',
-                'is_active' => true,
+                'active' => true,
             ]
         );
 

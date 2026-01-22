@@ -46,7 +46,7 @@ class DemoAppointmentSeeder extends Seeder
             ], [
                 'end_time' => '12:00:00',
                 'max_capacity' => 10,
-                'is_active' => true,
+                'is_available' => true,
             ]);
         }
 

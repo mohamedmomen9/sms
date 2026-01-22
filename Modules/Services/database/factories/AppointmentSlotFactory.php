@@ -16,10 +16,13 @@ class AppointmentSlotFactory extends Factory
         $end = (clone $start)->addMinutes(30);
 
         return [
+            'department_id' => \Modules\Services\Models\AppointmentDepartment::factory(),
+            'day_of_week' => $this->faker->numberBetween(0, 6),
             'start_time' => $start->format('H:i:s'),
             'end_time' => $end->format('H:i:s'),
             'label' => $start->format('g:i A') . ' - ' . $end->format('g:i A'),
             'is_available' => true,
+            'max_capacity' => 1,
         ];
     }
 }

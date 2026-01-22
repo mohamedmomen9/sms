@@ -11,8 +11,11 @@ use Modules\Department\Models\Department;
 class TrainingOpportunity extends Model
 {
     protected $fillable = [
+        'title',
         'organization_name',
         'description',
+        'location',
+        'deadline',
         'faculty_id',
         'department_id',
         'concentration',
@@ -28,6 +31,7 @@ class TrainingOpportunity extends Model
     protected $casts = [
         'start_date' => 'date',
         'end_date' => 'date',
+        'deadline' => 'date',
         'is_available' => 'boolean',
         'conditions' => 'array',
         'required_documents' => 'array',

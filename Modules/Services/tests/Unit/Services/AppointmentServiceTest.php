@@ -24,7 +24,7 @@ class AppointmentServiceTest extends TestCase
     {
         parent::setUp();
         $this->service = new AppointmentService();
-        $this->seed(\Database\Seeders\TestDatabaseSeeder::class);
+        $this->seed(\Database\Seeders\Demo\DemoTestSeeder::class);
     }
 
     public function test_get_available_slots_respects_capacity()

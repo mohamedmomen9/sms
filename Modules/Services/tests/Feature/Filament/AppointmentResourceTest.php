@@ -17,7 +17,7 @@ class AppointmentResourceTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->seed(\Database\Seeders\TestDatabaseSeeder::class);
+        $this->seed(\Database\Seeders\Demo\DemoTestSeeder::class);
     }
 
     public function test_admin_can_render_index_page()

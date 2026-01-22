@@ -16,11 +16,19 @@ class AppointmentSlot extends Model
     }
 
     protected $fillable = [
+        'department_id',
+        'day_of_week',
         'start_time',
         'end_time',
         'label',
         'is_available',
+        'max_capacity',
     ];
+
+    public function department(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(AppointmentDepartment::class);
+    }
 
     protected $casts = [
         'start_time' => 'datetime:H:i',

@@ -19,7 +19,7 @@ class AppointmentApiTest extends TestCase
     {
         parent::setUp();
         $this->setUpJwtTesting();
-        $this->seed(\Database\Seeders\TestDatabaseSeeder::class);
+        $this->seed(\Database\Seeders\Demo\DemoTestSeeder::class);
     }
 
     public function test_student_can_list_departments()

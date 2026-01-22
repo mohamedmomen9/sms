@@ -25,7 +25,7 @@ class ScheduleServiceTest extends TestCase
     {
         parent::setUp();
         $this->service = new ScheduleService();
-        $this->seed(\Database\Seeders\TestDatabaseSeeder::class);
+        $this->seed(\Database\Seeders\Demo\DemoTestSeeder::class);
     }
 
     public function test_get_student_schedule_returns_correct_items(): void
