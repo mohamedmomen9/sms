@@ -15,7 +15,7 @@ use Spatie\Permission\Models\Permission;
  * Minimal seeder for testing environment.
  * Creates only the essential data needed for tests to run.
  */
-class TestDatabaseSeeder extends Seeder
+class DemoTestSeeder extends Seeder
 {
     public function run(): void
     {

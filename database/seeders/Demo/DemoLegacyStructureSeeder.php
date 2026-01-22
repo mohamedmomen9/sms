@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
-class AcademicStructureSeeder extends Seeder
+class DemoLegacyStructureSeeder extends Seeder
 {
     public function run(): void
     {
