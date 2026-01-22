@@ -5,10 +5,13 @@ namespace Modules\Services\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Spatie\Translatable\HasTranslations;
 
 class AppointmentDepartment extends Model
 {
-    use HasFactory;
+    use HasTranslations, HasFactory;
+
+    public $translatable = ['name'];
 
     protected static function newFactory()
     {

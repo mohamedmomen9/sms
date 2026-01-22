@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('appointment_departments', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->json('name');
             $table->string('code')->nullable()->unique();
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
