@@ -2,15 +2,17 @@
 
 namespace Modules\Department\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Spatie\Translatable\HasTranslations;
-
-use Modules\Curriculum\Models\Curriculum;
 use Modules\Faculty\Models\Faculty;
 use Modules\Subject\Models\Subject;
+use Illuminate\Database\Eloquent\Model;
+use Spatie\Translatable\HasTranslations;
+use Modules\Curriculum\Models\Curriculum;
+
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Modules\Department\Database\Factories\DepartmentFactory;
 
 class Department extends Model
 {
@@ -18,7 +20,7 @@ class Department extends Model
 
     protected static function newFactory()
     {
-        return \Modules\Department\Database\Factories\DepartmentFactory::new();
+        return DepartmentFactory::new();
     }
 
     public $translatable = ['name'];
@@ -41,9 +43,9 @@ class Department extends Model
     /**
      * Get curricula belonging to this department
      */
-    public function curricula(): HasMany
+    public function curricula(): BelongsToMany
     {
-        return $this->hasMany(Curriculum::class);
+        return $this->belongsToMany(Curriculum::class, 'curriculum_department');
     }
 
     /**
