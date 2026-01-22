@@ -20,6 +20,21 @@ class AssessmentResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-check';
     protected static ?string $navigationGroup = 'Academic Management';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('evaluation::app.Academic Management');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('evaluation::app.Assessment');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('evaluation::app.Assessments');
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([

@@ -18,6 +18,11 @@ class SessionTypeResource extends Resource
 
     protected static ?string $navigationGroup = 'Course Management';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('subject::app.Course Management');
+    }
+
     protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
@@ -106,11 +111,11 @@ class SessionTypeResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('Session Type');
+        return __('subject::app.Session Type');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Session Types');
+        return __('subject::app.Session Types');
     }
 }

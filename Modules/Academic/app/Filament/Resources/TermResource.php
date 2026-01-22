@@ -22,6 +22,21 @@ class TermResource extends Resource
 
     protected static ?string $navigationGroup = 'Academic Structure';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('academic::app.Academic Structure');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('academic::app.Term');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('academic::app.Terms');
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema(TermForm::schema());

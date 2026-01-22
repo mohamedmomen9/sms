@@ -32,7 +32,23 @@ class AcademicYearResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-calendar-days';
 
-    protected static ?string $navigationGroup = 'Academic Structure';
+    protected static ?string $navigationGroup = 'Academic Structure'; // Can't easily translate property unless using method?
+    // Filament resources support translations better via methods.
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('academic::app.Academic Structure');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('academic::app.Academic Year');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('academic::app.Academic Years');
+    }
 
     public static function form(Form $form): Form
     {

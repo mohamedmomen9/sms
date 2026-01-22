@@ -25,14 +25,19 @@ class TeacherResource extends Resource
 
     protected static ?string $navigationGroup = 'Academic Management';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('teachers::app.Academic Management');
+    }
+
     public static function getModelLabel(): string
     {
-        return __('Teacher');
+        return __('teachers::app.Teacher');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('Teachers');
+        return __('teachers::app.Teachers');
     }
 
     public static function form(Form $form): Form

@@ -21,6 +21,22 @@ class ServiceRequestResource extends Resource
     protected static ?string $model = ServiceRequest::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationGroup = 'Service Management';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('services::app.Service Management');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('services::app.Service Request');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('services::app.Service Requests');
+    }
+
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

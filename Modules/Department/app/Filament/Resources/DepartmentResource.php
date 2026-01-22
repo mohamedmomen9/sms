@@ -47,7 +47,7 @@ class DepartmentResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.Academic Structure');
+        return __('department::app.Academic Structure');
     }
 
     public static function form(Form $form): Form
@@ -71,11 +71,11 @@ class DepartmentResource extends Resource
             ->modifyQueryUsing(function (Builder $query) {
                 /** @var \App\Models\User $user */
                 $user = Auth::user();
-                
+
                 if ($user && !$user->isAdmin()) {
                     return $user->scopeDepartmentQuery($query);
                 }
-                
+
                 return $query;
             });
     }
@@ -100,14 +100,14 @@ class DepartmentResource extends Resource
     public static function getEloquentQuery(): Builder
     {
         $query = parent::getEloquentQuery();
-        
+
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        
+
         if ($user && !$user->isAdmin()) {
             return $user->scopeDepartmentQuery($query);
         }
-        
+
         return $query;
     }
 }

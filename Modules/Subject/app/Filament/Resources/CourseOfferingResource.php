@@ -30,7 +30,17 @@ class CourseOfferingResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('app.Course Management');
+        return __('subject::app.Course Management');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('subject::app.Course Offering');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('subject::app.Course Offerings');
     }
 
     public static function form(Form $form): Form

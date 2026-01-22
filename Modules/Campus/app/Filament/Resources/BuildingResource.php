@@ -17,8 +17,22 @@ class BuildingResource extends Resource
 
     protected static ?string $navigationGroup = 'Campus Management';
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
+    public static function getNavigationGroup(): ?string
+    {
+        return __('campus::app.Campus Management');
+    }
 
+    public static function getModelLabel(): string
+    {
+        return __('campus::app.Building');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('campus::app.Buildings');
+    }
+
+    protected static ?string $navigationIcon = 'heroicon-o-building-office-2';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form

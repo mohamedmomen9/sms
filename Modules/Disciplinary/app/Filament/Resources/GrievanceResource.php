@@ -22,6 +22,21 @@ class GrievanceResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-exclamation-triangle';
     protected static ?string $navigationGroup = 'Student Affairs';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('disciplinary::app.Student Affairs');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('disciplinary::app.Grievance');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('disciplinary::app.Grievances');
+    }
+
     public static function form(Form $form): Form
     {
         return $form->schema([

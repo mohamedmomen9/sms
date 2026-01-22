@@ -22,10 +22,10 @@ class UserForm
         $isAdmin = $currentUser?->hasPermissionTo('scope:global') ?? false;
 
         return [
-            Section::make('Account Information')
+            Section::make(__('users::app.Account Information'))
                 ->schema([
                     TextInput::make('username')
-                        ->label('Username')
+                        ->label(__('users::app.Username'))
                         ->required()
                         ->maxLength(255)
                         ->unique(ignoreRecord: true),
@@ -38,57 +38,56 @@ class UserForm
 
                     TextInput::make('password')
                         ->password()
-                        ->required(fn ($livewire) => $livewire instanceof CreateUser)
-                        ->dehydrated(fn ($state) => filled($state))
-                        ->helperText(fn ($livewire) => $livewire instanceof CreateUser 
-                            ? null 
-                            : 'Leave empty to keep current password'),
+                        ->required(fn($livewire) => $livewire instanceof CreateUser)
+                        ->dehydrated(fn($state) => filled($state))
+                        ->helperText(fn($livewire) => $livewire instanceof CreateUser
+                            ? null
+                            : __('users::app.Leave empty password')),
                 ])
                 ->columns(3),
 
-            Section::make('Personal Information')
+            Section::make(__('users::app.Personal Information'))
                 ->schema([
                     TextInput::make('first_name')
-                        ->label('First Name')
+                        ->label(__('users::app.First Name'))
                         ->maxLength(255),
 
                     TextInput::make('last_name')
-                        ->label('Last Name')
+                        ->label(__('users::app.Last Name'))
                         ->maxLength(255),
 
                     TextInput::make('display_name')
-                        ->label('Display Name')
+                        ->label(__('users::app.Display Name'))
                         ->maxLength(255)
-                        ->helperText('This name will be shown in the admin panel'),
+                        ->helperText(__('users::app.Display Name Helper')),
                 ])
                 ->columns(3),
 
-            Section::make('Role & Access Control')
-                ->description('Assign Roles to define permissions and access scope')
+            Section::make(__('users::app.Role & Access Control'))
+                ->description(__('users::app.Assign Roles Description'))
                 ->schema([
                     Select::make('roles')
-                        ->label('Roles')
+                        ->label(__('users::app.Roles'))
                         ->relationship('roles', 'name')
                         ->multiple()
                         ->preload()
                         ->searchable()
                         ->default([])
                         ->live()
-                        ->afterStateUpdated(function (Set $set) {
-                        }),
+                        ->afterStateUpdated(function (Set $set) {}),
                 ])
-                ->visible(fn () => $isAdmin),
+                ->visible(fn() => $isAdmin),
 
-            Section::make('Academic Scope Assignment')
-                ->description('Assign the user to a specific academic scope based on their Role')
+            Section::make(__('users::app.Academic Scope Assignment'))
+                ->description(__('users::app.Scope Info Description'))
                 ->schema([
                     Select::make('faculty_id')
-                        ->label('Faculty')
+                        ->label(__('users::app.Faculty'))
                         ->options(function (Get $get) use ($currentUser) {
                             if ($currentUser->can('scope:global')) {
                                 return Faculty::all()->pluck('name', 'id');
                             }
-                            
+
                             $accessibleFacultyIds = $currentUser->getAccessibleFacultyIds();
                             return Faculty::whereIn('id', $accessibleFacultyIds)->get()->pluck('name', 'id');
                         })
@@ -98,11 +97,11 @@ class UserForm
                         ->afterStateUpdated(function (Set $set) {
                             $set('subject_id', null);
                         })
-                        ->visible(fn (Get $get) => self::hasScopePermission($get('roles'), ['scope:faculty', 'scope:subject']))
-                        ->required(fn (Get $get) => self::hasScopePermission($get('roles'), ['scope:faculty', 'scope:subject'])),
+                        ->visible(fn(Get $get) => self::hasScopePermission($get('roles'), ['scope:faculty', 'scope:subject']))
+                        ->required(fn(Get $get) => self::hasScopePermission($get('roles'), ['scope:faculty', 'scope:subject'])),
 
                     Select::make('subjects')
-                        ->label('Subjects')
+                        ->label(__('users::app.Subjects'))
                         ->relationship('subjects', 'code', modifyQueryUsing: function ($query, Get $get) {
                             $facultyId = $get('faculty_id');
                             if (!$facultyId) {
@@ -110,29 +109,29 @@ class UserForm
                             }
                             return $query->where('faculty_id', $facultyId);
                         })
-                        ->getOptionLabelFromRecordUsing(fn (Subject $record) => "{$record->code} - {$record->name}")
+                        ->getOptionLabelFromRecordUsing(fn(Subject $record) => "{$record->code} - {$record->name}")
                         ->multiple()
                         ->preload()
                         ->searchable(['name->en', 'name->ar', 'code'])
-                        ->visible(fn (Get $get) => self::hasScopePermission($get('roles'), ['scope:subject']))
-                        ->required(fn (Get $get) => self::hasScopePermission($get('roles'), ['scope:subject']))
+                        ->visible(fn(Get $get) => self::hasScopePermission($get('roles'), ['scope:subject']))
+                        ->required(fn(Get $get) => self::hasScopePermission($get('roles'), ['scope:subject']))
                         ->rules([
                             function (Get $get, $livewire) use ($currentUser) {
                                 return function (string $attribute, $value, \Closure $fail) use ($currentUser, $livewire) {
                                     if (empty($value) || !is_array($value)) return;
-                                    
+
                                     $subjects = Subject::whereIn('id', $value)->with('prerequisites')->get();
-                                    
+
                                     $passedSubjectIds = [];
                                     $targetUser = $livewire->record ?? null;
-                                    
+
                                     if ($targetUser) {
                                         $passedSubjectIds = $targetUser->subjects()
                                             ->wherePivot('status', 'completed')
                                             ->pluck('subjects.id')
                                             ->toArray();
                                     }
-                                    
+
                                     foreach ($subjects as $subject) {
                                         foreach ($subject->prerequisites as $prereq) {
                                             if (!in_array($prereq->id, $passedSubjectIds)) {
@@ -145,15 +144,15 @@ class UserForm
                         ]),
                 ])
                 ->columns(3)
-                ->visible(fn () => $isAdmin),
+                ->visible(fn() => $isAdmin),
 
-            Section::make('Scope Information')
+            Section::make(__('users::app.Scope Information'))
                 ->schema([
                     Placeholder::make('scope_info')
-                        ->label('Your Access Scope')
-                        ->content(fn () => $currentUser->scope_description ?? 'No scope assigned'),
+                        ->label(__('users::app.Your Access Scope'))
+                        ->content(fn() => $currentUser->scope_description ?? 'No scope assigned'),
                 ])
-                ->visible(fn () => !$isAdmin),
+                ->visible(fn() => !$isAdmin),
         ];
     }
 

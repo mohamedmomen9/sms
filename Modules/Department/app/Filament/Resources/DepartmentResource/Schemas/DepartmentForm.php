@@ -17,11 +17,11 @@ class DepartmentForm
         $user = Auth::user();
 
         return [
-            Section::make(__('app.Academic Assignment'))
-                ->description(__('app.Select the faculty for this department'))
+            Section::make(__('department::app.Academic Assignment'))
+                ->description(__('department::app.Select the faculty for this department'))
                 ->schema([
                     Select::make('faculty_id')
-                        ->label(__('app.Faculty'))
+                        ->label(__('department::app.Faculty'))
                         ->relationship('faculty', 'name')
                         ->options(function () use ($user) {
                             if ($user->isAdmin()) {
@@ -45,10 +45,10 @@ class DepartmentForm
                         }),
                 ]),
 
-            Section::make(__('app.Department Details'))
+            Section::make(__('department::app.Department Details'))
                 ->schema([
                     TextInput::make('code')
-                        ->label(__('app.Department Code'))
+                        ->label(__('department::app.Department Code'))
                         ->required()
                         ->maxLength(255)
                         ->unique(ignoreRecord: true),
@@ -58,11 +58,11 @@ class DepartmentForm
                     }),
 
                     Select::make('status')
-                        ->label(__('app.Status'))
+                        ->label(__('department::app.Status'))
                         ->options([
-                            'active' => __('app.Active'),
-                            'inactive' => __('app.Inactive'),
-                            'pending' => __('app.Pending'),
+                            'active' => __('department::app.Active'),
+                            'inactive' => __('department::app.Inactive'),
+                            'pending' => __('department::app.Pending'),
                         ])
                         ->required()
                         ->default('active'),

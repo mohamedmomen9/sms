@@ -17,6 +17,21 @@ class FacilityResource extends Resource
 
     protected static ?string $navigationGroup = 'Campus Management';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('campus::app.Campus Management');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('campus::app.Facility');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('campus::app.Facilities');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
     protected static ?int $navigationSort = 4;

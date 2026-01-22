@@ -12,14 +12,18 @@ class AcademicYearForm
     {
         return [
             TextInput::make('name')
+                ->label(__('academic::app.Name'))
                 ->required()
                 ->maxLength(255)
-                ->placeholder('e.g. 2025-2026'),
+                ->placeholder(__('academic::app.Example Year')),
             DatePicker::make('start_date')
+                ->label(__('academic::app.Start Date'))
                 ->required(),
             DatePicker::make('end_date')
+                ->label(__('academic::app.End Date'))
                 ->required(),
             Toggle::make('is_active')
+                ->label(__('academic::app.Is Active'))
                 ->required()
                 ->inline(false)
                 ->default(false),

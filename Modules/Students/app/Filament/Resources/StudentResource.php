@@ -27,6 +27,21 @@ class StudentResource extends Resource
 
     protected static ?string $navigationGroup = 'Academic Management';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('students::app.Academic Management');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('students::app.Student');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('students::app.Students');
+    }
+
     public static function form(Form $form): Form
     {
         return $form

@@ -17,6 +17,21 @@ class RoomResource extends Resource
 
     protected static ?string $navigationGroup = 'Campus Management';
 
+    public static function getNavigationGroup(): ?string
+    {
+        return __('campus::app.Campus Management');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('campus::app.Room');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('campus::app.Rooms');
+    }
+
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?int $navigationSort = 3;

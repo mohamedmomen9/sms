@@ -32,22 +32,22 @@ class CampusResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('app.Campuses');
+        return __('campus::app.Campuses');
     }
 
     public static function getModelLabel(): string
     {
-        return __('app.Campus');
+        return __('campus::app.Campus');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('app.Campuses');
+        return __('campus::app.Campuses');
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return "Campus Management";
+        return __('campus::app.Campus Management');
     }
 
     public static function form(Form $form): Form

@@ -20,6 +20,22 @@ class AppointmentResource extends Resource
     protected static ?string $model = Appointment::class;
     protected static ?string $navigationIcon = 'heroicon-o-calendar';
     protected static ?string $navigationGroup = 'Service Management';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('services::app.Service Management');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('services::app.Appointment');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('services::app.Appointments');
+    }
+
     protected static ?int $navigationSort = 1;
     protected static ?string $recordTitleAttribute = 'id';
 
