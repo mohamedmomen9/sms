@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/family-module",
+    "type": "laravel-module",
+    "description": "A reusable Laravel module: Family",
+    "keywords": [
+        "laravel",
+        "module",
+        "family"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Family\\": "app/",
+            "Modules\\Family\\Database\\Factories\\": "database/factories/",
+            "Modules\\Family\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Family\\Providers\\FamilyServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

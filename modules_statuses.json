@@ -13,5 +13,11 @@
     "Evaluation": true,
     "Training": true,
     "Payment": true,
-    "Disciplinary": true
+    "Disciplinary": true,
+    "Communications": true,
+    "Marketing": true,
+    "Engagement": true,
+    "Family": true,
+    "Admissions": true,
+    "System": true
 }

@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/marketing-module",
+    "type": "laravel-module",
+    "description": "A reusable Laravel module: Marketing",
+    "keywords": [
+        "laravel",
+        "module",
+        "marketing"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Marketing\\": "app/",
+            "Modules\\Marketing\\Database\\Factories\\": "database/factories/",
+            "Modules\\Marketing\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Marketing\\Providers\\MarketingServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

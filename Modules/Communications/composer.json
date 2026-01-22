@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/communications-module",
+    "type": "laravel-module",
+    "description": "A reusable Laravel module: Communications",
+    "keywords": [
+        "laravel",
+        "module",
+        "communications"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Communications\\": "app/",
+            "Modules\\Communications\\Database\\Factories\\": "database/factories/",
+            "Modules\\Communications\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Communications\\Providers\\CommunicationsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

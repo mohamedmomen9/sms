@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/engagement-module",
+    "type": "laravel-module",
+    "description": "A reusable Laravel module: Engagement",
+    "keywords": [
+        "laravel",
+        "module",
+        "engagement"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Engagement\\": "app/",
+            "Modules\\Engagement\\Database\\Factories\\": "database/factories/",
+            "Modules\\Engagement\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Engagement\\Providers\\EngagementServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

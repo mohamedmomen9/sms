@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/system-module",
+    "type": "laravel-module",
+    "description": "A reusable Laravel module: System",
+    "keywords": [
+        "laravel",
+        "module",
+        "system"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\System\\": "app/",
+            "Modules\\System\\Database\\Factories\\": "database/factories/",
+            "Modules\\System\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\System\\Providers\\SystemServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

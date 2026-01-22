@@ -1,0 +1,30 @@
+{
+    "name": "nwidart/admissions-module",
+    "type": "laravel-module",
+    "description": "A reusable Laravel module: Admissions",
+    "keywords": [
+        "laravel",
+        "module",
+        "admissions"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Modules\\Admissions\\": "app/",
+            "Modules\\Admissions\\Database\\Factories\\": "database/factories/",
+            "Modules\\Admissions\\Database\\Seeders\\": "database/seeders/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Modules\\Admissions\\Providers\\AdmissionsServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}
