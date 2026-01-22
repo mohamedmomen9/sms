@@ -2,9 +2,10 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
+use Modules\Users\Models\User;
+use Illuminate\Foundation\Testing\WithFaker;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class CurriculumResourceTest extends TestCase
 {
@@ -18,15 +19,15 @@ class CurriculumResourceTest extends TestCase
 
     public function test_super_admin_can_list_curricula()
     {
-        $admin = \Modules\Users\Models\User::where('email', 'admin@example.com')->first();
+        $admin = User::where('email', 'admin@example.com')->first();
         if (!$admin) {
-            $admin = \Modules\Users\Models\User::factory()->create([
-                'email' => 'admin@example.com', 
-                'is_admin' => true, 
+            $admin = User::factory()->create([
+                'email' => 'admin@example.com',
+                'is_admin' => true,
                 'role' => 'admin'
             ]);
         }
-        
+
         $admin->assignRole('Super Admin');
 
         $this->actingAs($admin);
