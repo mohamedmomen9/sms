@@ -52,7 +52,7 @@ class DemoUserSeeder extends Seeder
                     'password' => Hash::make('secret'),
                     'first_name' => $faculty->code,
                     'last_name' => 'Admin',
-                    'display_name' => "{$faculty->name['en']} Admin",
+                    'display_name' => "{$faculty->getTranslation('name', 'en')} Admin",
                     'faculty_id' => $faculty->id,
                 ]
             );

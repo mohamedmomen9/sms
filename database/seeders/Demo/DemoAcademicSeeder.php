@@ -17,11 +17,11 @@ class DemoAcademicSeeder extends Seeder
     {
         // Session Types
         $sessionTypes = [
-            ['code' => 'LECT', 'name' => 'Lecture', 'is_graded' => false],
-            ['code' => 'LAB', 'name' => 'Laboratory', 'is_graded' => true],
-            ['code' => 'TUT', 'name' => 'Tutorial', 'is_graded' => false],
-            ['code' => 'SEM', 'name' => 'Seminar', 'is_graded' => false],
-            ['code' => 'EXAM', 'name' => 'Exam', 'is_graded' => true],
+            ['code' => 'LECT', 'name' => 'Lecture'],
+            ['code' => 'LAB', 'name' => 'Laboratory'],
+            ['code' => 'TUT', 'name' => 'Tutorial'],
+            ['code' => 'SEM', 'name' => 'Seminar'],
+            ['code' => 'EXAM', 'name' => 'Exam'],
         ];
 
         foreach ($sessionTypes as $type) {

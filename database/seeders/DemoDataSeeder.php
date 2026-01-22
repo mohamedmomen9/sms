@@ -3,15 +3,16 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Database\Seeders\RolesSeeder;
 use Illuminate\Support\Facades\App;
 use Database\Seeders\PermissionsSeeder;
-use Database\Seeders\Demo\DemoStructureSeeder;
-use Database\Seeders\Demo\DemoAcademicSeeder;
 use Database\Seeders\Demo\DemoUserSeeder;
 use Database\Seeders\Demo\DemoCourseSeeder;
 use Database\Seeders\Demo\DemoServiceSeeder;
-use Database\Seeders\Demo\DemoAppointmentSeeder;
+use Database\Seeders\Demo\DemoAcademicSeeder;
 use Database\Seeders\Demo\DemoTrainingSeeder;
+use Database\Seeders\Demo\DemoStructureSeeder;
+use Database\Seeders\Demo\DemoAppointmentSeeder;
 
 /**
  * Demo data seeder with realistic, curated names for staging/demo environments.
@@ -272,6 +273,7 @@ class DemoDataSeeder extends Seeder
 
         $this->call([
             PermissionsSeeder::class,
+            RolesSeeder::class,
             DemoStructureSeeder::class,
             DemoAcademicSeeder::class,
             DemoUserSeeder::class,
