@@ -79,9 +79,19 @@ class AdminPanelProvider extends PanelProvider
             ->renderHook('panels::head.end', fn(): string => SidebarColorStyles::styles())
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label(__('Academic Structure')),
+                    ->label(fn() => __('app.Academic Structure')),
                 NavigationGroup::make()
-                    ->label(__('User Management')),
+                    ->label(fn() => __('campus::app.Campus Management')),
+                NavigationGroup::make()
+                    ->label(fn() => __('students::app.Academic Management')),
+                NavigationGroup::make()
+                    ->label(fn() => __('app.Course Management')),
+                NavigationGroup::make()
+                    ->label(fn() => __('services::app.Service Management')),
+                NavigationGroup::make()
+                    ->label(fn() => __('disciplinary::app.Student Affairs')),
+                NavigationGroup::make()
+                    ->label(fn() => __('users::app.User Management')),
             ]);
     }
 
