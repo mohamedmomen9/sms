@@ -80,4 +80,15 @@ class Student extends Authenticatable
             $query->where('is_active', true);
         });
     }
+
+    public function images()
+    {
+        return $this->hasMany(StudentImage::class);
+    }
+
+    public function guardians()
+    {
+        return $this->belongsToMany(\Modules\Family\Models\Guardian::class, 'parent_student', 'student_id', 'parent_id')
+            ->withPivot('relationship_type');
+    }
 }
