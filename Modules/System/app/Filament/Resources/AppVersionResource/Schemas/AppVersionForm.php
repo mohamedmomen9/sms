@@ -28,8 +28,10 @@ class AppVersionForm
                 TextInput::make('min_version')
                     ->maxLength(255),
                 Toggle::make('force_update')
+                    ->inline(false)
                     ->required(),
                 Textarea::make('release_notes')
+                    ->label('Release Notes')
                     ->columnSpanFull(),
             ]);
     }
