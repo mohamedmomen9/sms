@@ -89,6 +89,10 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label(fn() => __('services::app.Service Management')),
                 NavigationGroup::make()
+                    ->label(fn() => __('marketing::app.Marketing')),
+                NavigationGroup::make()
+                    ->label(fn() => __('engagement::app.Engagement')),
+                NavigationGroup::make()
                     ->label(fn() => __('communications::app.Communications')),
                 NavigationGroup::make()
                     ->label(fn() => __('disciplinary::app.Student Affairs')),

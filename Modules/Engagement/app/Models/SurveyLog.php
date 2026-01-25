@@ -2,9 +2,9 @@
 
 namespace Modules\Engagement\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Users\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class SurveyLog extends Model
 {
@@ -12,17 +12,19 @@ class SurveyLog extends Model
 
     protected $fillable = [
         'survey_id',
-        'user_id',
-        'status', // pending, completed, skipped
+        'participant_type',
+        'participant_id',
+        'status', // Is completed
+        'completed_at',
     ];
 
-    public function survey()
+    protected $casts = [
+        'status' => 'boolean',
+        'completed_at' => 'datetime',
+    ];
+
+    public function survey(): BelongsTo
     {
         return $this->belongsTo(Survey::class);
-    }
-
-    public function user()
-    {
-        return $this->belongsTo(User::class);
     }
 }
