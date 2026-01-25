@@ -60,6 +60,19 @@ class PermissionsSeeder extends Seeder
             'assessment',
             'evaluation',
             'grievance',
+            'app_version',
+            'lookup_item',
+            'system_setting',
+            'user_agreement',
+            'applicant',
+            'announcement',
+            'notification',
+            'survey',
+            'survey_log',
+            'guardian',
+            'offer',
+            'offer_log',
+            'student_tutorial',
         ];
 
         $actions = ['view_any', 'view', 'create', 'update', 'delete', 'delete_any'];
