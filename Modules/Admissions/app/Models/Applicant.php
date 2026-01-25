@@ -2,39 +2,30 @@
 
 namespace Modules\Admissions\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Faculty\Models\Faculty;
-use Modules\Academic\Models\Term;
+use Illuminate\Database\Eloquent\Model;
 
 class Applicant extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'first_name',
-        'last_name',
-        'national_id',
+        'name',
         'email',
         'phone',
-        'faculty_id',
-        'applied_term_id',
-        'status', // new, reviewing, accepted, rejected
-        'documents', // json
-        'notes',
+        'password',
+        'status', // pending, reviewed, accepted, rejected
+        'application_data', // JSON fields
+    ];
+
+    protected $hidden = [
+        'password',
+        'remember_token',
     ];
 
     protected $casts = [
-        'documents' => 'array',
+        'status' => 'string',
+        'application_data' => 'array',
+        'password' => 'hashed',
     ];
-
-    public function faculty()
-    {
-        return $this->belongsTo(Faculty::class);
-    }
-
-    public function appliedTerm()
-    {
-        return $this->belongsTo(Term::class, 'applied_term_id');
-    }
 }

@@ -2,29 +2,37 @@
 
 namespace Modules\Family\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Modules\Users\Models\User;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ParentVerification extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'parents_id',
-        'national_id_image',
-        'status', // pending, approved, rejected
-        'admin_id',
-        'notes',
+        'parent_id',
+        'phone',
+        'otp',
+        'otp_expires_at',
+        'verified_at',
     ];
 
-    public function guardian()
+    protected $casts = [
+        'otp_expires_at' => 'datetime',
+        'verified_at' => 'datetime',
+    ];
+
+    public function guardian(): BelongsTo
     {
-        return $this->belongsTo(Guardian::class, 'parents_id');
+        return $this->belongsTo(Guardian::class, 'parent_id');
     }
 
-    public function admin()
+    public static function clearOtp(int $parentId): void
     {
-        return $this->belongsTo(User::class, 'admin_id');
+        static::where('parent_id', $parentId)->update([
+            'otp' => null,
+            'otp_expires_at' => null
+        ]);
     }
 }

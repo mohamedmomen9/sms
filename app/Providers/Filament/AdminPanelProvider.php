@@ -97,6 +97,8 @@ class AdminPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label(fn() => __('disciplinary::app.Student Affairs')),
                 NavigationGroup::make()
+                    ->label(fn() => __('admissions::app.Admissions')),
+                NavigationGroup::make()
                     ->label(fn() => __('users::app.User Management')),
             ]);
     }

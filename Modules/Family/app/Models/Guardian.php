@@ -2,9 +2,13 @@
 
 namespace Modules\Family\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Family\Database\Factories\GuardianFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Campus\Models\Campus;
+use Modules\Students\Models\Student;
 
 class Guardian extends Model
 {
@@ -16,32 +20,38 @@ class Guardian extends Model
         'name',
         'email',
         'phone',
-        'national_id',
-        'job',
-        'address',
-        'is_active',
         'password',
+        'student_id',
+        'campus_id',
+        'is_active',
     ];
 
     protected $hidden = [
         'password',
+        'remember_token',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
         'password' => 'hashed',
     ];
 
-    public function students()
+    public function student(): BelongsTo
     {
-        return $this->belongsToMany(\Modules\Students\Models\Student::class, 'parent_student', 'parent_id', 'student_id')
-            ->withPivot('relationship_type');
+        return $this->belongsTo(Student::class);
     }
 
+    public function campus(): BelongsTo
+    {
+        return $this->belongsTo(Campus::class);
+    }
 
+    public function verifications(): HasMany
+    {
+        return $this->hasMany(ParentVerification::class, 'parent_id');
+    }
 
-    // protected static function newFactory(): GuardianFactory
-    // {
-    //     // return GuardianFactory::new();
-    // }
+    public function scopeForStudent(Builder $query, int $studentId): Builder
+    {
+        return $query->where('student_id', $studentId);
+    }
 }
