@@ -21,6 +21,7 @@ class AppLaunchSeeder extends Seeder
 
         // 2. Settings
         $this->call(SettingsSeeder::class);
+        $this->call(\Modules\System\Database\Seeders\AppVersionSeeder::class);
 
         // 3. Create Super Administrator
         $superAdminRole = Role::where('name', 'Super Admin')->firstOrFail();

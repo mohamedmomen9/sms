@@ -35,11 +35,16 @@ class AppVersionResource extends Resource
         ];
     }
 
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
     public static function getPages(): array
     {
         return [
             'index' => Pages\ListAppVersions::route('/'),
-            'create' => Pages\CreateAppVersion::route('/create'),
+            // 'create' => Pages\CreateAppVersion::route('/create'),
             'edit' => Pages\EditAppVersion::route('/{record}/edit'),
         ];
     }

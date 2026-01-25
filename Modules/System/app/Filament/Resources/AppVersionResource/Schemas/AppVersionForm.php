@@ -20,7 +20,8 @@ class AppVersionForm
                         'android' => 'Android',
                         'web' => 'Web',
                     ])
-                    ->required(),
+                    ->required()
+                    ->disabled(),
                 TextInput::make('version')
                     ->required()
                     ->maxLength(255),
