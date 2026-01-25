@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('app_versions', function (Blueprint $table) {
             $table->id();
-            $table->enum('platform', ['ios', 'android', 'web']);
+            $table->enum('platform', ['ios', 'android']);
             $table->string('version');
             $table->string('min_version')->nullable();
             $table->boolean('force_update')->default(false);

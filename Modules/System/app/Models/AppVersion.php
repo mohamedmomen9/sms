@@ -10,16 +10,14 @@ class AppVersion extends Model
     use HasFactory;
 
     protected $fillable = [
-        'version_number',
-        'platform', // ios, android
-        'is_mandatory',
-        'release_date',
-        'description',
-        'download_url',
+        'platform',
+        'version',
+        'min_version',
+        'force_update',
+        'release_notes',
     ];
 
     protected $casts = [
-        'is_mandatory' => 'boolean',
-        'release_date' => 'date',
+        'force_update' => 'boolean',
     ];
 }
