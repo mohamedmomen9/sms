@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Modules\Campus\Models\Campus;
+use Modules\Communications\Traits\HasNotificationLogs;
 use Modules\Faculty\Models\Faculty;
 use Modules\Subject\Models\Subject;
 use Spatie\Permission\Traits\HasRoles;
@@ -17,7 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 class Teacher extends Authenticatable implements FilamentUser
 {
-    use HasFactory, Notifiable, HasRoles, HasApiTokens;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens, HasNotificationLogs;
 
     protected static function newFactory()
     {

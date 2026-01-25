@@ -2,23 +2,25 @@
 
 namespace Modules\Students\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Modules\Campus\Models\Campus;
-use Modules\Department\Models\Department;
 use Modules\Faculty\Models\Faculty;
 use Modules\Subject\Models\Subject;
+use Illuminate\Notifications\Notifiable;
+use Modules\Department\Models\Department;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\Communications\Traits\HasNotificationLogs;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Modules\Students\Database\Factories\StudentFactory;
 
 
 class Student extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, HasNotificationLogs;
 
     protected static function newFactory()
     {
-        return \Modules\Students\Database\Factories\StudentFactory::new();
+        return StudentFactory::new();
     }
 
     protected $fillable = [
