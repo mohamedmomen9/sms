@@ -15,11 +15,9 @@ class OfferController extends Controller
      */
     public function index(Request $request)
     {
-        $campus = $request->input('campus', 'All');
+        $campusId = $request->campus_id;
 
-        $offers = Offer::where(function ($q) use ($campus) {
-            $q->where('campus', $campus)->orWhere('campus', 'All');
-        })->get();
+        $offers = Offer::forCampus($campusId)->get();
 
         return response()->json($offers);
     }
@@ -59,12 +57,7 @@ class OfferController extends Controller
             return response()->json(['message' => 'Offer not found'], 404);
         }
 
-        // Implementation from DashboardEloquentQueries uses create, but let's see if we can make it smarter
-        // If it's a toggle, we should check if it exists.
-        // However, I will strictly follow the provided "logic" which just creates a log entry for now
-        // to match the "DashboardEloquentQueries" file provided.
-        // Actually, let's implement true toggle for better UX, or stick to the code?
-        // The user said "missing apis ... implemented form here". So I should copy the implementation.
+        // Log the favorite action for this offer
 
         $log = OfferLog::create([
             'offer_id'    => $id,

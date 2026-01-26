@@ -4,6 +4,7 @@ namespace Modules\Communications\Providers;
 
 use Filament\Panel;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class CommunicationsServiceProvider extends ServiceProvider
@@ -28,6 +29,7 @@ class CommunicationsServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
+        $this->registerRoutes();
     }
 
     /**
@@ -108,6 +110,16 @@ class CommunicationsServiceProvider extends ServiceProvider
             in: module_path('Communications', 'app/Filament/Resources'),
             for: 'Modules\\Communications\\Filament\\Resources'
         );
+    }
+
+    /**
+     * Register the routes for the module.
+     */
+    protected function registerRoutes(): void
+    {
+        Route::middleware('api')
+            ->prefix('api')
+            ->group(module_path($this->moduleName, 'routes/api.php'));
     }
 
     /**

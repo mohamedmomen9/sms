@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use Modules\Marketing\Http\Controllers\OfferController;
 
-Route::prefix('v1')->group(function () {
+use Modules\Marketing\Http\Middleware\InjectMarketingContext;
+
+Route::prefix('v1')->middleware(InjectMarketingContext::class)->group(function () {
     Route::get('offers', [OfferController::class, 'index']);
     Route::get('offers/favorites', [OfferController::class, 'favorites']);
     Route::get('offers/{id}', [OfferController::class, 'show']);

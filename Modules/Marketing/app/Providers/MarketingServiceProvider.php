@@ -4,6 +4,7 @@ namespace Modules\Marketing\Providers;
 
 use Filament\Panel;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class MarketingServiceProvider extends ServiceProvider
@@ -28,6 +29,7 @@ class MarketingServiceProvider extends ServiceProvider
         $this->registerTranslations();
         $this->registerConfig();
         $this->loadMigrationsFrom(module_path($this->moduleName, 'database/migrations'));
+        $this->registerRoutes();
     }
 
     /**
@@ -81,7 +83,7 @@ class MarketingServiceProvider extends ServiceProvider
         $this->publishes([
             module_path($this->moduleName, 'config/config.php') => config_path($this->moduleNameLower . '.php'),
         ], 'config');
-        
+
         $this->mergeConfigFrom(
             module_path($this->moduleName, 'config/config.php'),
             $this->moduleNameLower
@@ -108,6 +110,16 @@ class MarketingServiceProvider extends ServiceProvider
             in: module_path('Marketing', 'app/Filament/Resources'),
             for: 'Modules\\Marketing\\Filament\\Resources'
         );
+    }
+
+    /**
+     * Register the routes for the module.
+     */
+    protected function registerRoutes(): void
+    {
+        Route::middleware('api')
+            ->prefix('api')
+            ->group(module_path($this->moduleName, 'routes/api.php'));
     }
 
     /**

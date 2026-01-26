@@ -14,16 +14,10 @@ class AnnouncementController extends Controller
      */
     public function index(Request $request)
     {
-        $types = $request->input('types', []);
-        $campus = $request->input('campus', 'All');
+        $types = $request->types;
+        $campusId = $request->campus_id;
 
-        if (empty($types)) {
-            $types = ['announcements', 'news', 'events'];
-        }
-
-        $results = Announcement::where(function ($q) use ($campus) {
-            $q->where('campus', $campus)->orWhere('campus', 'All');
-        })
+        $results = Announcement::forCampus($campusId)
             ->whereIn('type', $types)
             ->orderBy('id', 'desc')
             ->get();
@@ -52,14 +46,11 @@ class AnnouncementController extends Controller
      */
     public function search(Request $request)
     {
-        $campus = $request->input('campus', 'All');
+        $campusId = $request->campus_id;
         $query = $request->input('q');
         $type = $request->input('type', 'announcements'); // announcements or events
 
-        $q = Announcement::where(function ($q) use ($campus) {
-            $q->whereRaw('LOWER(campus) = ?', [strtolower($campus)])
-                ->orWhereRaw('LOWER(campus) = ?', ['all']);
-        });
+        $q = Announcement::forCampus($campusId);
 
         if ($type === 'events') {
             $q->where('type', 'events');
