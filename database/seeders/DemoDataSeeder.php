@@ -13,6 +13,10 @@ use Database\Seeders\Demo\DemoAcademicSeeder;
 use Database\Seeders\Demo\DemoTrainingSeeder;
 use Database\Seeders\Demo\DemoStructureSeeder;
 use Database\Seeders\Demo\DemoAppointmentSeeder;
+use Database\Seeders\Demo\DemoCommunicationsSeeder;
+use Database\Seeders\Demo\DemoMarketingSeeder;
+use Database\Seeders\Demo\DemoEngagementSeeder;
+use Database\Seeders\Demo\DemoStudentFeatureSeeder;
 
 /**
  * Demo data seeder with realistic, curated names for staging/demo environments.
@@ -281,6 +285,10 @@ class DemoDataSeeder extends Seeder
             DemoServiceSeeder::class,
             DemoAppointmentSeeder::class,
             DemoTrainingSeeder::class,
+            DemoCommunicationsSeeder::class,
+            DemoMarketingSeeder::class,
+            DemoEngagementSeeder::class,
+            DemoStudentFeatureSeeder::class,
         ]);
 
         $this->command->info('Demo data seeded successfully!');

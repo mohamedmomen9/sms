@@ -54,7 +54,7 @@ class DemoAppointmentSeeder extends Seeder
         $term = Term::where('is_active', true)->first();
         if (!$term) return;
 
-        $students = Student::inRandomOrder()->take(20)->get();
+        $students = Student::orderBy('id')->take(20)->get();
         $slot = AppointmentSlot::first();
         $purpose = AppointmentPurpose::first();
 
@@ -63,7 +63,8 @@ class DemoAppointmentSeeder extends Seeder
 
             Appointment::firstOrCreate([
                 'student_id' => $student->student_id,
-                'appointment_date' => now()->addDays(rand(1, 14))->format('Y-m-d'),
+                // Schedule based on student ID
+                'appointment_date' => now()->startOfWeek()->addDays(($student->id % 5) + 1)->format('Y-m-d'),
                 'slot_id' => $slot->id,
             ], [
                 'term_id' => $term->id,

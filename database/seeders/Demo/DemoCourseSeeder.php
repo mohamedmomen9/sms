@@ -62,21 +62,33 @@ class DemoCourseSeeder extends Seeder
 
                 // Sections
                 for ($sec = 1; $sec <= self::SECTIONS_PER_SUBJECT; $sec++) {
-                    $room = $allRooms->random();
-                    $primaryTeacher = $teachers->random();
-                    $secondaryTeacher = $teachers->where('id', '!=', $primaryTeacher->id)->random() ?? $primaryTeacher;
+                    // Deterministic room assignment
+                    $roomIndex = ($department->id + $s + $sec) % $allRooms->count();
+                    $room = $allRooms[$roomIndex];
+
+                    $teacherCount = $teachers->count();
+                    $t1Index = ($department->id + $s + $sec) % $teacherCount;
+                    $primaryTeacher = $teachers[$t1Index];
+
+                    // Select secondary teacher
+                    $t2Index = ($t1Index + 1) % $teacherCount;
+                    $secondaryTeacher = $teachers[$t2Index];
 
                     $offering = CourseOffering::firstOrCreate(
                         ['term_id' => $term->id, 'subject_id' => $subject->id, 'section_number' => str_pad($sec, 2, '0', STR_PAD_LEFT)],
                         ['room_id' => $room->id, 'capacity' => $room->capacity]
                     );
 
-                    // Attach instructors
-                    if (!$offering->teachers()->where('teacher_id', $primaryTeacher->id)->exists()) {
+                    // Attach primary teacher if missing
+                    if (!$offering->teachers()->wherePivot('is_primary', true)->exists()) {
                         $offering->teachers()->attach($primaryTeacher->id, ['is_primary' => true]);
                     }
-                    if ($primaryTeacher->id !== $secondaryTeacher->id && !$offering->teachers()->where('teacher_id', $secondaryTeacher->id)->exists()) {
-                        $offering->teachers()->attach($secondaryTeacher->id, ['is_primary' => false]);
+
+                    if ($primaryTeacher->id !== $secondaryTeacher->id) {
+                        // Attach secondary teacher if missing
+                        if (!$offering->teachers()->wherePivot('is_primary', false)->exists()) {
+                            $offering->teachers()->attach($secondaryTeacher->id, ['is_primary' => false]);
+                        }
                     }
 
                     // Schedules
@@ -105,10 +117,13 @@ class DemoCourseSeeder extends Seeder
                         ]
                     );
 
-                    // Enrollments (half of department students per section)
+                    // Enrollments (split students between sections)
+                    $deptStudents = $students->values();
+                    $halfCount = (int) ceil($deptStudents->count() / 2);
+
                     $sectionStudents = $sec === 1
-                        ? $students->take((int) ceil($students->count() / 2))
-                        : $students->slice((int) ceil($students->count() / 2));
+                        ? $deptStudents->take($halfCount)
+                        : $deptStudents->slice($halfCount);
 
                     foreach ($sectionStudents as $student) {
                         CourseEnrollment::firstOrCreate(

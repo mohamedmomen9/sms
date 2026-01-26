@@ -35,10 +35,12 @@ class DemoServiceSeeder extends Seeder
         $term = Term::where('is_active', true)->first();
         if (!$term) return;
 
-        $students = Student::inRandomOrder()->take(50)->get();
+        // Select fixed group of students
+        $students = Student::orderBy('id')->take(50)->get();
 
-        foreach ($students as $student) {
-            $type = collect($serviceTypes)->random();
+        foreach ($students as $index => $student) {
+            // Assign specific service type
+            $type = $serviceTypes[$index % count($serviceTypes)];
 
             ServiceRequest::firstOrCreate([
                 'student_id' => $student->student_id,
