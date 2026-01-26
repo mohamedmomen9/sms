@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Communications\Models\Notification;
 use Modules\Communications\Models\NotificationLog;
+use Modules\Students\Models\Student;
+use Modules\Teachers\Models\Teacher;
 
 class NotificationController extends Controller
 {
@@ -16,22 +18,13 @@ class NotificationController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        if (!$user) {
-            // Fallback for demo/testing if auth not fully set up yet, or return 401
-            // For now, let's assume student_id is passed or handled via auth
-            // Using logic from DashboardEloquentQueries: getStudentNotificationsWithLogs($studentId)
-            $studentId = $request->input('student_id');
-        } else {
-            $studentId = $user->cicid; // Assuming user has cicid
-        }
 
-        if (!$studentId) {
-            return response()->json(['message' => 'Student ID required'], 400);
-        }
+
 
         $results = Notification::select('notifications.*', 'notification_logs.is_read')
             ->join('notification_logs', 'notification_logs.notification_id', '=', 'notifications.id')
-            ->where('student_id', $studentId)
+            ->where('notification_logs.notifiable_type', Student::class)
+            ->where('notification_logs.notifiable_id', $user->id)
             ->orderBy('id', 'desc')
             ->get();
 
@@ -57,16 +50,17 @@ class NotificationController extends Controller
      */
     public function markAsRead(Request $request, $id)
     {
-        $studentId = $request->input('student_id'); // Or from auth
+        $user = $request->user();
 
-        if (!$studentId) {
-            return response()->json(['message' => 'Student ID required'], 400);
+        if (!Notification::where('id', $id)->exists()) {
+            return response()->json(['message' => 'Notification not found'], 404);
         }
 
         $log = NotificationLog::updateOrCreate(
             [
                 'notification_id' => $id,
-                'student_id' => $studentId,
+                'notifiable_type' => Student::class,
+                'notifiable_id' => $user->id,
             ],
             [
                 'is_read' => true,
@@ -82,19 +76,13 @@ class NotificationController extends Controller
      */
     public function instructorIndex(Request $request)
     {
-        $instructorId = $request->input('instructor_id'); // Or from auth
+        $user = $request->user();
 
-        if (!$instructorId) {
-            return response()->json(['message' => 'Instructor ID required'], 400);
-        }
 
         $results = Notification::select('notifications.*', 'notification_logs.is_read')
             ->join('notification_logs', 'notification_logs.notification_id', '=', 'notifications.id')
-            ->where('people_id', $instructorId)
-            ->where(function ($query) {
-                $query->whereNull('student_id')
-                    ->orWhere('student_id', '');
-            })
+            ->where('notification_logs.notifiable_type', Teacher::class)
+            ->where('notification_logs.notifiable_id', $user->id)
             ->orderBy('id', 'desc')
             ->get();
 

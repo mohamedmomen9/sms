@@ -28,13 +28,15 @@ class OfferController extends Controller
      */
     public function favorites(Request $request)
     {
-        $studentId = $request->input('student_id');
+        $user = $request->user();
 
-        if (!$studentId) {
-            return response()->json(['message' => 'Student ID required'], 400);
-        }
 
-        $offerLog = OfferLog::where(['cicid' => $studentId, 'is_favorite' => 1])->pluck('offer_id');
+        $offerLog = OfferLog::where([
+            'entity_type' => 'student',
+            'entity_id' => $user->id,
+            'is_favorite' => 1
+        ])->pluck('offer_id');
+
         $favOffers = Offer::whereIn('id', $offerLog)->get();
 
         return response()->json($favOffers);
@@ -46,11 +48,8 @@ class OfferController extends Controller
      */
     public function toggleLike(Request $request, $id)
     {
-        $studentId = $request->input('student_id');
+        $user = $request->user();
 
-        if (!$studentId) {
-            return response()->json(['message' => 'Student ID required'], 400);
-        }
 
         $offer = Offer::find($id);
         if (!$offer) {
@@ -61,7 +60,8 @@ class OfferController extends Controller
 
         $log = OfferLog::create([
             'offer_id'    => $id,
-            'cicid'       => $studentId,
+            'entity_type' => 'student',
+            'entity_id'   => $user->id,
             'is_favorite' => 1
         ]);
 

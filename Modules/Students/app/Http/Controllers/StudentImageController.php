@@ -14,19 +14,21 @@ class StudentImageController extends Controller
      */
     public function eligibility(Request $request)
     {
-        $studentId = $request->input('student_id');
+        $user = $request->user();
+
+
+
+        $studentId = $request->authenticated_student_id ?? $user->student_id;
+
         if (!$studentId) {
             return response()->json(['message' => 'Student ID required'], 400);
         }
 
-        // logic from DashboardEloquentQueries uses static method faceRecognitionStatus
-        // Check if that method exists in model, otherwise assume standard query
         if (method_exists(StudentImage::class, 'faceRecognitionStatus')) {
             return response()->json(StudentImage::faceRecognitionStatus($studentId));
         }
 
-        // Fallback or implementation
-        $status = StudentImage::where('cicid', $studentId)->exists(); // Simplified
+        $status = StudentImage::where('student_id', $studentId)->exists();
         return response()->json(['active' => $status]);
     }
 
@@ -36,17 +38,20 @@ class StudentImageController extends Controller
      */
     public function update(Request $request)
     {
-        $studentId = $request->input('cicid');
+        $user = $request->user();
+
+
+        $studentId = $request->authenticated_student_id ?? $user->student_id;
 
         if (!$studentId) {
-            return response()->json(['message' => 'CICID required'], 400);
+            return response()->json(['message' => 'Student ID required'], 400);
         }
 
         $imageData = $request->all();
-        unset($imageData['cicid']); // Prevent updating key if passed in body too
+
 
         $image = StudentImage::updateOrCreate(
-            ['cicid' => $studentId],
+            ['student_id' => $studentId],
             $imageData
         );
 
@@ -54,12 +59,12 @@ class StudentImageController extends Controller
     }
 
     /**
-     * Get student image by CICID.
-     * @api GET /api/student-images/{cicid}
+     * Get student image by Student ID.
+     * @api GET /api/student-images/{studentId}
      */
-    public function show($cicid)
+    public function show($studentId)
     {
-        $image = StudentImage::where('cicid', $cicid)->first();
+        $image = StudentImage::where('student_id', $studentId)->first();
         if (!$image) {
             return response()->json(['message' => 'Image not found'], 404);
         }

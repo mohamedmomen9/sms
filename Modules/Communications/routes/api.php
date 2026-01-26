@@ -5,8 +5,10 @@ use Modules\Communications\Http\Controllers\AnnouncementController;
 use Modules\Communications\Http\Controllers\NotificationController;
 
 use Modules\Communications\Http\Middleware\InjectAnnouncementContext;
+use Modules\System\Http\Middleware\InjectUserContext;
+use Modules\Auth\Http\Middleware\UniversalJwtMiddleware;
 
-Route::prefix('v1')->middleware(InjectAnnouncementContext::class)->group(function () {
+Route::prefix('v1')->middleware([UniversalJwtMiddleware::class, InjectAnnouncementContext::class, InjectUserContext::class])->group(function () {
     // Announcements
     Route::get('announcements', [AnnouncementController::class, 'index']);
     Route::get('announcements/{id}', [AnnouncementController::class, 'show']);

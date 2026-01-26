@@ -19,7 +19,9 @@ class TeacherCourseService implements CourseServiceInterface
 
     public function getCurrentCourses(): Collection
     {
-        $offerings = CourseOffering::where('teacher_id', $this->teacher->id)
+        $offerings = CourseOffering::whereHas('teachers', function ($query) {
+            $query->where('teachers.id', $this->teacher->id);
+        })
             ->whereHas('term', function ($query) {
                 $query->where('is_active', true);
             })

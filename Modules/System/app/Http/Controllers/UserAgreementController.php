@@ -14,14 +14,12 @@ class UserAgreementController extends Controller
      */
     public function status(Request $request)
     {
-        $cicid = $request->input('cicid'); // Or from auth
-        $name = $request->input('name', 'default');
+        $user = $request->user();
 
-        if (!$cicid) {
-            return response()->json(['message' => 'CICID required'], 400);
-        }
 
-        $exists = UserAgreement::where(['cicid' => $cicid, 'name' => $name])->exists();
+        $type = $request->input('type', 'default'); // Renamed 'name' to 'type' to match model
+
+        $exists = UserAgreement::hasAccepted($user, $type);
 
         return response()->json(['accepted' => $exists]);
     }
@@ -32,14 +30,12 @@ class UserAgreementController extends Controller
      */
     public function accept(Request $request)
     {
-        $cicid = $request->input('cicid'); // Or from auth
-        $name = $request->input('name', 'default');
+        $user = $request->user();
 
-        if (!$cicid) {
-            return response()->json(['message' => 'CICID required'], 400);
-        }
 
-        $agreement = UserAgreement::create(['cicid' => $cicid, 'name' => $name]);
+        $type = $request->input('type', 'default');
+
+        $agreement = UserAgreement::accept($user, $type);
 
         return response()->json($agreement);
     }
