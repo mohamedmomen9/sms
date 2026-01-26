@@ -26,3 +26,4 @@ plan/*
 *.md
 postman_collection.json
 postman/
+!Readme/*.md
